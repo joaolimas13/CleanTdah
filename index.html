@@ -1,330 +1,294 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>CleanTDAH — Foco sem fricção</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#06080F;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#E8EDF8;overscroll-behavior:none;}
+input,textarea,button{font-family:inherit;}
+input[type=range]{accent-color:#00D4FF;height:6px;width:100%;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#1A2440;border-radius:99px;}
+button:active{transform:scale(0.97);}
+textarea{resize:vertical;}
+@keyframes somaPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.8;transform:scale(1.08)}}
+@keyframes neuronPulse{0%,100%{opacity:0.5}50%{opacity:1}}
+@keyframes dendPulse{from{opacity:0.4}to{opacity:0.9}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fadein{animation:fadeIn 0.4s ease forwards;}
+.slideup{animation:slideUp 0.35s ease forwards;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useEffect,useRef,useCallback}=React;
 
-/* ═══════════════════════════════════════════════════
-   THEME — Dark Neuroscience
-═══════════════════════════════════════════════════ */
-const C = {
-  bg: "#06080F", surf: "#0B0F1E", card: "#10162A", bord: "#1A2440",
-  pri: "#7C5CF6", cyan: "#00D4FF", grn: "#00E896", amb: "#FFB020",
-  pnk: "#FF5294", red: "#FF3B5C", txt: "#E8EDF8", mut: "#4E5F80",
-  dim: "#1A2235",
+/* ══════════════ TEMA ══════════════ */
+const C={
+  bg:"#06080F",surf:"#0B0F1E",card:"#10162A",bord:"#1A2440",
+  pri:"#7C5CF6",cyan:"#00D4FF",grn:"#00E896",amb:"#FFB020",
+  pnk:"#FF5294",red:"#FF3B5C",txt:"#E8EDF8",mut:"#4E5F80"
 };
-const g = (a, b, deg = 135) => `linear-gradient(${deg}deg, ${a}, ${b})`;
-const glow = (col, px = 20) => `0 0 ${px}px ${col}40, 0 0 ${px * 2}px ${col}20`;
+const glow=(col,px=20)=>`0 0 ${px}px ${col}40,0 0 ${px*2}px ${col}20`;
 
-/* ═══════════════════════════════════════════════════
-   STORAGE HELPERS
-═══════════════════════════════════════════════════ */
-const db = {
-  get: async (k, shared = false) => {
-    try { const r = await window.storage.get(k, shared); return r ? JSON.parse(r.value) : null; } catch { return null; }
-  },
-  set: async (k, v, shared = false) => {
-    try { await window.storage.set(k, JSON.stringify(v), shared); } catch {}
-  },
-  del: async (k, shared = false) => {
-    try { await window.storage.delete(k, shared); } catch {}
-  },
+/* ══════════════ STORAGE (localStorage) ══════════════ */
+const db={
+  get:(k)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}},
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}},
+  del:(k)=>{try{localStorage.removeItem(k);}catch{}}
 };
-const hash = (s) => [...s].reduce((a, c) => (a << 5) - a + c.charCodeAt(0) | 0, 0).toString(36);
-const uid = () => Math.random().toString(36).slice(2, 10);
-const today = () => new Date().toISOString().slice(0, 10);
+const hash=(s)=>[...s].reduce((a,c)=>(a<<5)-a+c.charCodeAt(0)|0,0).toString(36);
+const uid=()=>Math.random().toString(36).slice(2,10);
+const today=()=>new Date().toISOString().slice(0,10);
 
-/* ═══════════════════════════════════════════════════
-   MEDICATION DATA
-═══════════════════════════════════════════════════ */
-const MEDS = {
-  venvanse: { name: "Venvanse", duration: 720, peak: [120, 240], color: C.cyan },
-  ritalina: { name: "Ritalina", duration: 270, peak: [60, 120], color: C.grn },
-  concerta: { name: "Concerta", duration: 660, peak: [180, 300], color: C.amb },
-  atentah: { name: "Atentah", duration: 270, peak: [60, 120], color: C.pnk },
-  outro: { name: "Outro", duration: 240, peak: [60, 120], color: C.mut },
+/* ══════════════ MEDICAMENTOS ══════════════ */
+const MEDS={
+  venvanse:{name:"Venvanse",duration:720,peak:[120,240],color:C.cyan},
+  ritalina:{name:"Ritalina",duration:270,peak:[60,120],color:C.grn},
+  concerta:{name:"Concerta",duration:660,peak:[180,300],color:C.amb},
+  atentah:{name:"Atentah",duration:270,peak:[60,120],color:C.pnk},
+  outro:{name:"Outro",duration:240,peak:[60,120],color:C.mut}
 };
-const medPhase = (med, min) => {
-  if (!med) return null;
-  const [ps, pe] = med.peak;
-  if (min < 30) return { label: "Absorção inicial", sub: "Início da ação no organismo", icon: "⚡" };
-  if (min < ps) return { label: "Subindo ao pico", sub: "Dopamina e norepinefrina aumentando", icon: "📈" };
-  if (min <= pe) return { label: "🔥 Pico de concentração", sub: "Máxima efetividade cognitiva", icon: "🧠" };
-  if (min < med.duration * 0.75) return { label: "Efeito estável", sub: "Ação sustentada no SNC", icon: "✅" };
-  if (min < med.duration) return { label: "Início do metabolismo", sub: "Efeito diminuindo gradualmente", icon: "🌅" };
-  return { label: "Efeito encerrado", sub: "Hora de avaliar nova dose", icon: "⏰" };
+const medPhase=(med,min)=>{
+  if(!med)return null;
+  const[ps,pe]=med.peak;
+  if(min<30)return{label:"Absorção inicial",sub:"Início da ação no organismo"};
+  if(min<ps)return{label:"Subindo ao pico",sub:"Dopamina e norepinefrina aumentando"};
+  if(min<=pe)return{label:"🔥 Pico de concentração",sub:"Máxima efetividade cognitiva"};
+  if(min<med.duration*0.75)return{label:"Efeito estável",sub:"Ação sustentada no SNC"};
+  if(min<med.duration)return{label:"Início do metabolismo",sub:"Efeito diminuindo gradualmente"};
+  return{label:"Efeito encerrado",sub:"Hora de avaliar nova dose"};
 };
 
-/* ═══════════════════════════════════════════════════
-   NEURON SVG (evolves with pomodoro cycles)
-═══════════════════════════════════════════════════ */
-function NeuronSVG({ level = 0, pulse = false }) {
-  const lv = Math.min(level, 6);
-  const cols = [C.mut, C.pri, C.cyan, C.grn, C.amb, C.pnk, C.cyan];
-  const col = cols[lv];
-  const sz = 70 + lv * 12;
+/* ══════════════ CATEGORIAS DO FÓRUM ══════════════ */
+const CATS=[
+  {id:"foco",label:"Foco",color:C.cyan},
+  {id:"meds",label:"Medicação",color:C.pnk},
+  {id:"dicas",label:"Dicas",color:C.grn},
+  {id:"desabafo",label:"Desabafo",color:C.amb},
+  {id:"conquistas",label:"Conquistas",color:C.pri}
+];
 
-  const dendrites = [
-    [], // lv 0
-    [[-30, -40], [30, -40]], // lv 1
-    [[-45, -25], [45, -25], [0, -55]], // lv 2
-    [[-50, -30], [50, -30], [-30, -50], [30, -50], [0, -60]], // lv 3
-    [[-55, -20], [55, -20], [-45, -42], [45, -42], [-15, -58], [15, -58]], // lv 4
-    [[-58, -15], [58, -15], [-50, -38], [50, -38], [-25, -55], [25, -55], [0, -62]], // lv 5
-    [[-60, -10], [60, -10], [-52, -35], [52, -35], [-30, -52], [30, -52], [-10, -62], [10, -62]], // lv 6
+/* ══════════════ COMPONENTES BASE ══════════════ */
+const Btn=({children,onClick,color=C.pri,outline=false,small=false,style:sx={},disabled=false})=>(
+  <button onClick={onClick} disabled={disabled} style={{
+    background:outline?"transparent":disabled?"#1A2440":color,
+    border:`1.5px solid ${disabled?"#1A2440":color}`,borderRadius:12,
+    color:outline?color:"#fff",padding:small?"8px 16px":"13px 24px",
+    cursor:disabled?"not-allowed":"pointer",fontWeight:600,
+    fontSize:small?13:15,opacity:disabled?0.6:1,
+    transition:"all 0.18s",letterSpacing:"0.02em",...sx
+  }}>{children}</button>
+);
+
+const Input=({label,...props})=>(
+  <div style={{marginBottom:16}}>
+    {label&&<div style={{fontSize:12,color:C.mut,marginBottom:6,letterSpacing:"0.08em",textTransform:"uppercase"}}>{label}</div>}
+    <input {...props} style={{width:"100%",background:C.surf,border:`1px solid ${C.bord}`,
+      borderRadius:10,color:C.txt,padding:"12px 14px",fontSize:15,outline:"none",
+      boxSizing:"border-box",...(props.style||{})}}/>
+  </div>
+);
+
+const Card=({children,style:sx={},gw=null})=>(
+  <div style={{background:C.card,border:`1px solid ${C.bord}`,borderRadius:18,
+    padding:20,boxShadow:gw?glow(gw):"none",transition:"box-shadow 0.3s",...sx}}>
+    {children}
+  </div>
+);
+
+const Label=({children})=>(
+  <div style={{fontSize:12,color:C.mut,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:12}}>
+    {children}
+  </div>
+);
+
+/* ══════════════ NEURÔNIO SVG ══════════════ */
+function NeuronSVG({level=0,pulse=false}){
+  const lv=Math.min(level,6);
+  const cols=[C.mut,C.pri,C.cyan,C.grn,C.amb,C.pnk,C.cyan];
+  const col=cols[lv];
+  const sz=70+lv*12;
+  const dendrites=[
+    [],
+    [[-30,-40],[30,-40]],
+    [[-45,-25],[45,-25],[0,-55]],
+    [[-50,-30],[50,-30],[-30,-50],[30,-50],[0,-60]],
+    [[-55,-20],[55,-20],[-45,-42],[45,-42],[-15,-58],[15,-58]],
+    [[-58,-15],[58,-15],[-50,-38],[50,-38],[-25,-55],[25,-55],[0,-62]],
+    [[-60,-10],[60,-10],[-52,-35],[52,-35],[-30,-52],[30,-52],[-10,-62],[10,-62]]
   ][lv];
-
-  const cx = 100, cy = 130;
-
-  return (
-    <svg width="200" height="190" viewBox="0 0 200 190" style={{ overflow: "visible" }}>
+  const cx=100,cy=130;
+  return(
+    <svg width="200" height="190" viewBox="0 0 200 190" style={{overflow:"visible"}}>
       <defs>
         <radialGradient id="ng" cx="50%" cy="50%">
-          <stop offset="0%" stopColor={col} stopOpacity="0.4" />
-          <stop offset="100%" stopColor={col} stopOpacity="0" />
+          <stop offset="0%" stopColor={col} stopOpacity="0.35"/>
+          <stop offset="100%" stopColor={col} stopOpacity="0"/>
         </radialGradient>
-        <filter id="gf">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
       </defs>
-
-      {/* Ambient glow */}
-      {lv >= 2 && <circle cx={cx} cy={cy} r={sz * 0.8} fill="url(#ng)"
-        style={{ animation: pulse ? "neuronPulse 2s ease-in-out infinite" : "none" }} />}
-
-      {/* Axon (downward) */}
-      <line x1={cx} y1={cy + 18} x2={cx} y2={cy + 55} stroke={col} strokeWidth={lv >= 1 ? 2 : 1.5} strokeOpacity={0.7} />
-      {lv >= 1 && <>
-        <line x1={cx} y1={cy + 55} x2={cx - 20} y2={cy + 75} stroke={col} strokeWidth={1.5} strokeOpacity={0.6} />
-        <line x1={cx} y1={cy + 55} x2={cx + 20} y2={cy + 75} stroke={col} strokeWidth={1.5} strokeOpacity={0.6} />
-        <circle cx={cx - 20} cy={cy + 78} r={3} fill={col} opacity={0.9} />
-        <circle cx={cx + 20} cy={cy + 78} r={3} fill={col} opacity={0.9} />
+      {lv>=2&&<circle cx={cx} cy={cy} r={sz*0.85} fill="url(#ng)"
+        style={{animation:pulse?"neuronPulse 2s ease-in-out infinite":"none"}}/>}
+      <line x1={cx} y1={cy+18} x2={cx} y2={cy+55} stroke={col} strokeWidth={2} strokeOpacity={0.7}/>
+      {lv>=1&&<>
+        <line x1={cx} y1={cy+55} x2={cx-20} y2={cy+75} stroke={col} strokeWidth={1.5} strokeOpacity={0.6}/>
+        <line x1={cx} y1={cy+55} x2={cx+20} y2={cy+75} stroke={col} strokeWidth={1.5} strokeOpacity={0.6}/>
+        <circle cx={cx-20} cy={cy+78} r={3} fill={col} opacity={0.9}/>
+        <circle cx={cx+20} cy={cy+78} r={3} fill={col} opacity={0.9}/>
       </>}
-      {lv >= 3 && <>
-        <line x1={cx - 20} y1={cy + 78} x2={cx - 35} y2={cy + 95} stroke={col} strokeWidth={1.2} strokeOpacity={0.5} />
-        <line x1={cx + 20} y1={cy + 78} x2={cx + 35} y2={cy + 95} stroke={col} strokeWidth={1.2} strokeOpacity={0.5} />
-        <circle cx={cx - 35} cy={cy + 98} r={2.5} fill={col} opacity={0.8} />
-        <circle cx={cx + 35} cy={cy + 98} r={2.5} fill={col} opacity={0.8} />
+      {lv>=3&&<>
+        <line x1={cx-20} y1={cy+78} x2={cx-35} y2={cy+95} stroke={col} strokeWidth={1.2} strokeOpacity={0.5}/>
+        <line x1={cx+20} y1={cy+78} x2={cx+35} y2={cy+95} stroke={col} strokeWidth={1.2} strokeOpacity={0.5}/>
+        <circle cx={cx-35} cy={cy+98} r={2.5} fill={col} opacity={0.8}/>
+        <circle cx={cx+35} cy={cy+98} r={2.5} fill={col} opacity={0.8}/>
       </>}
-
-      {/* Dendrites */}
-      {dendrites.map(([dx, dy], i) => (
+      {dendrites.map(([dx,dy],i)=>(
         <g key={i}>
-          <line x1={cx} y1={cy} x2={cx + dx} y2={cy + dy} stroke={col}
-            strokeWidth={1.5 - i * 0.05} strokeOpacity={0.65}
-            style={{ animation: pulse ? `dendPulse ${1.5 + i * 0.2}s ease-in-out infinite alternate` : "none" }} />
-          <circle cx={cx + dx} cy={cy + dy} r={lv >= 4 ? 3.5 : 2.5} fill={col} opacity={0.9}
-            filter={lv >= 4 ? "url(#gf)" : ""} />
-          {lv >= 5 && (
-            <line x1={cx + dx} y1={cy + dy} x2={cx + dx + (dx > 0 ? 10 : -10)} y2={cy + dy - 8}
-              stroke={col} strokeWidth={1} strokeOpacity={0.4} />
-          )}
+          <line x1={cx} y1={cy} x2={cx+dx} y2={cy+dy} stroke={col} strokeWidth={1.5} strokeOpacity={0.65}
+            style={{animation:pulse?`dendPulse ${1.5+i*0.2}s ease-in-out infinite alternate`:"none"}}/>
+          <circle cx={cx+dx} cy={cy+dy} r={lv>=4?3.5:2.5} fill={col} opacity={0.9}/>
         </g>
       ))}
-
-      {/* Second neuron for lv 4+ */}
-      {lv >= 4 && (
-        <g opacity={0.7}>
-          <circle cx={cx + 75} cy={cy - 20} r={lv >= 5 ? 13 : 10}
-            fill={C.pri} fillOpacity={0.15} stroke={C.pri} strokeWidth={1.5} />
-          <line x1={cx + 62} y1={cy - 22} x2={cx + 18} y2={cy - 5} stroke={col}
-            strokeWidth={1.5} strokeOpacity={0.5} strokeDasharray="4 3" />
-          <circle cx={cx + 62} cy={cy - 22} r={2.5} fill={col} opacity={0.8} />
-        </g>
-      )}
-      {lv >= 5 && (
-        <g opacity={0.6}>
-          <circle cx={cx - 68} cy={cy - 15} r={11}
-            fill={C.pnk} fillOpacity={0.12} stroke={C.pnk} strokeWidth={1.5} />
-          <line x1={cx - 57} y1={cy - 17} x2={cx - 18} y2={cy - 5} stroke={C.pnk}
-            strokeWidth={1.5} strokeOpacity={0.4} strokeDasharray="4 3" />
-          <circle cx={cx - 57} cy={cy - 17} r={2.5} fill={C.pnk} opacity={0.8} />
-        </g>
-      )}
-      {lv >= 6 && (
-        <g opacity={0.5}>
-          <circle cx={cx + 55} cy={cy + 60} r={9}
-            fill={C.grn} fillOpacity={0.12} stroke={C.grn} strokeWidth={1.5} />
-          <line x1={cx + 45} y1={cy + 57} x2={cx + 20} y2={cy + 78} stroke={C.grn}
-            strokeWidth={1.2} strokeOpacity={0.4} strokeDasharray="3 3" />
-        </g>
-      )}
-
-      {/* Cell body */}
-      <circle cx={cx} cy={cy} r={sz * 0.18} fill={col} fillOpacity={0.12}
-        stroke={col} strokeWidth={2}
-        style={{ animation: pulse ? "somaPulse 1.5s ease-in-out infinite" : "none" }} />
-      <circle cx={cx} cy={cy} r={sz * 0.10} fill={col} fillOpacity={0.35} />
-      <circle cx={cx} cy={cy} r={sz * 0.05} fill={col} />
-
-      {/* Nucleus for lv 2+ */}
-      {lv >= 2 && <circle cx={cx} cy={cy} r={sz * 0.06} fill="white" fillOpacity={0.6} />}
-
-      <style>{`
-        @keyframes somaPulse { 0%,100%{r:${sz * 0.18};opacity:1} 50%{r:${sz * 0.21};opacity:0.8} }
-        @keyframes neuronPulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
-        @keyframes dendPulse { from{stroke-opacity:0.4} to{stroke-opacity:0.9} }
-      `}</style>
+      {lv>=4&&<g opacity={0.7}>
+        <circle cx={cx+75} cy={cy-20} r={lv>=5?13:10} fill={C.pri} fillOpacity={0.15} stroke={C.pri} strokeWidth={1.5}/>
+        <line x1={cx+62} y1={cy-22} x2={cx+18} y2={cy-5} stroke={col} strokeWidth={1.5} strokeOpacity={0.5} strokeDasharray="4 3"/>
+        <circle cx={cx+62} cy={cy-22} r={2.5} fill={col} opacity={0.8}/>
+      </g>}
+      {lv>=5&&<g opacity={0.6}>
+        <circle cx={cx-68} cy={cy-15} r={11} fill={C.pnk} fillOpacity={0.12} stroke={C.pnk} strokeWidth={1.5}/>
+        <line x1={cx-57} y1={cy-17} x2={cx-18} y2={cy-5} stroke={C.pnk} strokeWidth={1.5} strokeOpacity={0.4} strokeDasharray="4 3"/>
+        <circle cx={cx-57} cy={cy-17} r={2.5} fill={C.pnk} opacity={0.8}/>
+      </g>}
+      {lv>=6&&<g opacity={0.5}>
+        <circle cx={cx+55} cy={cy+60} r={9} fill={C.grn} fillOpacity={0.12} stroke={C.grn} strokeWidth={1.5}/>
+        <line x1={cx+45} y1={cy+57} x2={cx+20} y2={cy+78} stroke={C.grn} strokeWidth={1.2} strokeOpacity={0.4} strokeDasharray="3 3"/>
+      </g>}
+      <circle cx={cx} cy={cy} r={sz*0.18} fill={col} fillOpacity={0.12} stroke={col} strokeWidth={2}
+        style={{animation:pulse?"somaPulse 1.5s ease-in-out infinite":"none"}}/>
+      <circle cx={cx} cy={cy} r={sz*0.10} fill={col} fillOpacity={0.35}/>
+      <circle cx={cx} cy={cy} r={sz*0.05} fill={col}/>
+      {lv>=2&&<circle cx={cx} cy={cy} r={sz*0.06} fill="white" fillOpacity={0.6}/>}
     </svg>
   );
 }
 
-/* ═══════════════════════════════════════════════════
-   FORUM CATEGORIES
-═══════════════════════════════════════════════════ */
-const CATS = [
-  { id: "foco", label: "Foco", color: C.cyan },
-  { id: "meds", label: "Medicação", color: C.pnk },
-  { id: "dicas", label: "Dicas", color: C.grn },
-  { id: "desabafo", label: "Desabafo", color: C.amb },
-  { id: "conquistas", label: "Conquistas", color: C.pri },
-];
+/* ══════════════ TELA DE AUTH ══════════════ */
+function AuthScreen({onLogin}){
+  const [mode,setMode]=useState("login");
+  const [form,setForm]=useState({username:"",password:"",confirm:""});
+  const [onboard,setOnboard]=useState({med:"",sleep:7,goal:""});
+  const [err,setErr]=useState("");
+  const [newUser,setNewUser]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const f=k=>e=>setForm(p=>({...p,[k]:e.target.value}));
 
-/* ═══════════════════════════════════════════════════
-   SHARED BUTTON / INPUT COMPONENTS
-═══════════════════════════════════════════════════ */
-const Btn = ({ children, onClick, color = C.pri, outline = false, small = false, style: sx = {}, disabled = false }) => (
-  <button onClick={onClick} disabled={disabled} style={{
-    background: outline ? "transparent" : color,
-    border: `1.5px solid ${color}`,
-    borderRadius: 12, color: outline ? color : "#fff",
-    padding: small ? "7px 14px" : "12px 22px",
-    cursor: disabled ? "not-allowed" : "pointer",
-    fontWeight: 600, fontSize: small ? 13 : 15,
-    opacity: disabled ? 0.5 : 1,
-    transition: "all 0.18s", letterSpacing: "0.02em", ...sx,
-  }}>{children}</button>
-);
-
-const Input = ({ label, ...props }) => (
-  <div style={{ marginBottom: 16 }}>
-    {label && <div style={{ fontSize: 12, color: C.mut, marginBottom: 6, letterSpacing: "0.08em", textTransform: "uppercase" }}>{label}</div>}
-    <input {...props} style={{
-      width: "100%", background: C.surf, border: `1px solid ${C.bord}`,
-      borderRadius: 10, color: C.txt, padding: "12px 14px", fontSize: 15,
-      outline: "none", boxSizing: "border-box",
-      ...(props.style || {}),
-    }} />
-  </div>
-);
-
-const Card = ({ children, style: sx = {}, glow: gl = null }) => (
-  <div style={{
-    background: C.card, border: `1px solid ${C.bord}`, borderRadius: 18,
-    padding: 20, boxShadow: gl ? glow(gl) : "none",
-    transition: "box-shadow 0.3s", ...sx,
-  }}>{children}</div>
-);
-
-/* ═══════════════════════════════════════════════════
-   AUTH SCREEN
-═══════════════════════════════════════════════════ */
-function AuthScreen({ onLogin }) {
-  const [mode, setMode] = useState("login"); // login | signup | onboard
-  const [form, setForm] = useState({ username: "", password: "", confirm: "" });
-  const [onboard, setOnboard] = useState({ med: "", sleep: 7, goal: "" });
-  const [err, setErr] = useState("");
-  const [newUser, setNewUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
-
-  const handleLogin = async () => {
-    setLoading(true); setErr("");
-    const user = await db.get(`users:${form.username.toLowerCase()}`);
-    if (!user || user.passHash !== hash(form.password)) {
-      setErr("Usuário ou senha incorretos"); setLoading(false); return;
-    }
-    await db.set("session:current", { userId: user.id, username: user.username });
-    onLogin(user);
-    setLoading(false);
+  const handleLogin=()=>{
+    setLoading(true);setErr("");
+    setTimeout(()=>{
+      const user=db.get(`users:${form.username.toLowerCase()}`);
+      if(!user||user.passHash!==hash(form.password)){setErr("Usuário ou senha incorretos");setLoading(false);return;}
+      db.set("session",{userId:user.id,username:user.username});
+      onLogin(user);setLoading(false);
+    },300);
   };
 
-  const handleSignup = async () => {
-    setLoading(true); setErr("");
-    if (!form.username.trim() || !form.password) { setErr("Preencha todos os campos"); setLoading(false); return; }
-    if (form.password !== form.confirm) { setErr("Senhas não coincidem"); setLoading(false); return; }
-    if (form.password.length < 4) { setErr("Senha muito curta (mín 4 caracteres)"); setLoading(false); return; }
-    const existing = await db.get(`users:${form.username.toLowerCase()}`);
-    if (existing) { setErr("Nome de usuário já existe"); setLoading(false); return; }
-    const user = { id: uid(), username: form.username.trim(), passHash: hash(form.password), createdAt: Date.now() };
-    setNewUser(user);
-    setMode("onboard");
-    setLoading(false);
+  const handleSignup=()=>{
+    setLoading(true);setErr("");
+    setTimeout(()=>{
+      if(!form.username.trim()||!form.password){setErr("Preencha todos os campos");setLoading(false);return;}
+      if(form.password!==form.confirm){setErr("Senhas não coincidem");setLoading(false);return;}
+      if(form.password.length<4){setErr("Senha mínimo 4 caracteres");setLoading(false);return;}
+      if(db.get(`users:${form.username.toLowerCase()}`)){setErr("Nome de usuário já existe");setLoading(false);return;}
+      const user={id:uid(),username:form.username.trim(),passHash:hash(form.password),createdAt:Date.now()};
+      setNewUser(user);setMode("onboard");setLoading(false);
+    },300);
   };
 
-  const handleOnboard = async () => {
+  const handleOnboard=()=>{
     setLoading(true);
-    await db.set(`users:${newUser.username.toLowerCase()}`, newUser);
-    await db.set(`goals:${newUser.id}`, {
-      fixed: onboard.goal ? [{ id: uid(), text: onboard.goal, done: false }] : [],
-      daily: [],
-    });
-    await db.set("session:current", { userId: newUser.id, username: newUser.username });
-    onLogin(newUser);
-    setLoading(false);
+    setTimeout(()=>{
+      db.set(`users:${newUser.username.toLowerCase()}`,newUser);
+      db.set(`goals:${newUser.id}`,{fixed:onboard.goal?[{id:uid(),text:onboard.goal,done:false}]:[],daily:[]});
+      db.set("session",{userId:newUser.id,username:newUser.username});
+      onLogin(newUser);setLoading(false);
+    },300);
   };
 
-  return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');*{font-family:'Space Grotesk',system-ui,sans-serif;}`}</style>
-      {/* Logo */}
-      <div style={{ textAlign: "center", marginBottom: 36 }}>
-        <div style={{ fontSize: 40, marginBottom: 8 }}>🧠</div>
-        <div style={{ fontSize: 28, fontWeight: 700, background: g(C.pri, C.cyan), WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: "-0.02em" }}>CleanTDAH</div>
-        <div style={{ color: C.mut, fontSize: 14, marginTop: 4 }}>Foco sem fricção</div>
+  return(
+    <div className="fadein" style={{minHeight:"100vh",background:C.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 16px"}}>
+      <div style={{textAlign:"center",marginBottom:36}}>
+        <div style={{fontSize:52,marginBottom:10}}>🧠</div>
+        <div style={{fontSize:32,fontWeight:800,background:`linear-gradient(135deg,${C.pri},${C.cyan})`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",letterSpacing:"-0.02em"}}>CleanTDAH</div>
+        <div style={{color:C.mut,fontSize:14,marginTop:6}}>Foco sem fricção</div>
       </div>
 
-      <div style={{ width: "100%", maxWidth: 380 }}>
-        {mode === "onboard" ? (
-          <Card>
-            <div style={{ color: C.txt, fontWeight: 700, fontSize: 20, marginBottom: 4 }}>Rápido! 3 perguntas ⚡</div>
-            <div style={{ color: C.mut, fontSize: 13, marginBottom: 24 }}>Personalize sua experiência agora</div>
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 12, color: C.mut, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>Você usa algum medicamento?</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {["Nenhum", ...Object.values(MEDS).map(m => m.name)].map(m => (
-                  <button key={m} onClick={() => setOnboard(p => ({ ...p, med: m }))} style={{
-                    background: onboard.med === m ? C.pri : C.surf,
-                    border: `1px solid ${onboard.med === m ? C.pri : C.bord}`,
-                    borderRadius: 10, color: C.txt, padding: "8px 14px", cursor: "pointer", fontSize: 13, fontWeight: 500,
+      <div style={{width:"100%",maxWidth:400}}>
+        {mode==="onboard"?(
+          <Card className="slideup">
+            <div style={{color:C.txt,fontWeight:700,fontSize:20,marginBottom:4}}>Rápido! 3 perguntas ⚡</div>
+            <div style={{color:C.mut,fontSize:13,marginBottom:24}}>Personalize sua experiência agora</div>
+
+            <div style={{marginBottom:18}}>
+              <div style={{fontSize:12,color:C.mut,marginBottom:10,textTransform:"uppercase",letterSpacing:"0.08em"}}>Você usa medicamento?</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+                {["Nenhum",...Object.values(MEDS).map(m=>m.name)].map(m=>(
+                  <button key={m} onClick={()=>setOnboard(p=>({...p,med:m}))} style={{
+                    background:onboard.med===m?C.pri:C.surf,border:`1px solid ${onboard.med===m?C.pri:C.bord}`,
+                    borderRadius:10,color:C.txt,padding:"9px 14px",cursor:"pointer",fontSize:13,fontWeight:500,transition:"all 0.15s"
                   }}>{m}</button>
                 ))}
               </div>
             </div>
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 12, color: C.mut, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>Horas de sono desejadas</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <input type="range" min={4} max={12} value={onboard.sleep} onChange={e => setOnboard(p => ({ ...p, sleep: +e.target.value }))}
-                  style={{ flex: 1, accentColor: C.cyan }} />
-                <span style={{ color: C.cyan, fontWeight: 700, fontSize: 18, minWidth: 32 }}>{onboard.sleep}h</span>
+
+            <div style={{marginBottom:18}}>
+              <div style={{fontSize:12,color:C.mut,marginBottom:10,textTransform:"uppercase",letterSpacing:"0.08em"}}>Horas de sono desejadas</div>
+              <div style={{display:"flex",alignItems:"center",gap:14}}>
+                <input type="range" min={4} max={12} step={0.5} value={onboard.sleep}
+                  onChange={e=>setOnboard(p=>({...p,sleep:+e.target.value}))}/>
+                <span style={{color:C.cyan,fontWeight:700,fontSize:20,minWidth:40}}>{onboard.sleep}h</span>
               </div>
             </div>
-            <Input label="Primeira meta fixa (opcional)" placeholder="Ex: Tomar remédio às 8h" value={onboard.goal}
-              onChange={e => setOnboard(p => ({ ...p, goal: e.target.value }))} />
-            <Btn onClick={handleOnboard} disabled={loading} style={{ width: "100%", marginTop: 8 }}>
-              {loading ? "Criando conta..." : "Entrar no CleanTDAH →"}
+
+            <Input label="Primeira meta fixa (opcional)" placeholder="Ex: Tomar remédio às 8h"
+              value={onboard.goal} onChange={e=>setOnboard(p=>({...p,goal:e.target.value}))}/>
+
+            <Btn onClick={handleOnboard} disabled={loading} style={{width:"100%",marginTop:8}}>
+              {loading?"Criando conta...":"Entrar no CleanTDAH →"}
             </Btn>
           </Card>
-        ) : (
+        ):(
           <Card>
-            <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
-              {["login", "signup"].map(m => (
-                <button key={m} onClick={() => { setMode(m); setErr(""); }} style={{
-                  flex: 1, background: mode === m ? C.pri : "transparent",
-                  border: `1px solid ${mode === m ? C.pri : C.bord}`, borderRadius: 10,
-                  color: mode === m ? "#fff" : C.mut, padding: "10px", cursor: "pointer", fontWeight: 600, fontSize: 14,
-                }}>{m === "login" ? "Entrar" : "Criar conta"}</button>
+            <div style={{display:"flex",gap:8,marginBottom:24}}>
+              {["login","signup"].map(m=>(
+                <button key={m} onClick={()=>{setMode(m);setErr("");}} style={{
+                  flex:1,background:mode===m?C.pri:"transparent",border:`1px solid ${mode===m?C.pri:C.bord}`,
+                  borderRadius:10,color:mode===m?"#fff":C.mut,padding:"11px",cursor:"pointer",fontWeight:600,fontSize:14,transition:"all 0.15s"
+                }}>{m==="login"?"Entrar":"Criar conta"}</button>
               ))}
             </div>
+
             <Input label="Usuário" placeholder="@seunome" value={form.username} onChange={f("username")}
-              onKeyDown={e => e.key === "Enter" && (mode === "login" ? handleLogin() : handleSignup())} />
+              onKeyDown={e=>e.key==="Enter"&&(mode==="login"?handleLogin():handleSignup())}/>
             <Input label="Senha" type="password" placeholder="••••••••" value={form.password} onChange={f("password")}
-              onKeyDown={e => e.key === "Enter" && (mode === "login" ? handleLogin() : handleSignup())} />
-            {mode === "signup" && <Input label="Confirmar senha" type="password" placeholder="••••••••" value={form.confirm} onChange={f("confirm")} />}
-            {err && <div style={{ color: C.red, fontSize: 13, marginBottom: 12, textAlign: "center" }}>{err}</div>}
-            <Btn onClick={mode === "login" ? handleLogin : handleSignup} disabled={loading} style={{ width: "100%" }}>
-              {loading ? "..." : mode === "login" ? "Entrar" : "Criar conta"}
+              onKeyDown={e=>e.key==="Enter"&&(mode==="login"?handleLogin():handleSignup())}/>
+            {mode==="signup"&&
+              <Input label="Confirmar senha" type="password" placeholder="••••••••" value={form.confirm} onChange={f("confirm")}/>}
+
+            {err&&<div style={{color:C.red,fontSize:13,marginBottom:14,textAlign:"center",padding:"8px",background:C.red+"15",borderRadius:8}}>{err}</div>}
+
+            <Btn onClick={mode==="login"?handleLogin:handleSignup} disabled={loading} style={{width:"100%"}}>
+              {loading?"...":mode==="login"?"Entrar":"Criar conta"}
             </Btn>
-            <div style={{ textAlign: "center", marginTop: 16, fontSize: 12, color: C.mut }}>
-              Dados salvos localmente no seu navegador
+            <div style={{textAlign:"center",marginTop:16,fontSize:12,color:C.mut}}>
+              💾 Dados salvos localmente no seu navegador
             </div>
           </Card>
         )}
@@ -333,116 +297,123 @@ function AuthScreen({ onLogin }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════
-   HOME TAB
-═══════════════════════════════════════════════════ */
-function HomeTab({ userId }) {
-  const [log, setLog] = useState({ medKey: null, medTime: null, water: 0, mood: null, activity: false });
-  const [now, setNow] = useState(Date.now());
+/* ══════════════ ABA HOME ══════════════ */
+function HomeTab({userId}){
+  const [log,setLog]=useState({medKey:null,medTime:null,water:0,mood:null,activity:false});
+  const [now,setNow]=useState(Date.now());
 
-  useEffect(() => {
-    db.get(`logs:${userId}:${today()}`).then(l => l && setLog(l));
-    const t = setInterval(() => setNow(Date.now()), 30000);
-    return () => clearInterval(t);
-  }, [userId]);
+  useEffect(()=>{
+    const l=db.get(`logs:${userId}:${today()}`);
+    if(l)setLog(l);
+    const t=setInterval(()=>setNow(Date.now()),30000);
+    return()=>clearInterval(t);
+  },[userId]);
 
-  const save = useCallback(async (update) => {
-    const next = { ...log, ...update };
+  const save=useCallback((update)=>{
+    const next={...log,...update};
     setLog(next);
-    await db.set(`logs:${userId}:${today()}`, next);
-  }, [log, userId]);
+    db.set(`logs:${userId}:${today()}`,next);
+  },[log,userId]);
 
-  const med = log.medKey ? MEDS[log.medKey] : null;
-  const elapsedMin = log.medTime ? Math.floor((now - log.medTime) / 60000) : 0;
-  const progress = med ? Math.min(100, (elapsedMin / med.duration) * 100) : 0;
-  const phase = medPhase(med, elapsedMin);
-  const remaining = med ? Math.max(0, med.duration - elapsedMin) : 0;
+  const med=log.medKey?MEDS[log.medKey]:null;
+  const elapsedMin=log.medTime?Math.floor((now-log.medTime)/60000):0;
+  const progress=med?Math.min(100,(elapsedMin/med.duration)*100):0;
+  const phase=medPhase(med,elapsedMin);
+  const remaining=med?Math.max(0,med.duration-elapsedMin):0;
+  const fmtTime=m=>m<60?`${m}min`:`${Math.floor(m/60)}h${m%60>0?` ${m%60}min`:""}`;
 
-  return (
-    <div style={{ padding: "0 16px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Medication Card */}
-      <Card glow={med ? med.color : null}>
-        <div style={{ fontSize: 12, color: C.mut, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>Medicação</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
-          {Object.entries(MEDS).map(([k, m]) => (
-            <button key={k} onClick={() => save({ medKey: k, medTime: log.medKey === k ? log.medTime : Date.now() })} style={{
-              background: log.medKey === k ? m.color + "25" : C.surf,
-              border: `1.5px solid ${log.medKey === k ? m.color : C.bord}`,
-              borderRadius: 10, color: log.medKey === k ? m.color : C.mut,
-              padding: "9px 14px", cursor: "pointer", fontSize: 14, fontWeight: 600,
+  return(
+    <div style={{padding:"0 16px 100px",display:"flex",flexDirection:"column",gap:16}}>
+
+      {/* Medicação */}
+      <Card gw={med?med.color:null}>
+        <Label>💊 Medicação</Label>
+        <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:16}}>
+          {Object.entries(MEDS).map(([k,m])=>(
+            <button key={k} onClick={()=>save({medKey:k,medTime:log.medKey===k?log.medTime:Date.now()})} style={{
+              background:log.medKey===k?m.color+"25":C.surf,
+              border:`1.5px solid ${log.medKey===k?m.color:C.bord}`,
+              borderRadius:10,color:log.medKey===k?m.color:C.mut,
+              padding:"10px 16px",cursor:"pointer",fontSize:14,fontWeight:600,transition:"all 0.15s"
             }}>{m.name}</button>
           ))}
         </div>
 
-        {med ? (
+        {med?(
           <>
-            {/* Effect bar */}
-            <div style={{ background: C.bord, borderRadius: 99, height: 10, marginBottom: 10, overflow: "hidden" }}>
-              <div style={{
-                height: "100%", borderRadius: 99, width: `${progress}%`,
-                background: progress < 60 ? g(med.color, med.color + "aa") : progress < 85 ? g(C.amb, med.color) : g(C.red, C.amb),
-                transition: "width 1s ease", boxShadow: `0 0 10px ${med.color}60`,
-              }} />
+            <div style={{background:C.bord,borderRadius:99,height:12,marginBottom:10,overflow:"hidden"}}>
+              <div style={{height:"100%",borderRadius:99,width:`${progress}%`,
+                background:progress<60?`linear-gradient(90deg,${med.color},${med.color}bb)`:
+                  progress<85?`linear-gradient(90deg,${C.amb},${med.color})`:`linear-gradient(90deg,${C.red},${C.amb})`,
+                transition:"width 1s ease",boxShadow:`0 0 12px ${med.color}60`}}/>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.mut, marginBottom: 12 }}>
-              <span>⏱ {elapsedMin < 60 ? `${elapsedMin}min` : `${Math.floor(elapsedMin / 60)}h${elapsedMin % 60 > 0 ? ` ${elapsedMin % 60}min` : ""}`} decorrido</span>
-              <span>{remaining > 0 ? `${Math.floor(remaining / 60)}h${remaining % 60}min restante` : "Efeito encerrado"}</span>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:C.mut,marginBottom:14}}>
+              <span>⏱ {fmtTime(elapsedMin)} decorrido</span>
+              <span>{remaining>0?`${fmtTime(remaining)} restante`:"⏰ Efeito encerrado"}</span>
             </div>
-            {phase && (
-              <div style={{ background: med.color + "15", border: `1px solid ${med.color}40`, borderRadius: 12, padding: "12px 14px" }}>
-                <div style={{ color: med.color, fontWeight: 700, fontSize: 15, marginBottom: 3 }}>{phase.label}</div>
-                <div style={{ color: C.mut, fontSize: 13 }}>{phase.sub}</div>
+            {phase&&(
+              <div style={{background:med.color+"15",border:`1px solid ${med.color}40`,borderRadius:14,padding:"14px 16px"}}>
+                <div style={{color:med.color,fontWeight:700,fontSize:16,marginBottom:4}}>{phase.label}</div>
+                <div style={{color:C.mut,fontSize:13}}>{phase.sub}</div>
               </div>
             )}
-            <button onClick={() => save({ medKey: null, medTime: null })} style={{
-              marginTop: 10, background: "transparent", border: "none", color: C.mut, fontSize: 12, cursor: "pointer", padding: 0,
-            }}>Limpar →</button>
+            <button onClick={()=>save({medKey:null,medTime:null})}
+              style={{marginTop:12,background:"transparent",border:"none",color:C.mut,fontSize:12,cursor:"pointer",padding:0}}>
+              Limpar registro →
+            </button>
           </>
-        ) : (
-          <div style={{ color: C.mut, fontSize: 14, textAlign: "center", padding: "8px 0" }}>Selecione o medicamento tomado hoje</div>
+        ):(
+          <div style={{color:C.mut,fontSize:14,textAlign:"center",padding:"10px 0"}}>
+            Selecione o medicamento tomado hoje
+          </div>
         )}
       </Card>
 
       {/* Quick Logs */}
       <Card>
-        <div style={{ fontSize: 12, color: C.mut, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 14 }}>Registro rápido</div>
-        <div style={{ display: "flex", gap: 10 }}>
-          {/* Water */}
-          <div style={{ flex: 1, background: C.surf, borderRadius: 14, padding: 14, textAlign: "center" }}>
-            <div style={{ fontSize: 26, marginBottom: 6 }}>💧</div>
-            <div style={{ color: C.cyan, fontWeight: 700, fontSize: 20 }}>{log.water}</div>
-            <div style={{ color: C.mut, fontSize: 11, marginBottom: 10 }}>copos</div>
-            <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
-              <button onClick={() => save({ water: Math.max(0, log.water - 1) })} style={{ background: C.bord, border: "none", borderRadius: 8, color: C.txt, width: 30, height: 30, cursor: "pointer", fontSize: 16 }}>-</button>
-              <button onClick={() => save({ water: log.water + 1 })} style={{ background: C.cyan + "25", border: `1px solid ${C.cyan}60`, borderRadius: 8, color: C.cyan, width: 30, height: 30, cursor: "pointer", fontSize: 16 }}>+</button>
+        <Label>⚡ Registro rápido</Label>
+        <div style={{display:"flex",gap:10}}>
+          {/* Água */}
+          <div style={{flex:1,background:C.surf,borderRadius:16,padding:16,textAlign:"center"}}>
+            <div style={{fontSize:28,marginBottom:6}}>💧</div>
+            <div style={{color:C.cyan,fontWeight:800,fontSize:22}}>{log.water}</div>
+            <div style={{color:C.mut,fontSize:11,marginBottom:12}}>copos</div>
+            <div style={{display:"flex",gap:6,justifyContent:"center"}}>
+              <button onClick={()=>save({water:Math.max(0,log.water-1)})}
+                style={{background:C.bord,border:"none",borderRadius:8,color:C.txt,width:34,height:34,cursor:"pointer",fontSize:18,fontWeight:700}}>−</button>
+              <button onClick={()=>save({water:log.water+1})}
+                style={{background:C.cyan+"25",border:`1px solid ${C.cyan}60`,borderRadius:8,color:C.cyan,width:34,height:34,cursor:"pointer",fontSize:18,fontWeight:700}}>+</button>
             </div>
           </div>
-          {/* Mood */}
-          <div style={{ flex: 1, background: C.surf, borderRadius: 14, padding: 14, textAlign: "center" }}>
-            <div style={{ fontSize: 26, marginBottom: 6 }}>
-              {log.mood ? ["😔", "😕", "😐", "🙂", "😄"][log.mood - 1] : "😶"}
+
+          {/* Humor */}
+          <div style={{flex:1,background:C.surf,borderRadius:16,padding:16,textAlign:"center"}}>
+            <div style={{fontSize:28,marginBottom:6}}>
+              {log.mood?["😔","😕","😐","🙂","😄"][log.mood-1]:"😶"}
             </div>
-            <div style={{ color: C.pnk, fontWeight: 700, fontSize: 13, marginBottom: 8 }}>Humor</div>
-            <div style={{ display: "flex", gap: 3, justifyContent: "center" }}>
-              {[1, 2, 3, 4, 5].map(n => (
-                <button key={n} onClick={() => save({ mood: n })} style={{
-                  background: log.mood === n ? C.pnk + "30" : "transparent",
-                  border: `1px solid ${log.mood === n ? C.pnk : C.bord}`,
-                  borderRadius: 6, color: C.pnk, width: 26, height: 26, cursor: "pointer", fontSize: 11, fontWeight: 700,
+            <div style={{color:C.pnk,fontWeight:700,fontSize:13,marginBottom:10}}>Humor</div>
+            <div style={{display:"flex",gap:4,justifyContent:"center"}}>
+              {[1,2,3,4,5].map(n=>(
+                <button key={n} onClick={()=>save({mood:n})} style={{
+                  background:log.mood===n?C.pnk+"35":"transparent",
+                  border:`1.5px solid ${log.mood===n?C.pnk:C.bord}`,
+                  borderRadius:6,color:log.mood===n?C.pnk:C.mut,
+                  width:28,height:28,cursor:"pointer",fontSize:12,fontWeight:700,transition:"all 0.15s"
                 }}>{n}</button>
               ))}
             </div>
           </div>
-          {/* Activity */}
-          <div style={{ flex: 1, background: C.surf, borderRadius: 14, padding: 14, textAlign: "center" }}>
-            <div style={{ fontSize: 26, marginBottom: 6 }}>{log.activity ? "🏃" : "🛋️"}</div>
-            <div style={{ color: C.grn, fontWeight: 700, fontSize: 13, marginBottom: 8 }}>Atividade</div>
-            <button onClick={() => save({ activity: !log.activity })} style={{
-              background: log.activity ? C.grn + "25" : C.bord,
-              border: `1px solid ${log.activity ? C.grn : C.bord}`,
-              borderRadius: 10, color: log.activity ? C.grn : C.mut,
-              padding: "6px 10px", cursor: "pointer", fontSize: 12, fontWeight: 700,
-            }}>{log.activity ? "✓ Feito!" : "Marcar"}</button>
+
+          {/* Atividade */}
+          <div style={{flex:1,background:C.surf,borderRadius:16,padding:16,textAlign:"center"}}>
+            <div style={{fontSize:28,marginBottom:6}}>{log.activity?"🏃":"🛋️"}</div>
+            <div style={{color:C.grn,fontWeight:700,fontSize:13,marginBottom:10}}>Atividade</div>
+            <button onClick={()=>save({activity:!log.activity})} style={{
+              background:log.activity?C.grn+"25":C.bord,
+              border:`1.5px solid ${log.activity?C.grn:C.bord}`,
+              borderRadius:10,color:log.activity?C.grn:C.mut,
+              padding:"8px 10px",cursor:"pointer",fontSize:12,fontWeight:700,transition:"all 0.15s",width:"100%"
+            }}>{log.activity?"✓ Feito!":"Marcar"}</button>
           </div>
         </div>
       </Card>
@@ -450,630 +421,577 @@ function HomeTab({ userId }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════
-   POMODORO TAB
-═══════════════════════════════════════════════════ */
-function PomodoroTab({ userId }) {
-  const [pom, setPom] = useState({ cycles: 0, totalMin: 0, neuronLv: 0 });
-  const [mode, setMode] = useState("idle"); // idle | focus | break
-  const [secs, setSecs] = useState(25 * 60);
-  const [isRunning, setIsRunning] = useState(false);
-  const [focusDur, setFocusDur] = useState(25);
-  const [breakDur, setBreakDur] = useState(5);
-  const timerRef = useRef(null);
+/* ══════════════ ABA POMODORO ══════════════ */
+function PomodoroTab({userId}){
+  const [pom,setPom]=useState({cycles:0,totalMin:0,neuronLv:0});
+  const [mode,setMode]=useState("idle");
+  const [secs,setSecs]=useState(25*60);
+  const [isRunning,setIsRunning]=useState(false);
+  const [focusDur,setFocusDur]=useState(25);
+  const [breakDur,setBreakDur]=useState(5);
+  const timerRef=useRef(null);
+  const pomRef=useRef(pom);
+  pomRef.current=pom;
+  const modeRef=useRef(mode);
+  modeRef.current=mode;
 
-  useEffect(() => {
-    db.get(`pomodoro:${userId}`).then(p => p && setPom(p));
-  }, [userId]);
+  useEffect(()=>{
+    const p=db.get(`pomodoro:${userId}`);
+    if(p)setPom(p);
+  },[userId]);
 
-  const savePom = useCallback(async (p) => {
-    setPom(p); await db.set(`pomodoro:${userId}`, p);
-  }, [userId]);
+  const savePom=useCallback((p)=>{setPom(p);db.set(`pomodoro:${userId}`,p);},[userId]);
 
-  useEffect(() => {
-    if (isRunning) {
-      timerRef.current = setInterval(() => {
-        setSecs(s => {
-          if (s <= 1) {
+  useEffect(()=>{
+    if(isRunning){
+      timerRef.current=setInterval(()=>{
+        setSecs(s=>{
+          if(s<=1){
             clearInterval(timerRef.current);
-            if (mode === "focus") {
-              const np = { cycles: pom.cycles + 1, totalMin: pom.totalMin + focusDur, neuronLv: Math.min(6, Math.floor((pom.cycles + 1) / 2)) };
-              savePom(np);
-              setMode("break");
-              setSecs(breakDur * 60);
-              setIsRunning(false);
-            } else {
-              setMode("idle");
-              setSecs(focusDur * 60);
-              setIsRunning(false);
-            }
+            const cur=pomRef.current;
+            if(modeRef.current==="focus"){
+              const np={cycles:cur.cycles+1,totalMin:cur.totalMin+focusDur,neuronLv:Math.min(6,Math.floor((cur.cycles+1)/2))};
+              savePom(np);setMode("break");setSecs(breakDur*60);setIsRunning(false);
+            }else{setMode("idle");setSecs(focusDur*60);setIsRunning(false);}
             return 0;
           }
-          return s - 1;
+          return s-1;
         });
-      }, 1000);
+      },1000);
     }
-    return () => clearInterval(timerRef.current);
-  }, [isRunning, mode, pom, focusDur, breakDur, savePom]);
+    return()=>clearInterval(timerRef.current);
+  },[isRunning,focusDur,breakDur,savePom]);
 
-  const start = () => { setMode("focus"); setSecs(focusDur * 60); setIsRunning(true); };
-  const pause = () => setIsRunning(false);
-  const resume = () => setIsRunning(true);
-  const stop = () => { setIsRunning(false); setMode("idle"); setSecs(focusDur * 60); };
+  const mm=String(Math.floor(secs/60)).padStart(2,"0");
+  const ss=String(secs%60).padStart(2,"0");
+  const totalSecs=mode==="focus"?focusDur*60:mode==="break"?breakDur*60:focusDur*60;
+  const pct=mode==="idle"?0:Math.max(0,Math.min(100,((totalSecs-secs)/totalSecs)*100));
+  const tc=mode==="break"?C.grn:mode==="focus"?C.cyan:C.pri;
+  const R=80,circ=2*Math.PI*R;
+  const lvLabels=["Dormindo... 💤","Acordando ✨","Ativando 🔋","Conectando 🔗","Florescendo 🌸","Rede neural 🕸️","Supernova 🌟"];
 
-  const mm = String(Math.floor(secs / 60)).padStart(2, "0");
-  const ss = String(secs % 60).padStart(2, "0");
-  const totalSecs = mode === "focus" ? focusDur * 60 : breakDur * 60;
-  const timerPct = mode === "idle" ? 0 : ((totalSecs - secs) / totalSecs) * 100;
-  const timerColor = mode === "break" ? C.grn : mode === "focus" ? C.cyan : C.pri;
+  return(
+    <div style={{padding:"0 16px 100px",display:"flex",flexDirection:"column",gap:16,alignItems:"center"}}>
 
-  const radius = 80, circ = 2 * Math.PI * radius;
-
-  return (
-    <div style={{ padding: "0 16px 24px", display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
-      {/* Neuron display */}
-      <Card style={{ width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 12, color: C.mut, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Seu Neurônio</div>
-        <div style={{ fontSize: 12, color: pom.neuronLv === 0 ? C.mut : C.cyan, marginBottom: 4 }}>
-          {["Dormindo... 💤", "Acordando ✨", "Ativando 🔋", "Conectando 🔗", "Florescendo 🌸", "Rede neural 🕸️", "Supernova 🌟"][pom.neuronLv]}
+      {/* Neurônio */}
+      <Card style={{width:"100%",textAlign:"center"}}>
+        <div style={{fontSize:12,color:C.mut,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4}}>Seu Neurônio</div>
+        <div style={{fontSize:14,color:pom.neuronLv===0?C.mut:C.cyan,marginBottom:4,fontWeight:600}}>
+          {lvLabels[pom.neuronLv]}
         </div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <NeuronSVG level={pom.neuronLv} pulse={isRunning && mode === "focus"} />
+        <div style={{display:"flex",justifyContent:"center"}}>
+          <NeuronSVG level={pom.neuronLv} pulse={isRunning&&mode==="focus"}/>
         </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 4 }}>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ color: C.cyan, fontWeight: 700, fontSize: 22 }}>{pom.cycles}</div>
-            <div style={{ color: C.mut, fontSize: 11 }}>ciclos</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ color: C.pri, fontWeight: 700, fontSize: 22 }}>{pom.totalMin}</div>
-            <div style={{ color: C.mut, fontSize: 11 }}>min focado</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ color: C.grn, fontWeight: 700, fontSize: 22 }}>Nv.{pom.neuronLv}</div>
-            <div style={{ color: C.mut, fontSize: 11 }}>evolução</div>
-          </div>
+        <div style={{display:"flex",justifyContent:"center",gap:28,marginTop:8}}>
+          {[{v:pom.cycles,l:"ciclos",c:C.cyan},{v:pom.totalMin+"min",l:"focado",c:C.pri},{v:"Nv."+pom.neuronLv,l:"evolução",c:C.grn}].map(({v,l,c})=>(
+            <div key={l} style={{textAlign:"center"}}>
+              <div style={{color:c,fontWeight:800,fontSize:20}}>{v}</div>
+              <div style={{color:C.mut,fontSize:11}}>{l}</div>
+            </div>
+          ))}
         </div>
       </Card>
 
       {/* Timer */}
-      <Card style={{ width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 12, color: timerColor, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16, fontWeight: 600 }}>
-          {mode === "idle" ? "Pronto para focar" : mode === "focus" ? "⚡ Em foco" : "☕ Pausa"}
+      <Card style={{width:"100%",textAlign:"center"}}>
+        <div style={{fontSize:13,color:tc,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:16,fontWeight:700}}>
+          {mode==="idle"?"Pronto para focar":mode==="focus"?"⚡ Em foco":"☕ Pausa — respire"}
         </div>
 
-        {/* Circular timer */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
-          <svg width={200} height={200} viewBox="0 0 200 200">
-            <circle cx={100} cy={100} r={radius} fill="none" stroke={C.bord} strokeWidth={8} />
-            <circle cx={100} cy={100} r={radius} fill="none" stroke={timerColor} strokeWidth={8}
-              strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={circ * (1 - timerPct / 100)}
-              transform="rotate(-90 100 100)" style={{ transition: "stroke-dashoffset 1s linear", filter: `drop-shadow(0 0 8px ${timerColor}80)` }} />
-            <text x={100} y={95} textAnchor="middle" fontSize={36} fontWeight={700} fill={C.txt} fontFamily="monospace">{mm}:{ss}</text>
-            <text x={100} y={120} textAnchor="middle" fontSize={13} fill={C.mut}>
-              {mode === "idle" ? "minutos" : mode === "focus" ? "foco" : "pausa"}
+        <div style={{display:"flex",justifyContent:"center",marginBottom:20}}>
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r={R} fill="none" stroke={C.bord} strokeWidth="10"/>
+            <circle cx="100" cy="100" r={R} fill="none" stroke={tc} strokeWidth="10"
+              strokeLinecap="round"
+              strokeDasharray={circ}
+              strokeDashoffset={circ*(1-pct/100)}
+              transform="rotate(-90 100 100)"
+              style={{transition:"stroke-dashoffset 1s linear",filter:`drop-shadow(0 0 10px ${tc}80)`}}/>
+            <text x="100" y="93" textAnchor="middle" fontSize="38" fontWeight="700" fill={C.txt} fontFamily="monospace">{mm}:{ss}</text>
+            <text x="100" y="118" textAnchor="middle" fontSize="13" fill={C.mut}>
+              {mode==="idle"?"minutos":mode==="focus"?"foco":"pausa"}
             </text>
           </svg>
         </div>
 
-        {/* Controls */}
-        {mode === "idle" ? (
+        {mode==="idle"?(
           <>
-            <div style={{ display: "flex", gap: 16, justifyContent: "center", marginBottom: 16 }}>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 11, color: C.mut, marginBottom: 4 }}>FOCO (min)</div>
-                <input type="number" value={focusDur} onChange={e => { setFocusDur(+e.target.value); setSecs(+e.target.value * 60); }} min={1} max={90}
-                  style={{ width: 60, background: C.surf, border: `1px solid ${C.bord}`, borderRadius: 8, color: C.txt, padding: "6px 10px", textAlign: "center", fontSize: 15 }} />
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 11, color: C.mut, marginBottom: 4 }}>PAUSA (min)</div>
-                <input type="number" value={breakDur} onChange={e => setBreakDur(+e.target.value)} min={1} max={30}
-                  style={{ width: 60, background: C.surf, border: `1px solid ${C.bord}`, borderRadius: 8, color: C.txt, padding: "6px 10px", textAlign: "center", fontSize: 15 }} />
-              </div>
+            <div style={{display:"flex",gap:20,justifyContent:"center",marginBottom:18}}>
+              {[{label:"Foco (min)",val:focusDur,set:v=>{setFocusDur(v);setSecs(v*60);}},{label:"Pausa (min)",val:breakDur,set:setBreakDur}].map(({label,val,set})=>(
+                <div key={label} style={{textAlign:"center"}}>
+                  <div style={{fontSize:11,color:C.mut,marginBottom:6,textTransform:"uppercase",letterSpacing:"0.06em"}}>{label}</div>
+                  <input type="number" value={val} min={1} max={90}
+                    onChange={e=>set(Math.max(1,+e.target.value))}
+                    style={{width:70,background:C.surf,border:`1px solid ${C.bord}`,borderRadius:10,color:C.txt,padding:"8px",textAlign:"center",fontSize:18,fontWeight:700,outline:"none"}}/>
+                </div>
+              ))}
             </div>
-            <Btn onClick={start} color={C.cyan} style={{ width: "100%", fontSize: 17 }}>Iniciar Foco ⚡</Btn>
+            <Btn onClick={()=>{setMode("focus");setSecs(focusDur*60);setIsRunning(true);}} color={C.cyan} style={{width:"100%",fontSize:17}}>
+              Iniciar Foco ⚡
+            </Btn>
           </>
-        ) : (
-          <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+        ):(
+          <div style={{display:"flex",gap:10}}>
             {isRunning
-              ? <Btn onClick={pause} color={C.amb} style={{ flex: 1 }}>⏸ Pausar</Btn>
-              : <Btn onClick={resume} color={C.grn} style={{ flex: 1 }}>▶ Continuar</Btn>}
-            <Btn onClick={stop} outline color={C.red} style={{ flex: 1 }}>✕ Parar</Btn>
+              ?<Btn onClick={()=>setIsRunning(false)} color={C.amb} style={{flex:1}}>⏸ Pausar</Btn>
+              :<Btn onClick={()=>setIsRunning(true)} color={C.grn} style={{flex:1}}>▶ Continuar</Btn>}
+            <Btn onClick={()=>{setIsRunning(false);setMode("idle");setSecs(focusDur*60);}} outline color={C.red} style={{flex:1}}>✕ Parar</Btn>
           </div>
         )}
-        {mode === "break" && !isRunning && (
-          <Btn onClick={() => { setMode("focus"); setSecs(focusDur * 60); setIsRunning(true); }} color={C.cyan} style={{ width: "100%", marginTop: 10 }}>Iniciar próximo ciclo →</Btn>
+        {mode==="break"&&!isRunning&&(
+          <Btn onClick={()=>{setMode("focus");setSecs(focusDur*60);setIsRunning(true);}} color={C.cyan} style={{width:"100%",marginTop:12}}>
+            Próximo ciclo →
+          </Btn>
         )}
       </Card>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════
-   COMMUNITY TAB
-═══════════════════════════════════════════════════ */
-function CommunityTab({ userId, username }) {
-  const [posts, setPosts] = useState([]);
-  const [view, setView] = useState("list"); // list | detail | create
-  const [selected, setSelected] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [newPost, setNewPost] = useState({ title: "", body: "", cat: "foco" });
-  const [newComment, setNewComment] = useState("");
-  const [filterCat, setFilterCat] = useState("all");
-  const [loading, setLoading] = useState(false);
+/* ══════════════ ABA COMUNIDADE ══════════════ */
+function CommunityTab({userId,username}){
+  const [posts,setPosts]=useState([]);
+  const [view,setView]=useState("list");
+  const [selected,setSelected]=useState(null);
+  const [comments,setComments]=useState([]);
+  const [newPost,setNewPost]=useState({title:"",body:"",cat:"foco"});
+  const [newComment,setNewComment]=useState("");
+  const [filterCat,setFilterCat]=useState("all");
+  const [loading,setLoading]=useState(false);
 
-  const loadPosts = useCallback(async () => {
-    const p = await db.get("forum:posts", true);
-    setPosts(p || []);
-  }, []);
+  const loadPosts=useCallback(()=>{
+    const p=db.get("forum:posts")||[];
+    setPosts(p);
+  },[]);
 
-  useEffect(() => { loadPosts(); }, [loadPosts]);
+  useEffect(()=>{loadPosts();},[loadPosts]);
 
-  const loadComments = async (postId) => {
-    const c = await db.get(`forum:comments:${postId}`, true);
-    setComments(c || []);
-  };
-
-  const openPost = async (post) => {
+  const openPost=(post)=>{
     setSelected(post);
-    await loadComments(post.id);
-    setView("detail");
+    const c=db.get(`forum:comments:${post.id}`)||[];
+    setComments(c);setView("detail");
   };
 
-  const submitPost = async () => {
-    if (!newPost.title.trim()) return;
-    setLoading(true);
-    const post = { id: uid(), authorId: userId, author: username, title: newPost.title.trim(), body: newPost.body.trim(), cat: newPost.cat, votes: 0, voters: [], createdAt: Date.now(), commentCount: 0 };
-    const updated = [post, ...posts];
-    await db.set("forum:posts", updated, true);
-    setPosts(updated);
-    setNewPost({ title: "", body: "", cat: "foco" });
-    setView("list");
-    setLoading(false);
+  const submitPost=()=>{
+    if(!newPost.title.trim())return;setLoading(true);
+    setTimeout(()=>{
+      const post={id:uid(),authorId:userId,author:username,title:newPost.title.trim(),body:newPost.body.trim(),cat:newPost.cat,votes:0,voters:[],createdAt:Date.now(),commentCount:0};
+      const updated=[post,...posts];
+      db.set("forum:posts",updated);setPosts(updated);
+      setNewPost({title:"",body:"",cat:"foco"});setView("list");setLoading(false);
+    },200);
   };
 
-  const vote = async (postId, dir) => {
-    const updated = posts.map(p => {
-      if (p.id !== postId) return p;
-      const alreadyVoted = (p.voters || []).includes(userId);
-      if (alreadyVoted) return p;
-      return { ...p, votes: p.votes + dir, voters: [...(p.voters || []), userId] };
+  const vote=(postId)=>{
+    const updated=posts.map(p=>{
+      if(p.id!==postId)return p;
+      if((p.voters||[]).includes(userId))return p;
+      return{...p,votes:p.votes+1,voters:[...(p.voters||[]),userId]};
     });
-    await db.set("forum:posts", updated, true);
-    setPosts(updated);
+    db.set("forum:posts",updated);setPosts(updated);
+    if(selected&&selected.id===postId){
+      const up=updated.find(p=>p.id===postId);
+      if(up)setSelected(up);
+    }
   };
 
-  const submitComment = async () => {
-    if (!newComment.trim() || !selected) return;
-    const c = { id: uid(), authorId: userId, author: username, body: newComment.trim(), createdAt: Date.now() };
-    const updatedComments = [...comments, c];
-    await db.set(`forum:comments:${selected.id}`, updatedComments, true);
-    const updatedPosts = posts.map(p => p.id === selected.id ? { ...p, commentCount: (p.commentCount || 0) + 1 } : p);
-    await db.set("forum:posts", updatedPosts, true);
-    setComments(updatedComments);
-    setPosts(updatedPosts);
-    setNewComment("");
+  const submitComment=()=>{
+    if(!newComment.trim()||!selected)return;
+    const c={id:uid(),authorId:userId,author:username,body:newComment.trim(),createdAt:Date.now()};
+    const updC=[...comments,c];
+    db.set(`forum:comments:${selected.id}`,updC);
+    const updP=posts.map(p=>p.id===selected.id?{...p,commentCount:(p.commentCount||0)+1}:p);
+    db.set("forum:posts",updP);
+    setComments(updC);setPosts(updP);setNewComment("");
   };
 
-  const timeAgo = (ts) => {
-    const m = Math.floor((Date.now() - ts) / 60000);
-    if (m < 1) return "agora";
-    if (m < 60) return `${m}min`;
-    if (m < 1440) return `${Math.floor(m / 60)}h`;
-    return `${Math.floor(m / 1440)}d`;
+  const timeAgo=(ts)=>{
+    const m=Math.floor((Date.now()-ts)/60000);
+    if(m<1)return"agora";if(m<60)return`${m}min`;
+    if(m<1440)return`${Math.floor(m/60)}h`;return`${Math.floor(m/1440)}d`;
   };
 
-  const filtered = filterCat === "all" ? posts : posts.filter(p => p.cat === filterCat);
+  const filtered=filterCat==="all"?posts:posts.filter(p=>p.cat===filterCat);
 
-  if (view === "create") return (
-    <div style={{ padding: "0 16px 24px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-        <button onClick={() => setView("list")} style={{ background: "none", border: "none", color: C.mut, cursor: "pointer", fontSize: 22 }}>←</button>
-        <div style={{ color: C.txt, fontWeight: 700, fontSize: 18 }}>Nova postagem</div>
+  if(view==="create")return(
+    <div style={{padding:"0 16px 100px"}} className="slideup">
+      <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
+        <button onClick={()=>setView("list")} style={{background:"none",border:"none",color:C.mut,cursor:"pointer",fontSize:26,lineHeight:1}}>←</button>
+        <div style={{color:C.txt,fontWeight:700,fontSize:18}}>Nova postagem</div>
       </div>
       <Card>
-        <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 12, color: C.mut, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>Categoria</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {CATS.map(cat => (
-              <button key={cat.id} onClick={() => setNewPost(p => ({ ...p, cat: cat.id }))} style={{
-                background: newPost.cat === cat.id ? cat.color + "25" : C.surf,
-                border: `1px solid ${newPost.cat === cat.id ? cat.color : C.bord}`,
-                borderRadius: 10, color: newPost.cat === cat.id ? cat.color : C.mut,
-                padding: "7px 14px", cursor: "pointer", fontSize: 13, fontWeight: 600,
+        <div style={{marginBottom:16}}>
+          <div style={{fontSize:12,color:C.mut,marginBottom:10,textTransform:"uppercase",letterSpacing:"0.08em"}}>Categoria</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+            {CATS.map(cat=>(
+              <button key={cat.id} onClick={()=>setNewPost(p=>({...p,cat:cat.id}))} style={{
+                background:newPost.cat===cat.id?cat.color+"25":C.surf,
+                border:`1px solid ${newPost.cat===cat.id?cat.color:C.bord}`,
+                borderRadius:10,color:newPost.cat===cat.id?cat.color:C.mut,
+                padding:"8px 14px",cursor:"pointer",fontSize:13,fontWeight:600,transition:"all 0.15s"
               }}>{cat.label}</button>
             ))}
           </div>
         </div>
-        <Input label="Título" placeholder="Sobre o que você quer falar?" value={newPost.title} onChange={e => setNewPost(p => ({ ...p, title: e.target.value }))} />
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 12, color: C.mut, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em" }}>Descrição (opcional)</div>
-          <textarea value={newPost.body} onChange={e => setNewPost(p => ({ ...p, body: e.target.value }))} placeholder="Compartilhe mais detalhes..."
-            style={{ width: "100%", background: C.surf, border: `1px solid ${C.bord}`, borderRadius: 10, color: C.txt, padding: "12px 14px", fontSize: 14, resize: "vertical", minHeight: 100, outline: "none", boxSizing: "border-box" }} />
+        <Input label="Título" placeholder="Sobre o que você quer falar?" value={newPost.title}
+          onChange={e=>setNewPost(p=>({...p,title:e.target.value}))}/>
+        <div style={{marginBottom:18}}>
+          <div style={{fontSize:12,color:C.mut,marginBottom:6,textTransform:"uppercase",letterSpacing:"0.08em"}}>Descrição (opcional)</div>
+          <textarea value={newPost.body} onChange={e=>setNewPost(p=>({...p,body:e.target.value}))}
+            placeholder="Compartilhe mais detalhes..."
+            style={{width:"100%",background:C.surf,border:`1px solid ${C.bord}`,borderRadius:10,
+              color:C.txt,padding:"12px 14px",fontSize:14,minHeight:110,outline:"none",boxSizing:"border-box"}}/>
         </div>
-        <Btn onClick={submitPost} disabled={loading || !newPost.title.trim()} style={{ width: "100%" }}>
-          {loading ? "Publicando..." : "Publicar →"}
+        <Btn onClick={submitPost} disabled={loading||!newPost.title.trim()} style={{width:"100%"}}>
+          {loading?"Publicando...":"Publicar →"}
         </Btn>
       </Card>
     </div>
   );
 
-  if (view === "detail" && selected) return (
-    <div style={{ padding: "0 16px 24px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-        <button onClick={() => { setView("list"); setSelected(null); }} style={{ background: "none", border: "none", color: C.mut, cursor: "pointer", fontSize: 22 }}>←</button>
-        <div style={{ color: C.txt, fontWeight: 700, fontSize: 16, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selected.title}</div>
+  if(view==="detail"&&selected)return(
+    <div style={{padding:"0 16px 100px"}} className="slideup">
+      <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
+        <button onClick={()=>{setView("list");setSelected(null);}} style={{background:"none",border:"none",color:C.mut,cursor:"pointer",fontSize:26,lineHeight:1}}>←</button>
+        <div style={{color:C.txt,fontWeight:700,fontSize:16,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{selected.title}</div>
       </div>
-      <Card style={{ marginBottom: 16 }}>
-        {(() => { const cat = CATS.find(c => c.id === selected.cat); return cat ? <span style={{ background: cat.color + "20", border: `1px solid ${cat.color}40`, borderRadius: 20, color: cat.color, fontSize: 11, fontWeight: 700, padding: "4px 10px", letterSpacing: "0.06em" }}>{cat.label}</span> : null; })()}
-        <div style={{ color: C.txt, fontWeight: 700, fontSize: 18, marginTop: 10, marginBottom: 8 }}>{selected.title}</div>
-        {selected.body && <div style={{ color: C.mut, fontSize: 14, lineHeight: 1.6, marginBottom: 12 }}>{selected.body}</div>}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 12, color: C.mut }}>@{selected.author} · {timeAgo(selected.createdAt)}</div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <button onClick={() => vote(selected.id, 1)} style={{ background: C.pri + "20", border: `1px solid ${C.pri}40`, borderRadius: 8, color: C.pri, padding: "5px 10px", cursor: "pointer", fontSize: 13 }}>▲ {selected.votes}</button>
-          </div>
+      <Card style={{marginBottom:14}}>
+        {(()=>{const cat=CATS.find(c=>c.id===selected.cat);return cat?(<span style={{background:cat.color+"20",border:`1px solid ${cat.color}40`,borderRadius:20,color:cat.color,fontSize:11,fontWeight:700,padding:"4px 12px",display:"inline-block",marginBottom:10}}>{cat.label}</span>):null;})()}
+        <div style={{color:C.txt,fontWeight:700,fontSize:18,marginBottom:8}}>{selected.title}</div>
+        {selected.body&&<div style={{color:C.mut,fontSize:14,lineHeight:1.7,marginBottom:14}}>{selected.body}</div>}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{fontSize:12,color:C.mut}}>@{selected.author} · {timeAgo(selected.createdAt)}</div>
+          <button onClick={()=>vote(selected.id)} style={{background:C.pri+"20",border:`1px solid ${C.pri}40`,borderRadius:8,color:C.pri,padding:"6px 14px",cursor:"pointer",fontSize:13,fontWeight:700}}>▲ {selected.votes}</button>
         </div>
       </Card>
 
-      {/* Comments */}
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, color: C.mut, marginBottom: 12 }}>{comments.length} comentário{comments.length !== 1 ? "s" : ""}</div>
-        {comments.map(c => (
-          <div key={c.id} style={{ background: C.surf, border: `1px solid ${C.bord}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-              <span style={{ fontSize: 13, color: C.cyan, fontWeight: 600 }}>@{c.author}</span>
-              <span style={{ fontSize: 11, color: C.mut }}>{timeAgo(c.createdAt)}</span>
+      <div style={{marginBottom:14}}>
+        <div style={{fontSize:13,color:C.mut,marginBottom:12,fontWeight:600}}>{comments.length} comentário{comments.length!==1?"s":""}</div>
+        {comments.map(c=>(
+          <div key={c.id} style={{background:C.surf,border:`1px solid ${C.bord}`,borderRadius:14,padding:14,marginBottom:10}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+              <span style={{fontSize:13,color:C.cyan,fontWeight:700}}>@{c.author}</span>
+              <span style={{fontSize:11,color:C.mut}}>{timeAgo(c.createdAt)}</span>
             </div>
-            <div style={{ color: C.txt, fontSize: 14, lineHeight: 1.5 }}>{c.body}</div>
+            <div style={{color:C.txt,fontSize:14,lineHeight:1.6}}>{c.body}</div>
           </div>
         ))}
       </div>
 
-      {/* New comment */}
       <Card>
-        <textarea value={newComment} onChange={e => setNewComment(e.target.value)} placeholder="Escreva um comentário..."
-          style={{ width: "100%", background: C.surf, border: `1px solid ${C.bord}`, borderRadius: 10, color: C.txt, padding: "12px 14px", fontSize: 14, resize: "none", height: 80, outline: "none", boxSizing: "border-box", marginBottom: 10 }} />
-        <Btn onClick={submitComment} disabled={!newComment.trim()} small style={{ width: "100%" }}>Comentar</Btn>
+        <textarea value={newComment} onChange={e=>setNewComment(e.target.value)}
+          placeholder="Escreva um comentário..."
+          style={{width:"100%",background:C.surf,border:`1px solid ${C.bord}`,borderRadius:10,
+            color:C.txt,padding:"12px 14px",fontSize:14,height:90,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
+        <Btn onClick={submitComment} disabled={!newComment.trim()} small style={{width:"100%"}}>Comentar</Btn>
       </Card>
     </div>
   );
 
-  return (
-    <div style={{ padding: "0 16px 24px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <div style={{ color: C.txt, fontWeight: 700, fontSize: 18 }}>Comunidade</div>
-        <Btn onClick={() => setView("create")} small color={C.pri}>+ Postar</Btn>
+  return(
+    <div style={{padding:"0 16px 100px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <div style={{color:C.txt,fontWeight:700,fontSize:20}}>Comunidade</div>
+        <Btn onClick={()=>setView("create")} small color={C.pri}>+ Postar</Btn>
       </div>
 
-      {/* Category filter */}
-      <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 8, marginBottom: 16 }}>
-        <button onClick={() => setFilterCat("all")} style={{ background: filterCat === "all" ? C.pri : C.surf, border: `1px solid ${filterCat === "all" ? C.pri : C.bord}`, borderRadius: 20, color: filterCat === "all" ? "#fff" : C.mut, padding: "6px 14px", cursor: "pointer", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>Tudo</button>
-        {CATS.map(cat => (
-          <button key={cat.id} onClick={() => setFilterCat(cat.id)} style={{ background: filterCat === cat.id ? cat.color + "25" : C.surf, border: `1px solid ${filterCat === cat.id ? cat.color : C.bord}`, borderRadius: 20, color: filterCat === cat.id ? cat.color : C.mut, padding: "6px 14px", cursor: "pointer", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>{cat.label}</button>
+      <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,marginBottom:16,scrollbarWidth:"none"}}>
+        <button onClick={()=>setFilterCat("all")} style={{background:filterCat==="all"?C.pri:C.surf,border:`1px solid ${filterCat==="all"?C.pri:C.bord}`,borderRadius:20,color:filterCat==="all"?"#fff":C.mut,padding:"7px 16px",cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap"}}>Tudo</button>
+        {CATS.map(cat=>(
+          <button key={cat.id} onClick={()=>setFilterCat(cat.id)} style={{background:filterCat===cat.id?cat.color+"25":C.surf,border:`1px solid ${filterCat===cat.id?cat.color:C.bord}`,borderRadius:20,color:filterCat===cat.id?cat.color:C.mut,padding:"7px 16px",cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap"}}>{cat.label}</button>
         ))}
       </div>
 
-      {filtered.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "40px 20px", color: C.mut }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>🤫</div>
-          <div style={{ fontSize: 15, fontWeight: 600, color: C.txt, marginBottom: 6 }}>Nenhuma postagem ainda</div>
-          <div style={{ fontSize: 13 }}>Seja o primeiro a postar nesta categoria!</div>
+      {filtered.length===0?(
+        <div style={{textAlign:"center",padding:"50px 20px",color:C.mut}}>
+          <div style={{fontSize:44,marginBottom:14}}>🤫</div>
+          <div style={{fontSize:16,fontWeight:600,color:C.txt,marginBottom:8}}>Nenhuma postagem ainda</div>
+          <div style={{fontSize:13}}>Seja o primeiro a postar nesta categoria!</div>
         </div>
-      ) : (
-        filtered.map(post => {
-          const cat = CATS.find(c => c.id === post.cat);
-          return (
-            <div key={post.id} onClick={() => openPost(post)} style={{ background: C.card, border: `1px solid ${C.bord}`, borderRadius: 14, padding: 16, marginBottom: 10, cursor: "pointer", transition: "border-color 0.2s" }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = C.pri + "60"}
-              onMouseLeave={e => e.currentTarget.style.borderColor = C.bord}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                <div style={{ flex: 1 }}>
-                  {cat && <span style={{ background: cat.color + "20", borderRadius: 20, color: cat.color, fontSize: 10, fontWeight: 700, padding: "3px 8px", marginBottom: 6, display: "inline-block", letterSpacing: "0.06em" }}>{cat.label}</span>}
-                  <div style={{ color: C.txt, fontWeight: 600, fontSize: 15, marginTop: 4, lineHeight: 1.3 }}>{post.title}</div>
-                </div>
-              </div>
-              {post.body && <div style={{ color: C.mut, fontSize: 13, marginBottom: 10, lineHeight: 1.5, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{post.body}</div>}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 12, color: C.mut }}>@{post.author} · {timeAgo(post.createdAt)}</span>
-                <div style={{ display: "flex", gap: 10, fontSize: 12, color: C.mut }}>
-                  <span>▲ {post.votes}</span>
-                  <span>💬 {post.commentCount || 0}</span>
-                </div>
+      ):filtered.map(post=>{
+        const cat=CATS.find(c=>c.id===post.cat);
+        return(
+          <div key={post.id} onClick={()=>openPost(post)}
+            style={{background:C.card,border:`1px solid ${C.bord}`,borderRadius:16,padding:18,marginBottom:10,cursor:"pointer",transition:"border-color 0.2s,transform 0.15s"}}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=C.pri+"60";e.currentTarget.style.transform="translateY(-1px)";}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=C.bord;e.currentTarget.style.transform="none";}}>
+            {cat&&<span style={{background:cat.color+"20",borderRadius:20,color:cat.color,fontSize:10,fontWeight:700,padding:"3px 10px",marginBottom:8,display:"inline-block",letterSpacing:"0.06em"}}>{cat.label}</span>}
+            <div style={{color:C.txt,fontWeight:700,fontSize:16,marginTop:4,lineHeight:1.3}}>{post.title}</div>
+            {post.body&&<div style={{color:C.mut,fontSize:13,marginTop:6,lineHeight:1.5,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{post.body}</div>}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:12}}>
+              <span style={{fontSize:12,color:C.mut}}>@{post.author} · {timeAgo(post.createdAt)}</span>
+              <div style={{display:"flex",gap:12,fontSize:12,color:C.mut}}>
+                <span>▲ {post.votes}</span>
+                <span>💬 {post.commentCount||0}</span>
               </div>
             </div>
-          );
-        })
-      )}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════
-   GOALS TAB
-═══════════════════════════════════════════════════ */
-function GoalsTab({ userId }) {
-  const [goals, setGoals] = useState({ fixed: [], daily: [] });
-  const [newFixed, setNewFixed] = useState("");
-  const [newDaily, setNewDaily] = useState("");
-  const [sleep, setSleep] = useState({ hours: 7, quality: 3 });
-  const [screen, setScreen] = useState({ hours: 2, limit: 4 });
+/* ══════════════ ABA METAS ══════════════ */
+function GoalsTab({userId}){
+  const [goals,setGoals]=useState({fixed:[],daily:[]});
+  const [newFixed,setNewFixed]=useState("");
+  const [newDaily,setNewDaily]=useState("");
+  const [sleep,setSleep]=useState({hours:7,quality:3});
+  const [screen,setScreen]=useState({hours:2,limit:4});
 
-  useEffect(() => {
-    db.get(`goals:${userId}`).then(g => g && setGoals(g));
-    db.get(`logs:${userId}:${today()}`).then(l => {
-      if (l?.sleep) setSleep(l.sleep);
-      if (l?.screen) setScreen(l.screen);
-    });
-  }, [userId]);
+  useEffect(()=>{
+    const g=db.get(`goals:${userId}`);if(g)setGoals(g);
+    const l=db.get(`logs:${userId}:${today()}`);
+    if(l?.sleep)setSleep(l.sleep);
+    if(l?.screen)setScreen(l.screen);
+  },[userId]);
 
-  const saveGoals = async (g) => { setGoals(g); await db.set(`goals:${userId}`, g); };
-
-  const addGoal = async (type) => {
-    const text = type === "fixed" ? newFixed : newDaily;
-    if (!text.trim()) return;
-    const g = { ...goals, [type]: [...goals[type], { id: uid(), text: text.trim(), done: false }] };
-    await saveGoals(g);
-    if (type === "fixed") setNewFixed(""); else setNewDaily("");
+  const saveGoals=(g)=>{setGoals(g);db.set(`goals:${userId}`,g);};
+  const addGoal=(type)=>{
+    const text=type==="fixed"?newFixed:newDaily;
+    if(!text.trim())return;
+    const g={...goals,[type]:[...goals[type],{id:uid(),text:text.trim(),done:false}]};
+    saveGoals(g);if(type==="fixed")setNewFixed("");else setNewDaily("");
   };
+  const toggleGoal=(type,id)=>saveGoals({...goals,[type]:goals[type].map(i=>i.id===id?{...i,done:!i.done}:i)});
+  const deleteGoal=(type,id)=>saveGoals({...goals,[type]:goals[type].filter(i=>i.id!==id)});
 
-  const toggleGoal = async (type, id) => {
-    const g = { ...goals, [type]: goals[type].map(item => item.id === id ? { ...item, done: !item.done } : item) };
-    await saveGoals(g);
-  };
+  const saveSleep=(s)=>{setSleep(s);const l=db.get(`logs:${userId}:${today()}`)||{};db.set(`logs:${userId}:${today()}`,{...l,sleep:s});};
+  const saveScreen=(s)=>{setScreen(s);const l=db.get(`logs:${userId}:${today()}`)||{};db.set(`logs:${userId}:${today()}`,{...l,screen:s});};
 
-  const deleteGoal = async (type, id) => {
-    const g = { ...goals, [type]: goals[type].filter(item => item.id !== id) };
-    await saveGoals(g);
-  };
-
-  const saveSleep = async (s) => {
-    setSleep(s);
-    const l = (await db.get(`logs:${userId}:${today()}`)) || {};
-    await db.set(`logs:${userId}:${today()}`, { ...l, sleep: s });
-  };
-
-  const saveScreen = async (s) => {
-    setScreen(s);
-    const l = (await db.get(`logs:${userId}:${today()}`)) || {};
-    await db.set(`logs:${userId}:${today()}`, { ...l, screen: s });
-  };
-
-  const GoalList = ({ type, items, color, label, addVal, setAddVal }) => (
+  const GoalList=({type,items,color,label,addVal,setAddVal})=>(
     <div>
-      <div style={{ fontSize: 13, color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>{label}</div>
-      {items.map(item => (
-        <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 10, background: C.surf, borderRadius: 12, padding: "10px 14px", marginBottom: 8, border: `1px solid ${item.done ? color + "40" : C.bord}` }}>
-          <button onClick={() => toggleGoal(type, item.id)} style={{ width: 22, height: 22, borderRadius: 6, background: item.done ? color : "transparent", border: `2px solid ${item.done ? color : C.bord}`, cursor: "pointer", color: "#fff", fontSize: 13, flexShrink: 0 }}>
-            {item.done ? "✓" : ""}
-          </button>
-          <span style={{ flex: 1, color: item.done ? C.mut : C.txt, fontSize: 14, textDecoration: item.done ? "line-through" : "none" }}>{item.text}</span>
-          <button onClick={() => deleteGoal(type, item.id)} style={{ background: "none", border: "none", color: C.mut, cursor: "pointer", fontSize: 16, padding: 0 }}>×</button>
+      <div style={{fontSize:13,color,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:12}}>{label}</div>
+      {items.length===0&&<div style={{color:C.mut,fontSize:13,marginBottom:12,padding:"8px 0"}}>Nenhuma meta ainda. Adicione uma!</div>}
+      {items.map(item=>(
+        <div key={item.id} style={{display:"flex",alignItems:"center",gap:10,background:C.surf,borderRadius:12,padding:"11px 14px",marginBottom:8,border:`1px solid ${item.done?color+"50":C.bord}`,transition:"border-color 0.2s"}}>
+          <button onClick={()=>toggleGoal(type,item.id)} style={{width:24,height:24,borderRadius:7,background:item.done?color:"transparent",border:`2px solid ${item.done?color:C.bord}`,cursor:"pointer",color:"#fff",fontSize:14,flexShrink:0,transition:"all 0.15s"}}>{item.done?"✓":""}</button>
+          <span style={{flex:1,color:item.done?C.mut:C.txt,fontSize:14,textDecoration:item.done?"line-through":"none"}}>{item.text}</span>
+          <button onClick={()=>deleteGoal(type,item.id)} style={{background:"none",border:"none",color:C.mut,cursor:"pointer",fontSize:20,padding:0,lineHeight:1,opacity:0.6}}>×</button>
         </div>
       ))}
-      <div style={{ display: "flex", gap: 8 }}>
-        <input value={addVal} onChange={e => setAddVal(e.target.value)} placeholder={`+ Nova meta ${type === "fixed" ? "fixa" : "diária"}...`}
-          onKeyDown={e => e.key === "Enter" && addGoal(type)}
-          style={{ flex: 1, background: C.surf, border: `1px solid ${C.bord}`, borderRadius: 10, color: C.txt, padding: "10px 12px", fontSize: 14, outline: "none" }} />
-        <button onClick={() => addGoal(type)} style={{ background: color + "20", border: `1px solid ${color}40`, borderRadius: 10, color, padding: "10px 14px", cursor: "pointer", fontSize: 16 }}>+</button>
+      <div style={{display:"flex",gap:8,marginTop:4}}>
+        <input value={addVal} onChange={e=>setAddVal(e.target.value)}
+          placeholder={`+ Nova meta ${type==="fixed"?"fixa":"diária"}...`}
+          onKeyDown={e=>e.key==="Enter"&&addGoal(type)}
+          style={{flex:1,background:C.surf,border:`1px solid ${C.bord}`,borderRadius:10,color:C.txt,padding:"11px 14px",fontSize:14,outline:"none"}}/>
+        <button onClick={()=>addGoal(type)} style={{background:color+"20",border:`1px solid ${color}40`,borderRadius:10,color,padding:"11px 16px",cursor:"pointer",fontSize:20,fontWeight:700}}>+</button>
       </div>
     </div>
   );
 
-  return (
-    <div style={{ padding: "0 16px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Sleep & Screen */}
+  return(
+    <div style={{padding:"0 16px 100px",display:"flex",flexDirection:"column",gap:16}}>
       <Card>
-        <div style={{ fontSize: 12, color: C.mut, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 14 }}>Monitoramento</div>
-        <div style={{ display: "flex", gap: 12 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12, color: C.pri, marginBottom: 8, fontWeight: 600 }}>🌙 Sono</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <input type="range" min={3} max={12} step={0.5} value={sleep.hours} onChange={e => saveSleep({ ...sleep, hours: +e.target.value })} style={{ flex: 1, accentColor: C.pri }} />
-              <span style={{ color: C.pri, fontWeight: 700, minWidth: 32 }}>{sleep.hours}h</span>
+        <Label>📊 Monitoramento do dia</Label>
+        <div style={{display:"flex",gap:16}}>
+          <div style={{flex:1}}>
+            <div style={{fontSize:13,color:C.pri,marginBottom:10,fontWeight:700}}>🌙 Sono</div>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+              <input type="range" min={3} max={12} step={0.5} value={sleep.hours}
+                onChange={e=>saveSleep({...sleep,hours:+e.target.value})} style={{flex:1,accentColor:C.pri}}/>
+              <span style={{color:C.pri,fontWeight:700,minWidth:36,fontSize:15}}>{sleep.hours}h</span>
             </div>
-            <div style={{ display: "flex", gap: 5 }}>
-              {[1, 2, 3, 4, 5].map(n => (
-                <button key={n} onClick={() => saveSleep({ ...sleep, quality: n })} style={{ flex: 1, background: sleep.quality >= n ? C.pri + "30" : C.bord, border: `1px solid ${sleep.quality >= n ? C.pri : C.bord}`, borderRadius: 6, color: sleep.quality >= n ? C.pri : C.mut, padding: "5px 2px", cursor: "pointer", fontSize: 11, fontWeight: 700 }}>{n}</button>
+            <div style={{fontSize:11,color:C.mut,marginBottom:6}}>Qualidade</div>
+            <div style={{display:"flex",gap:4}}>
+              {[1,2,3,4,5].map(n=>(
+                <button key={n} onClick={()=>saveSleep({...sleep,quality:n})} style={{
+                  flex:1,background:sleep.quality>=n?C.pri+"35":C.bord,
+                  border:`1.5px solid ${sleep.quality>=n?C.pri:C.bord}`,
+                  borderRadius:7,color:sleep.quality>=n?C.pri:C.mut,
+                  padding:"6px 2px",cursor:"pointer",fontSize:12,fontWeight:700,transition:"all 0.15s"
+                }}>{n}</button>
               ))}
             </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12, color: C.amb, marginBottom: 8, fontWeight: 600 }}>📱 Tela</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <input type="range" min={0} max={12} step={0.5} value={screen.hours} onChange={e => saveScreen({ ...screen, hours: +e.target.value })} style={{ flex: 1, accentColor: C.amb }} />
-              <span style={{ color: C.amb, fontWeight: 700, minWidth: 32 }}>{screen.hours}h</span>
+          <div style={{flex:1}}>
+            <div style={{fontSize:13,color:C.amb,marginBottom:10,fontWeight:700}}>📱 Tempo de tela</div>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+              <input type="range" min={0} max={14} step={0.5} value={screen.hours}
+                onChange={e=>saveScreen({...screen,hours:+e.target.value})} style={{flex:1,accentColor:C.amb}}/>
+              <span style={{color:C.amb,fontWeight:700,minWidth:36,fontSize:15}}>{screen.hours}h</span>
             </div>
-            <div style={{ fontSize: 11, color: C.mut, marginBottom: 4 }}>Limite</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <input type="range" min={1} max={12} step={0.5} value={screen.limit} onChange={e => saveScreen({ ...screen, limit: +e.target.value })} style={{ flex: 1, accentColor: C.red }} />
-              <span style={{ color: C.red, fontWeight: 700, minWidth: 32 }}>{screen.limit}h</span>
+            <div style={{fontSize:11,color:C.mut,marginBottom:6}}>Limite diário</div>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <input type="range" min={1} max={12} step={0.5} value={screen.limit}
+                onChange={e=>saveScreen({...screen,limit:+e.target.value})} style={{flex:1,accentColor:C.red}}/>
+              <span style={{color:C.red,fontWeight:700,minWidth:36,fontSize:15}}>{screen.limit}h</span>
             </div>
           </div>
         </div>
       </Card>
 
       <Card>
-        <GoalList type="fixed" items={goals.fixed} color={C.cyan} label="Metas fixas (rotina)" addVal={newFixed} setAddVal={setNewFixed} />
+        <GoalList type="fixed" items={goals.fixed} color={C.cyan} label="🔁 Metas fixas — rotina" addVal={newFixed} setAddVal={setNewFixed}/>
       </Card>
+
       <Card>
-        <GoalList type="daily" items={goals.daily} color={C.grn} label={`Metas diárias — ${today()}`} addVal={newDaily} setAddVal={setNewDaily} />
+        <GoalList type="daily" items={goals.daily} color={C.grn} label={`📅 Metas diárias — ${today()}`} addVal={newDaily} setAddVal={setNewDaily}/>
       </Card>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════
-   REPORT TAB
-═══════════════════════════════════════════════════ */
-function ReportTab({ userId }) {
-  const [report, setReport] = useState(null);
-  const [generating, setGenerating] = useState(false);
+/* ══════════════ ABA RELATÓRIO ══════════════ */
+function ReportTab({userId}){
+  const [report,setReport]=useState(null);
+  const [generating,setGenerating]=useState(false);
 
-  const generate = async () => {
+  const generate=()=>{
     setGenerating(true);
-    const log = (await db.get(`logs:${userId}:${today()}`)) || {};
-    const goals = (await db.get(`goals:${userId}`)) || { fixed: [], daily: [] };
-    const pom = (await db.get(`pomodoro:${userId}`)) || { cycles: 0, totalMin: 0 };
+    setTimeout(()=>{
+      const log=db.get(`logs:${userId}:${today()}`)||{};
+      const goals=db.get(`goals:${userId}`)||{fixed:[],daily:[]};
+      const pom=db.get(`pomodoro:${userId}`)||{cycles:0,totalMin:0};
 
-    // Sleep score (25pts)
-    const sleepH = log.sleep?.hours || 0;
-    const sleepQ = log.sleep?.quality || 0;
-    const sleepScore = Math.round(Math.min(25, (sleepH / 8) * 12.5 + (sleepQ / 5) * 12.5));
+      const sleepH=log.sleep?.hours||0,sleepQ=log.sleep?.quality||0;
+      const sleepScore=Math.round(Math.min(25,(sleepH/8)*12.5+(sleepQ/5)*12.5));
 
-    // Goals score (25pts)
-    const allGoals = [...goals.fixed, ...goals.daily];
-    const done = allGoals.filter(g => g.done).length;
-    const goalsScore = allGoals.length > 0 ? Math.round((done / allGoals.length) * 25) : 0;
+      const allGoals=[...goals.fixed,...goals.daily];
+      const done=allGoals.filter(g=>g.done).length;
+      const goalsScore=allGoals.length>0?Math.round((done/allGoals.length)*25):0;
 
-    // Activity (25pts)
-    const actScore = log.activity ? 25 : 0;
+      const actScore=log.activity?25:0;
 
-    // Screen time (25pts)
-    const sc = log.screen || {};
-    const screenScore = sc.limit && sc.hours !== undefined
-      ? Math.round(Math.max(0, 25 - Math.max(0, sc.hours - sc.limit) * 5))
-      : 12;
+      const sc=log.screen||{};
+      const screenScore=sc.limit&&sc.hours!==undefined
+        ?Math.round(Math.max(0,25-Math.max(0,sc.hours-sc.limit)*5)):12;
 
-    const total = sleepScore + goalsScore + actScore + screenScore;
-    const grade = total >= 90 ? "S" : total >= 75 ? "A" : total >= 60 ? "B" : total >= 40 ? "C" : "D";
-    const gradeColor = { S: C.cyan, A: C.grn, B: C.pri, C: C.amb, D: C.red }[grade];
+      const total=sleepScore+goalsScore+actScore+screenScore;
+      const grade=total>=90?"S":total>=75?"A":total>=60?"B":total>=40?"C":"D";
+      const gradeColor={S:C.cyan,A:C.grn,B:C.pri,C:C.amb,D:C.red}[grade];
+      const gradeMsg={S:"🌟 Incrível! Dia perfeito!",A:"🎉 Excelente! Continue assim!",B:"👍 Bom dia! Vai melhorar!",C:"💪 Esforço conta! Amanhã mais!",D:"🔄 Tudo bem, amanhã é novo dia!"}[grade];
 
-    setTimeout(() => {
-      setReport({ sleepScore, goalsScore, actScore, screenScore, total, grade, gradeColor, log, goals, pom });
+      setReport({sleepScore,goalsScore,actScore,screenScore,total,grade,gradeColor,gradeMsg,log,goals,pom,done,allGoals:allGoals.length});
       setGenerating(false);
-    }, 800);
+    },900);
   };
 
-  const bars = report ? [
-    { label: "Sono", score: report.sleepScore, max: 25, color: C.pri, icon: "🌙" },
-    { label: "Metas", score: report.goalsScore, max: 25, color: C.cyan, icon: "🎯" },
-    { label: "Atividade", score: report.actScore, max: 25, color: C.grn, icon: "🏃" },
-    { label: "Tela", score: report.screenScore, max: 25, color: C.amb, icon: "📱" },
-  ] : [];
-
-  return (
-    <div style={{ padding: "0 16px 24px" }}>
-      {!report ? (
-        <div style={{ textAlign: "center", paddingTop: 40 }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>📊</div>
-          <div style={{ color: C.txt, fontWeight: 700, fontSize: 22, marginBottom: 8 }}>Relatório do Dia</div>
-          <div style={{ color: C.mut, fontSize: 14, marginBottom: 32, lineHeight: 1.6 }}>
-            Veja quanto seu cérebro trabalhou hoje.<br />100 pontos no total.
+  return(
+    <div style={{padding:"0 16px 100px"}}>
+      {!report?(
+        <div style={{textAlign:"center",paddingTop:50}} className="fadein">
+          <div style={{fontSize:60,marginBottom:18}}>📊</div>
+          <div style={{color:C.txt,fontWeight:800,fontSize:24,marginBottom:10}}>Relatório do Dia</div>
+          <div style={{color:C.mut,fontSize:15,marginBottom:36,lineHeight:1.7}}>
+            Veja quanto seu cérebro trabalhou hoje.<br/>Pontuação máxima: 100 pontos.
           </div>
-          <Btn onClick={generate} disabled={generating} color={C.pri} style={{ fontSize: 17, padding: "14px 32px" }}>
-            {generating ? "Calculando... 🧠" : "Gerar Relatório Wrapped ✨"}
+          <Btn onClick={generate} disabled={generating} color={C.pri} style={{fontSize:18,padding:"16px 36px"}}>
+            {generating?"Calculando... 🧠":"Gerar Relatório Wrapped ✨"}
           </Btn>
         </div>
-      ) : (
-        <div>
-          {/* Hero score */}
-          <div style={{ textAlign: "center", padding: "28px 20px", background: g(C.card, C.surf, 160), borderRadius: 20, border: `1px solid ${report.gradeColor}40`, marginBottom: 16, boxShadow: glow(report.gradeColor, 30) }}>
-            <div style={{ fontSize: 13, color: C.mut, letterSpacing: "0.12em", marginBottom: 4, textTransform: "uppercase" }}>{today()}</div>
-            <div style={{ fontSize: 90, fontWeight: 800, color: report.gradeColor, lineHeight: 1, filter: `drop-shadow(0 0 20px ${report.gradeColor}80)` }}>{report.total}</div>
-            <div style={{ fontSize: 16, color: C.mut, marginBottom: 12 }}>pontos de 100</div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: report.gradeColor + "20", border: `1px solid ${report.gradeColor}50`, borderRadius: 14, padding: "8px 20px" }}>
-              <span style={{ fontSize: 22, fontWeight: 800, color: report.gradeColor }}>Nota {report.grade}</span>
-              <span style={{ fontSize: 20 }}>
-                {report.grade === "S" ? "🌟" : report.grade === "A" ? "🎉" : report.grade === "B" ? "👍" : report.grade === "C" ? "💪" : "🔄"}
-              </span>
+      ):(
+        <div className="fadein">
+          {/* Hero */}
+          <div style={{textAlign:"center",padding:"32px 20px",background:`linear-gradient(160deg,${C.card},${C.surf})`,borderRadius:22,border:`1px solid ${report.gradeColor}50`,marginBottom:16,boxShadow:glow(report.gradeColor,35)}}>
+            <div style={{fontSize:13,color:C.mut,letterSpacing:"0.12em",marginBottom:6,textTransform:"uppercase"}}>{today()}</div>
+            <div style={{fontSize:96,fontWeight:800,color:report.gradeColor,lineHeight:1,filter:`drop-shadow(0 0 24px ${report.gradeColor}80)`}}>{report.total}</div>
+            <div style={{fontSize:16,color:C.mut,marginBottom:16}}>pontos de 100</div>
+            <div style={{display:"inline-flex",alignItems:"center",gap:10,background:report.gradeColor+"20",border:`1px solid ${report.gradeColor}50`,borderRadius:16,padding:"10px 24px",marginBottom:12}}>
+              <span style={{fontSize:24,fontWeight:800,color:report.gradeColor}}>Nota {report.grade}</span>
             </div>
+            <div style={{color:C.txt,fontSize:16,fontWeight:600}}>{report.gradeMsg}</div>
           </div>
 
-          {/* Score breakdown */}
-          <Card style={{ marginBottom: 16 }}>
-            {bars.map(bar => (
-              <div key={bar.label} style={{ marginBottom: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ color: C.txt, fontSize: 14, fontWeight: 600 }}>{bar.icon} {bar.label}</span>
-                  <span style={{ color: bar.color, fontWeight: 700, fontSize: 15 }}>{bar.score}/{bar.max}pts</span>
+          {/* Barras */}
+          <Card style={{marginBottom:14}}>
+            <Label>📈 Detalhamento</Label>
+            {[
+              {label:"Sono",score:report.sleepScore,max:25,color:C.pri,icon:"🌙",detail:`${report.log.sleep?.hours||0}h · qualidade ${report.log.sleep?.quality||0}/5`},
+              {label:"Metas",score:report.goalsScore,max:25,color:C.cyan,icon:"🎯",detail:`${report.done}/${report.allGoals} concluídas`},
+              {label:"Atividade física",score:report.actScore,max:25,color:C.grn,icon:"🏃",detail:report.actScore===25?"Realizada ✓":"Não registrada"},
+              {label:"Tempo de tela",score:report.screenScore,max:25,color:C.amb,icon:"📱",detail:`${report.log.screen?.hours||0}h de ${report.log.screen?.limit||4}h limite`}
+            ].map(bar=>(
+              <div key={bar.label} style={{marginBottom:16}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:6}}>
+                  <div>
+                    <span style={{color:C.txt,fontSize:14,fontWeight:700}}>{bar.icon} {bar.label}</span>
+                    <div style={{fontSize:11,color:C.mut,marginTop:1}}>{bar.detail}</div>
+                  </div>
+                  <span style={{color:bar.color,fontWeight:800,fontSize:16}}>{bar.score}/{bar.max}</span>
                 </div>
-                <div style={{ background: C.bord, borderRadius: 99, height: 8 }}>
-                  <div style={{ width: `${(bar.score / bar.max) * 100}%`, height: "100%", background: bar.color, borderRadius: 99, boxShadow: `0 0 8px ${bar.color}50`, transition: "width 1s ease" }} />
+                <div style={{background:C.bord,borderRadius:99,height:10,overflow:"hidden"}}>
+                  <div style={{width:`${(bar.score/bar.max)*100}%`,height:"100%",background:bar.color,borderRadius:99,boxShadow:`0 0 10px ${bar.color}50`,transition:"width 1.2s ease"}}/>
                 </div>
               </div>
             ))}
           </Card>
 
-          {/* Highlights */}
-          <Card style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 12, color: C.mut, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>Destaques do dia</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {report.pom.cycles > 0 && <div style={{ background: C.cyan + "15", border: `1px solid ${C.cyan}30`, borderRadius: 10, padding: "8px 12px", color: C.cyan, fontSize: 13, fontWeight: 600 }}>⚡ {report.pom.cycles} ciclos Pomodoro</div>}
-              {report.pom.totalMin > 0 && <div style={{ background: C.pri + "15", border: `1px solid ${C.pri}30`, borderRadius: 10, padding: "8px 12px", color: C.pri, fontSize: 13, fontWeight: 600 }}>🧠 {report.pom.totalMin}min focado</div>}
-              {report.log.water > 0 && <div style={{ background: C.cyan + "15", border: `1px solid ${C.cyan}30`, borderRadius: 10, padding: "8px 12px", color: C.cyan, fontSize: 13, fontWeight: 600 }}>💧 {report.log.water} copos</div>}
-              {report.log.activity && <div style={{ background: C.grn + "15", border: `1px solid ${C.grn}30`, borderRadius: 10, padding: "8px 12px", color: C.grn, fontSize: 13, fontWeight: 600 }}>🏃 Atividade física ✓</div>}
-              {report.log.mood && <div style={{ background: C.pnk + "15", border: `1px solid ${C.pnk}30`, borderRadius: 10, padding: "8px 12px", color: C.pnk, fontSize: 13, fontWeight: 600 }}>😊 Humor: {report.log.mood}/5</div>}
+          {/* Destaques */}
+          <Card style={{marginBottom:14}}>
+            <Label>🏅 Destaques do dia</Label>
+            <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
+              {report.pom.cycles>0&&<div style={{background:C.cyan+"15",border:`1px solid ${C.cyan}30`,borderRadius:10,padding:"9px 14px",color:C.cyan,fontSize:13,fontWeight:700}}>⚡ {report.pom.cycles} ciclos Pomodoro</div>}
+              {report.pom.totalMin>0&&<div style={{background:C.pri+"15",border:`1px solid ${C.pri}30`,borderRadius:10,padding:"9px 14px",color:C.pri,fontSize:13,fontWeight:700}}>🧠 {report.pom.totalMin}min focado</div>}
+              {report.log.water>0&&<div style={{background:C.cyan+"15",border:`1px solid ${C.cyan}30`,borderRadius:10,padding:"9px 14px",color:C.cyan,fontSize:13,fontWeight:700}}>💧 {report.log.water} copos de água</div>}
+              {report.log.activity&&<div style={{background:C.grn+"15",border:`1px solid ${C.grn}30`,borderRadius:10,padding:"9px 14px",color:C.grn,fontSize:13,fontWeight:700}}>🏃 Atividade física feita!</div>}
+              {report.log.mood&&<div style={{background:C.pnk+"15",border:`1px solid ${C.pnk}30`,borderRadius:10,padding:"9px 14px",color:C.pnk,fontSize:13,fontWeight:700}}>😊 Humor: {["😔","😕","😐","🙂","😄"][report.log.mood-1]} ({report.log.mood}/5)</div>}
+              {(!report.pom.cycles&&!report.log.water&&!report.log.activity&&!report.log.mood)&&(
+                <div style={{color:C.mut,fontSize:13,padding:"4px 0"}}>Registre atividades na aba Hoje para ver destaques aqui!</div>
+              )}
             </div>
           </Card>
 
-          <Btn onClick={() => setReport(null)} outline color={C.mut} style={{ width: "100%", fontSize: 14 }}>← Resetar</Btn>
+          <Btn onClick={()=>setReport(null)} outline color={C.mut} style={{width:"100%",fontSize:14}}>← Novo relatório</Btn>
         </div>
       )}
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════
-   MAIN APP
-═══════════════════════════════════════════════════ */
-const TABS = [
-  { id: "home", label: "Hoje", icon: "🏠" },
-  { id: "pomodoro", label: "Foco", icon: "⚡" },
-  { id: "community", label: "Comunidade", icon: "🌐" },
-  { id: "goals", label: "Metas", icon: "🎯" },
-  { id: "report", label: "Relatório", icon: "📊" },
+/* ══════════════ APP PRINCIPAL ══════════════ */
+const TABS=[
+  {id:"home",label:"Hoje",icon:"🏠"},
+  {id:"pomodoro",label:"Foco",icon:"⚡"},
+  {id:"community",label:"Comunidade",icon:"🌐"},
+  {id:"goals",label:"Metas",icon:"🎯"},
+  {id:"report",label:"Relatório",icon:"📊"}
 ];
 
-function MainApp({ user, onLogout }) {
-  const [tab, setTab] = useState("home");
+function MainApp({user,onLogout}){
+  const [tab,setTab]=useState("home");
+  const contentRef=useRef(null);
 
-  return (
-    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "'Space Grotesk', system-ui, sans-serif", color: C.txt, display: "flex", flexDirection: "column" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        input[type=range] { height: 6px; }
-        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #1C2440; border-radius: 99px; }
-        button:active { transform: scale(0.97); }
-      `}</style>
+  useEffect(()=>{
+    if(contentRef.current)contentRef.current.scrollTop=0;
+  },[tab]);
 
-      {/* Top bar */}
-      <div style={{ padding: "16px 20px 12px", background: C.surf, borderBottom: `1px solid ${C.bord}`, display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 10 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 22 }}>🧠</span>
+  return(
+    <div style={{height:"100vh",background:C.bg,display:"flex",flexDirection:"column",maxWidth:600,margin:"0 auto"}}>
+      {/* Header */}
+      <div style={{padding:"14px 20px 12px",background:C.surf,borderBottom:`1px solid ${C.bord}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <span style={{fontSize:24}}>🧠</span>
           <div>
-            <div style={{ fontWeight: 800, fontSize: 16, background: g(C.pri, C.cyan), WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>CleanTDAH</div>
-            <div style={{ fontSize: 11, color: C.mut }}>@{user.username}</div>
+            <div style={{fontWeight:800,fontSize:17,background:`linear-gradient(135deg,${C.pri},${C.cyan})`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>CleanTDAH</div>
+            <div style={{fontSize:11,color:C.mut}}>@{user.username}</div>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <div style={{ fontSize: 11, color: C.mut, background: C.card, border: `1px solid ${C.bord}`, borderRadius: 8, padding: "5px 10px" }}>
-            {new Date().toLocaleDateString("pt-BR", { weekday: "short", day: "numeric", month: "short" })}
+        <div style={{display:"flex",gap:8,alignItems:"center"}}>
+          <div style={{fontSize:11,color:C.mut,background:C.card,border:`1px solid ${C.bord}`,borderRadius:8,padding:"5px 10px"}}>
+            {new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"numeric",month:"short"})}
           </div>
-          <button onClick={onLogout} style={{ background: "transparent", border: `1px solid ${C.bord}`, borderRadius: 8, color: C.mut, padding: "5px 10px", cursor: "pointer", fontSize: 12 }}>Sair</button>
+          <button onClick={onLogout} style={{background:"transparent",border:`1px solid ${C.bord}`,borderRadius:8,color:C.mut,padding:"5px 10px",cursor:"pointer",fontSize:12,transition:"all 0.15s"}}>Sair</button>
         </div>
       </div>
 
-      {/* Content */}
-      <div style={{ flex: 1, overflowY: "auto", paddingTop: 16 }}>
-        {tab === "home" && <HomeTab userId={user.id} />}
-        {tab === "pomodoro" && <PomodoroTab userId={user.id} />}
-        {tab === "community" && <CommunityTab userId={user.id} username={user.username} />}
-        {tab === "goals" && <GoalsTab userId={user.id} />}
-        {tab === "report" && <ReportTab userId={user.id} />}
+      {/* Conteúdo */}
+      <div ref={contentRef} style={{flex:1,overflowY:"auto",paddingTop:16}}>
+        {tab==="home"&&<HomeTab userId={user.id}/>}
+        {tab==="pomodoro"&&<PomodoroTab userId={user.id}/>}
+        {tab==="community"&&<CommunityTab userId={user.id} username={user.username}/>}
+        {tab==="goals"&&<GoalsTab userId={user.id}/>}
+        {tab==="report"&&<ReportTab userId={user.id}/>}
       </div>
 
-      {/* Bottom nav */}
-      <div style={{ background: C.surf, borderTop: `1px solid ${C.bord}`, display: "flex", padding: "8px 4px 12px", position: "sticky", bottom: 0, zIndex: 10 }}>
-        {TABS.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{
-            flex: 1, background: "transparent", border: "none", cursor: "pointer",
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "6px 2px",
-          }}>
-            <div style={{ fontSize: 20, filter: tab === t.id ? `drop-shadow(0 0 6px ${C.cyan})` : "none", transition: "filter 0.2s" }}>{t.icon}</div>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: tab === t.id ? C.cyan : C.mut, transition: "color 0.2s" }}>{t.label}</div>
-            {tab === t.id && <div style={{ width: 20, height: 2, background: C.cyan, borderRadius: 99, boxShadow: `0 0 8px ${C.cyan}` }} />}
+      {/* Navbar */}
+      <div style={{background:C.surf,borderTop:`1px solid ${C.bord}`,display:"flex",padding:"10px 4px 16px",flexShrink:0}}>
+        {TABS.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:4,padding:"6px 2px"}}>
+            <div style={{fontSize:22,filter:tab===t.id?`drop-shadow(0 0 8px ${C.cyan})`:"none",transition:"filter 0.2s"}}>{t.icon}</div>
+            <div style={{fontSize:9,fontWeight:700,letterSpacing:"0.04em",textTransform:"uppercase",color:tab===t.id?C.cyan:C.mut,transition:"color 0.2s"}}>{t.label}</div>
+            {tab===t.id&&<div style={{width:22,height:2.5,background:C.cyan,borderRadius:99,boxShadow:`0 0 8px ${C.cyan}`}}/>}
           </button>
         ))}
       </div>
@@ -1081,33 +999,35 @@ function MainApp({ user, onLogout }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════
-   ROOT
-═══════════════════════════════════════════════════ */
-export default function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+/* ══════════════ ROOT ══════════════ */
+function App(){
+  const [user,setUser]=useState(null);
+  const [loading,setLoading]=useState(true);
 
-  useEffect(() => {
-    db.get("session:current").then(async (sess) => {
-      if (sess?.userId) {
-        const u = await db.get(`users:${sess.username}`);
-        if (u) setUser(u);
-      }
-      setLoading(false);
-    });
-  }, []);
+  useEffect(()=>{
+    const sess=db.get("session");
+    if(sess?.username){
+      const u=db.get(`users:${sess.username}`);
+      if(u)setUser(u);
+    }
+    setLoading(false);
+  },[]);
 
-  const logout = async () => { await db.del("session:current"); setUser(null); };
+  const logout=()=>{db.del("session");setUser(null);};
 
-  if (loading) return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui" }}>
-      <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 48, marginBottom: 12 }}>🧠</div>
-        <div style={{ color: C.mut, fontSize: 14 }}>Carregando...</div>
+  if(loading)return(
+    <div style={{height:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{textAlign:"center"}}>
+        <div style={{fontSize:52,marginBottom:14}}>🧠</div>
+        <div style={{color:C.mut,fontSize:15}}>Carregando...</div>
       </div>
     </div>
   );
 
-  return user ? <MainApp user={user} onLogout={logout} /> : <AuthScreen onLogin={setUser} />;
+  return user?<MainApp user={user} onLogout={logout}/>:<AuthScreen onLogin={setUser}/>;
 }
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
