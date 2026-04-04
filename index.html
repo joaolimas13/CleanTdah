@@ -603,7 +603,7 @@ function HomeTab({userId,username,onXP,onBadge}){
   // Daily score preview
   const score=useMemo(()=>{
     let s=0;
-    if(log.sleep){const h=+log.sleep;s+=Math.min(25,Math.round((h/8)*25));}
+    if(log.sleep){const h=({4:4,5:5,6:6,7:7,8:8,9:9,10:10,"11h+":11}[log.sleep]||parseInt(log.sleep)||0);s+=Math.min(25,Math.round((h/8)*25));}
     const g=db.get(`goals:${userId}`)||{fixed:[],daily:[]};
     const all=[...g.fixed,...g.daily];
     const done=all.filter(x=>x.done).length;
