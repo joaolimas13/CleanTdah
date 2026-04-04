@@ -1504,7 +1504,7 @@ function MainApp({user,onLogout}){
 function App(){
   const[user,setUser]=useState(null);
   const[loading,setLoading]=useState(true);
-  useEffect(()=>{const s=db.get("session");if(s?.uname){const u=db.get(`users:${s.uname}`);if(u)setUser(u);}setLoading(false);},[]);
+  useEffect(()=>{const s=db.get("session");if(s?.uname){const u=db.get(`users:${s.uname.toLowerCase()}`);if(u)setUser(u);}setLoading(false);},[]);
   const logout=()=>{db.del("session");setUser(null);};
   if(loading)return(
     <div style={{height:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center"}}>
