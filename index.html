@@ -32,29 +32,29 @@ button:active{transform:scale(0.96);transition:transform 0.08s;}
 input,select,textarea{font-family:var(--font);outline:none;}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
 
-/* ── APP SHELL ── */
 #app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;}
 .page-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:20px 16px;padding-bottom:calc(var(--nav-h) + 20px);scroll-behavior:smooth;}
 
-/* ── NAV ── */
+/* NAV */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--nav-h);background:rgba(10,14,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;border-radius:12px;background:none;color:var(--txt3);transition:all 0.2s;font-size:10px;font-weight:600;letter-spacing:0.3px;}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 14px;border-radius:12px;background:none;color:var(--txt3);transition:all 0.2s;font-size:10px;font-weight:600;letter-spacing:0.3px;}
 .nav-btn svg{width:24px;height:24px;transition:all 0.2s;}
 .nav-btn.active{color:var(--blue);}
 .nav-btn.active svg{filter:drop-shadow(0 0 8px rgba(59,130,246,0.5));}
 
-/* ── PAGES ── */
 .page{display:none;animation:fadeIn 0.25s ease;}
 .page.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── HEADER ── */
+/* HEADER */
 .greeting{margin-bottom:20px;}
+.greeting-row{display:flex;justify-content:space-between;align-items:flex-start;}
 .greeting-hi{font-size:26px;font-weight:700;line-height:1.2;}
 .greeting-sub{font-size:13px;color:var(--txt2);margin-top:4px;}
 .streak-pill{display:inline-flex;align-items:center;gap:6px;background:var(--amber-g);color:var(--amber);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-top:8px;}
+.gear-btn{width:40px;height:40px;border-radius:12px;background:var(--surf);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--txt2);flex-shrink:0;}
 
-/* ── XP BAR ── */
+/* XP BAR */
 .xp-bar-wrap{background:var(--surf);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
 .xp-level{background:var(--blue-g);color:var(--blue);width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:16px;flex-shrink:0;}
 .xp-info{flex:1;min-width:0;}
@@ -62,24 +62,24 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .xp-track{height:6px;background:var(--bg2);border-radius:99px;overflow:hidden;}
 .xp-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:99px;transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}
 
-/* ── CARDS ── */
+/* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:14px;transition:all 0.2s;}
 .card-title{font-size:13px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .card-title span{font-size:16px;}
 
-/* ── MED CARD ── */
+/* MED */
 .med-quick{display:flex;align-items:center;gap:12px;}
 .med-btn-tomei{flex:1;height:56px;border-radius:var(--r);font-size:16px;font-weight:700;border:none;color:#fff;background:linear-gradient(135deg,var(--green2),var(--green));box-shadow:0 4px 20px rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;gap:8px;}
 .med-btn-tomei.taken{background:var(--surf2);color:var(--green);box-shadow:none;border:1px solid var(--green);}
 .med-time-input{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:0 12px;height:56px;color:var(--txt);font-family:var(--mono);font-size:18px;width:110px;text-align:center;}
 .med-progress{margin-top:14px;}
-.med-progress-bar{height:8px;background:var(--bg2);border-radius:99px;overflow:hidden;position:relative;}
+.med-progress-bar{height:8px;background:var(--bg2);border-radius:99px;overflow:hidden;}
 .med-progress-fill{height:100%;border-radius:99px;transition:width 1s linear;}
 .med-phase{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--txt3);}
 .med-phase-current{font-size:13px;color:var(--amber);font-weight:600;text-align:center;margin-top:6px;}
 .med-select{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--txt);font-size:14px;width:100%;margin-bottom:12px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394A3B8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
 
-/* ── QUICK LOGS ── */
+/* QUICK LOGS */
 .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .quick-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
 .quick-card:active{background:var(--surf2);}
@@ -90,7 +90,7 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .quick-card .q-btns{display:flex;gap:8px;justify-content:center;margin-top:8px;}
 .q-btn{width:36px;height:36px;border-radius:50%;background:var(--surf);border:1px solid var(--border);color:var(--txt);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;}
 
-/* ── SLEEP CARD ── */
+/* SLEEP */
 .sleep-hours-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
 .sleep-h-btn{padding:8px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);color:var(--txt);font-size:14px;font-weight:600;font-family:var(--mono);}
 .sleep-h-btn.active{background:var(--blue-g);border-color:var(--blue);color:var(--blue);}
@@ -98,10 +98,8 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .sleep-q-btn{flex:1;padding:10px 4px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);text-align:center;font-size:22px;}
 .sleep-q-btn.active{border-color:var(--blue);background:var(--blue-g);}
 .sleep-q-btn .sq-label{font-size:10px;color:var(--txt3);display:block;margin-top:2px;}
-.sleep-save{width:100%;margin-top:12px;padding:12px;border-radius:var(--r);background:var(--blue);color:#fff;font-size:14px;font-weight:600;}
-.sleep-save:disabled{opacity:0.4;cursor:not-allowed;}
 
-/* ── GOALS ── */
+/* GOALS */
 .goal-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:all 0.15s;}
 .goal-item.completed{opacity:0.5;text-decoration:line-through;}
 .goal-check{width:28px;height:28px;border-radius:8px;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;font-size:14px;}
@@ -116,7 +114,7 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .add-goal-btn{width:44px;height:44px;border-radius:12px;background:var(--blue);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;}
 .prio-select{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--txt);font-size:13px;width:90px;}
 
-/* ── POMODORO ── */
+/* POMODORO */
 .pomo-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 0;}
 .pomo-timer-ring{position:relative;width:220px;height:220px;margin-bottom:20px;}
 .pomo-timer-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
@@ -135,20 +133,55 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .pomo-stats{display:flex;gap:20px;font-size:12px;color:var(--txt3);}
 .pomo-stats span{font-family:var(--mono);color:var(--txt);font-weight:600;}
 
-/* ── NEURON ── */
+/* NEURON */
 .neuron-wrap{position:relative;width:160px;height:160px;margin:0 auto 10px;}
 .neuron-canvas{width:100%;height:100%;}
 
-/* ── REACTIVATE FOCUS ── */
+/* REATIVAR FOCO */
 .react-focus-btn{width:100%;padding:14px;border-radius:var(--r);background:var(--purple-g);border:1px solid rgba(139,92,246,0.3);color:var(--purple);font-size:14px;font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
-.breathing-overlay{position:fixed;inset:0;background:rgba(10,14,26,0.95);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeIn 0.3s;}
+.rf-overlay{position:fixed;inset:0;background:rgba(10,14,26,0.96);z-index:200;display:flex;flex-direction:column;animation:fadeIn 0.3s;overflow-y:auto;}
+.rf-header{padding:20px 16px 10px;display:flex;justify-content:space-between;align-items:center;}
+.rf-close{width:40px;height:40px;border-radius:12px;background:var(--surf);border:1px solid var(--border);color:var(--txt);font-size:20px;display:flex;align-items:center;justify-content:center;}
+.rf-steps{padding:0 16px 40px;flex:1;}
+.rf-step{background:var(--surf);border:1px solid var(--border);border-radius:var(--r2);padding:20px;margin-bottom:12px;cursor:pointer;transition:all 0.2s;position:relative;}
+.rf-step.active{border-color:var(--purple);background:rgba(139,92,246,0.08);}
+.rf-step.done{border-color:var(--green);opacity:0.6;}
+.rf-step-num{position:absolute;top:-10px;left:16px;background:var(--purple);color:#fff;width:24px;height:24px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
+.rf-step.done .rf-step-num{background:var(--green);}
+.rf-step-title{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.rf-step-desc{font-size:13px;color:var(--txt2);line-height:1.5;}
+.rf-step-action{margin-top:12px;}
+.rf-action-btn{width:100%;padding:14px;border-radius:var(--r);background:var(--purple);color:#fff;font-size:14px;font-weight:600;}
+.rf-action-btn.green{background:var(--green);}
+.rf-complete-banner{text-align:center;padding:30px 20px;animation:fadeIn 0.4s;}
+.rf-complete-banner .rf-big-emoji{font-size:56px;margin-bottom:12px;}
+
+/* BREATHING SQUARE */
+.breathing-container{display:flex;flex-direction:column;align-items:center;padding:20px 0;}
 .breathing-circle{width:140px;height:140px;border-radius:50%;border:3px solid var(--purple);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:var(--purple);transition:all 4s ease-in-out;}
 .breathing-circle.inhale{transform:scale(1.5);background:var(--purple-g);}
 .breathing-circle.hold{transform:scale(1.5);background:var(--purple-g);}
 .breathing-circle.exhale{transform:scale(1);background:transparent;}
-.breathing-close{margin-top:30px;padding:12px 32px;border-radius:var(--r);background:var(--surf);border:1px solid var(--border);color:var(--txt);font-size:14px;}
 
-/* ── REPORT ── */
+/* FORUM */
+.forum-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;}
+.forum-tab{padding:8px 16px;border-radius:20px;background:var(--surf);border:1px solid var(--border);color:var(--txt2);font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0;}
+.forum-tab.active{background:var(--blue-g);border-color:var(--blue);color:var(--blue);}
+.forum-post{background:var(--surf);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:10px;}
+.forum-post-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.forum-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.forum-user{font-size:13px;font-weight:600;}
+.forum-time{font-size:11px;color:var(--txt3);}
+.forum-body{font-size:14px;line-height:1.6;color:var(--txt2);}
+.forum-actions{display:flex;gap:16px;margin-top:10px;}
+.forum-act{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--txt3);background:none;padding:4px 8px;border-radius:8px;}
+.forum-act:active{background:var(--surf2);}
+.forum-compose{position:relative;margin-bottom:16px;}
+.forum-compose textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;color:var(--txt);font-size:14px;resize:none;min-height:80px;}
+.forum-compose-btn{position:absolute;bottom:12px;right:12px;width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.forum-empty{text-align:center;color:var(--txt3);font-size:13px;padding:30px 0;}
+
+/* REPORT */
 .report-score{text-align:center;margin-bottom:20px;}
 .report-score-num{font-size:64px;font-weight:700;font-family:var(--mono);background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .report-score-label{font-size:13px;color:var(--txt2);}
@@ -164,14 +197,14 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .cal-day.today{border:1px solid var(--blue);}
 .cal-header{font-size:10px;color:var(--txt3);text-align:center;font-weight:600;}
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(10,14,26,0.85);z-index:200;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s;}
 .modal-content{background:var(--surf);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:80vh;overflow-y:auto;padding:24px 20px 40px;animation:slideUp 0.3s ease;}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .modal-handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 20px;}
 .modal-title{font-size:20px;font-weight:700;margin-bottom:16px;text-align:center;}
 
-/* ── BADGE POPUP ── */
+/* BADGE POPUP */
 .badge-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--surf);border:1px solid var(--border);border-radius:var(--r2);padding:30px;text-align:center;z-index:300;animation:badgePop 0.5s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 20px 60px rgba(0,0,0,0.5);}
 @keyframes badgePop{0%{transform:translate(-50%,-50%) scale(0)}60%{transform:translate(-50%,-50%) scale(1.1)}100%{transform:translate(-50%,-50%) scale(1)}}
 .badge-popup .badge-icon{font-size:56px;margin-bottom:12px;}
@@ -179,11 +212,9 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .badge-popup .badge-desc{font-size:13px;color:var(--txt2);}
 .badge-popup .badge-xp{font-family:var(--mono);color:var(--green);font-size:16px;font-weight:700;margin-top:10px;}
 
-/* ── CONFETTI ── */
 .conf{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:400;animation:confFall 2.5s ease-in forwards;}
 @keyframes confFall{0%{opacity:1;transform:translateY(-10px) rotate(0)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
 
-/* ── TOAST ── */
 .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:10px 20px;font-size:13px;font-weight:500;z-index:500;animation:toastIn 0.3s ease;white-space:nowrap;max-width:90vw;}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-20px)}to{opacity:1;transform:translate(-50%,0)}}
 </style>
@@ -191,15 +222,22 @@ input,select,textarea{font-family:var(--font);outline:none;}
 <body>
 <div id="app">
   <div class="page-scroll" id="page-scroll">
+
     <!-- ═══ HOME ═══ -->
     <div class="page active" id="page-home">
       <div class="greeting">
-        <div class="greeting-hi" id="greeting-text">Bom dia 👋</div>
-        <div class="greeting-sub" id="greeting-date"></div>
+        <div class="greeting-row">
+          <div>
+            <div class="greeting-hi" id="greeting-text">Bom dia 👋</div>
+            <div class="greeting-sub" id="greeting-date"></div>
+          </div>
+          <button class="gear-btn" onclick="goPage('perfil')" title="Perfil">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          </button>
+        </div>
         <div class="streak-pill" id="streak-pill" style="display:none;">🔥 <span id="streak-num">0</span> dias seguidos</div>
       </div>
 
-      <!-- XP -->
       <div class="xp-bar-wrap">
         <div class="xp-level" id="xp-level">1</div>
         <div class="xp-info">
@@ -208,7 +246,6 @@ input,select,textarea{font-family:var(--font);outline:none;}
         </div>
       </div>
 
-      <!-- MEDICAÇÃO -->
       <div class="card" id="med-card">
         <div class="card-title"><span>💊</span> Medicação</div>
         <select class="med-select" id="med-select" onchange="onMedChange()">
@@ -231,7 +268,6 @@ input,select,textarea{font-family:var(--font);outline:none;}
         </div>
       </div>
 
-      <!-- QUICK LOGS -->
       <div class="quick-grid">
         <div class="quick-card" id="qc-agua">
           <div class="q-icon">💧</div>
@@ -259,7 +295,6 @@ input,select,textarea{font-family:var(--font);outline:none;}
         </div>
       </div>
 
-      <!-- METAS DO DIA -->
       <div class="card" style="margin-top:14px;">
         <div class="card-title"><span>🎯</span> Metas do dia</div>
         <div id="goals-list"></div>
@@ -278,13 +313,7 @@ input,select,textarea{font-family:var(--font);outline:none;}
     <!-- ═══ FOCO ═══ -->
     <div class="page" id="page-foco">
       <div class="greeting"><div class="greeting-hi">Modo Foco 🧠</div></div>
-
-      <!-- NEURON -->
-      <div class="neuron-wrap">
-        <canvas class="neuron-canvas" id="neuron-canvas" width="320" height="320"></canvas>
-      </div>
-
-      <!-- POMODORO -->
+      <div class="neuron-wrap"><canvas class="neuron-canvas" id="neuron-canvas" width="320" height="320"></canvas></div>
       <div class="pomo-wrap">
         <div class="pomo-timer-ring">
           <svg viewBox="0 0 200 200">
@@ -296,27 +325,35 @@ input,select,textarea{font-family:var(--font);outline:none;}
         <div class="pomo-phase-label" id="pomo-phase">Foco</div>
         <div class="pomo-dots" id="pomo-dots"></div>
         <div class="pomo-controls">
-          <button class="pomo-ctrl" onclick="pomoReset()" title="Reset">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-          </button>
-          <button class="pomo-ctrl play" id="pomo-play-btn" onclick="pomoToggle()">
-            <svg width="24" height="24" fill="currentColor" id="pomo-play-icon"><polygon points="8,5 20,12 8,19"/></svg>
-          </button>
-          <button class="pomo-ctrl" onclick="pomoSkip()" title="Pular">
-            <svg width="20" height="20" fill="currentColor"><polygon points="4,4 14,10 4,16"/><rect x="14" y="4" width="3" height="12"/></svg>
-          </button>
+          <button class="pomo-ctrl" onclick="pomoReset()"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+          <button class="pomo-ctrl play" id="pomo-play-btn" onclick="pomoToggle()"><svg width="24" height="24" fill="currentColor" id="pomo-play-icon"><polygon points="8,5 20,12 8,19"/></svg></button>
+          <button class="pomo-ctrl" onclick="pomoSkip()"><svg width="20" height="20" fill="currentColor"><polygon points="4,4 14,10 4,16"/><rect x="14" y="4" width="3" height="12"/></svg></button>
         </div>
         <div class="pomo-stats">
           <div>Ciclos: <span id="pomo-cycles">0/4</span></div>
           <div>Total: <span id="pomo-total">0min</span></div>
         </div>
       </div>
-
-      <!-- REATIVAR FOCO -->
-      <button class="react-focus-btn" onclick="openBreathing()">⚡ Reativar Foco — Respiração Quadrada</button>
+      <button class="react-focus-btn" onclick="openReativar()">⚡ Reativar Foco — Protocolo de Emergência</button>
     </div>
 
-    <!-- ═══ METAS ═══ -->
+    <!-- ═══ FÓRUM ═══ -->
+    <div class="page" id="page-forum">
+      <div class="greeting"><div class="greeting-hi">Comunidade 💬</div><div class="greeting-sub">Troque experiências com outras pessoas com TDAH</div></div>
+      <div class="forum-tabs" id="forum-tabs">
+        <button class="forum-tab active" onclick="setForumTab('geral')">Geral</button>
+        <button class="forum-tab" onclick="setForumTab('dicas')">Dicas</button>
+        <button class="forum-tab" onclick="setForumTab('medicacao')">Medicação</button>
+        <button class="forum-tab" onclick="setForumTab('vitorias')">Vitórias</button>
+      </div>
+      <div class="forum-compose">
+        <textarea id="forum-input" placeholder="Compartilhe algo com a comunidade..." maxlength="500"></textarea>
+        <button class="forum-compose-btn" onclick="postForum()">↑</button>
+      </div>
+      <div id="forum-feed"></div>
+    </div>
+
+    <!-- ═══ METAS FIXAS + RELATÓRIO ═══ -->
     <div class="page" id="page-metas">
       <div class="greeting"><div class="greeting-hi">Metas Fixas 📋</div><div class="greeting-sub">Rotina diária que não muda</div></div>
       <div id="fixed-goals-list"></div>
@@ -341,7 +378,12 @@ input,select,textarea{font-family:var(--font);outline:none;}
 
     <!-- ═══ PERFIL ═══ -->
     <div class="page" id="page-perfil">
-      <div class="greeting"><div class="greeting-hi">Perfil ⚙️</div></div>
+      <div class="greeting">
+        <div class="greeting-row">
+          <div class="greeting-hi">Perfil ⚙️</div>
+          <button class="gear-btn" onclick="goPage('home')"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+        </div>
+      </div>
       <div class="card">
         <div class="card-title"><span>🏆</span> Badges conquistados</div>
         <div id="badges-list" style="display:flex;flex-wrap:wrap;gap:12px;"></div>
@@ -359,7 +401,7 @@ input,select,textarea{font-family:var(--font);outline:none;}
     </div>
   </div>
 
-  <!-- NAV -->
+  <!-- NAV — 4 abas -->
   <nav class="nav">
     <button class="nav-btn active" onclick="goPage('home')" id="nav-home">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>
@@ -369,27 +411,25 @@ input,select,textarea{font-family:var(--font);outline:none;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       Foco
     </button>
+    <button class="nav-btn" onclick="goPage('forum')" id="nav-forum">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Fórum
+    </button>
     <button class="nav-btn" onclick="goPage('metas')" id="nav-metas">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       Metas
     </button>
-    <button class="nav-btn" onclick="goPage('perfil')" id="nav-perfil">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
-      Perfil
-    </button>
   </nav>
 </div>
 
-<!-- MODALS CONTAINER -->
 <div id="modals"></div>
 
 <script>
 /* ═══════════════════════════════════════════════
-   CLEANTDAH — FUSÃO DEFINITIVA
+   CLEANTDAH v2 — FUSÃO DEFINITIVA
    Zero Atrito • TDAH First • Minimalista
 ═══════════════════════════════════════════════ */
 
-// ── STORAGE ──
 const DB = {
   get: k => { try { return JSON.parse(localStorage.getItem('ct_'+k)); } catch { return null; } },
   set: (k,v) => { try { localStorage.setItem('ct_'+k, JSON.stringify(v)); } catch {} },
@@ -399,9 +439,8 @@ const DB = {
 const today = () => new Date().toISOString().slice(0,10);
 const uid = () => Math.random().toString(36).slice(2,9);
 
-// ── STATE ──
 function loadDay(d) {
-  return DB.get('day_'+d) || { date:d, med:null, medTime:null, agua:0, humor:null, sono:null, sonoQual:null, atividade:null, goals:[], fixedDone:[], pomoCycles:0, pomoMinutes:0, tela:null };
+  return DB.get('day_'+d) || { date:d, med:null, medTime:null, agua:0, humor:null, sono:null, sonoQual:null, atividade:null, goals:[], fixedDone:[], pomoCycles:0, pomoMinutes:0 };
 }
 function saveDay(s) { DB.set('day_'+s.date, s); }
 let S = loadDay(today());
@@ -410,497 +449,346 @@ let badges = DB.get('badges') || [];
 let fixedGoals = DB.get('fixedGoals') || [];
 let streak = DB.get('streak') || 0;
 
-// ── MEDS DATABASE ──
 const MEDS = {
-  venvanse: { name:'Venvanse', sub:'Lisdexanfetamina', dur:12, phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1.5,l:'Subindo',c:'var(--blue)'},{t:3,l:'Pico de foco',c:'var(--green)'},{t:8,l:'Descendo',c:'var(--amber)'},{t:11,l:'Encerrando',c:'var(--red)'}] },
-  ritalina: { name:'Ritalina', sub:'Metilfenidato', dur:4, phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:0.5,l:'Subindo',c:'var(--blue)'},{t:1,l:'Pico',c:'var(--green)'},{t:2.5,l:'Descendo',c:'var(--amber)'},{t:3.5,l:'Encerrando',c:'var(--red)'}] },
-  ritalina_la: { name:'Ritalina LA', sub:'Metilfenidato LA', dur:8, phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'1º Pico',c:'var(--green)'},{t:4,l:'2º Pico',c:'var(--green)'},{t:6,l:'Descendo',c:'var(--amber)'},{t:7.5,l:'Encerrando',c:'var(--red)'}] },
-  concerta: { name:'Concerta', sub:'Metilfenidato OROS', dur:12, phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'Liberação rápida',c:'var(--blue)'},{t:3,l:'Pico crescente',c:'var(--green)'},{t:8,l:'Descendo',c:'var(--amber)'},{t:11,l:'Encerrando',c:'var(--red)'}] },
-  atentah: { name:'Atentah', sub:'Metilfenidato', dur:8, phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'Subindo',c:'var(--blue)'},{t:2,l:'Pico',c:'var(--green)'},{t:5,l:'Descendo',c:'var(--amber)'},{t:7,l:'Encerrando',c:'var(--red)'}] },
-  strattera: { name:'Strattera', sub:'Atomoxetina', dur:24, phases:[{t:0,l:'Contínuo',c:'var(--blue)'}] },
-  outro: { name:'Outro', sub:'', dur:0, phases:[] }
+  venvanse:{name:'Venvanse',sub:'Lisdexanfetamina',dur:12,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1.5,l:'Subindo',c:'var(--blue)'},{t:3,l:'Pico de foco',c:'var(--green)'},{t:8,l:'Descendo',c:'var(--amber)'},{t:11,l:'Encerrando',c:'var(--red)'}]},
+  ritalina:{name:'Ritalina',sub:'Metilfenidato',dur:4,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:0.5,l:'Subindo',c:'var(--blue)'},{t:1,l:'Pico',c:'var(--green)'},{t:2.5,l:'Descendo',c:'var(--amber)'},{t:3.5,l:'Encerrando',c:'var(--red)'}]},
+  ritalina_la:{name:'Ritalina LA',sub:'Metilfenidato LA',dur:8,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'1º Pico',c:'var(--green)'},{t:4,l:'2º Pico',c:'var(--green)'},{t:6,l:'Descendo',c:'var(--amber)'},{t:7.5,l:'Encerrando',c:'var(--red)'}]},
+  concerta:{name:'Concerta',sub:'Metilfenidato OROS',dur:12,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'Liberação rápida',c:'var(--blue)'},{t:3,l:'Pico crescente',c:'var(--green)'},{t:8,l:'Descendo',c:'var(--amber)'},{t:11,l:'Encerrando',c:'var(--red)'}]},
+  atentah:{name:'Atentah',sub:'Metilfenidato',dur:8,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'Subindo',c:'var(--blue)'},{t:2,l:'Pico',c:'var(--green)'},{t:5,l:'Descendo',c:'var(--amber)'},{t:7,l:'Encerrando',c:'var(--red)'}]},
+  strattera:{name:'Strattera',sub:'Atomoxetina',dur:24,phases:[{t:0,l:'Contínuo',c:'var(--blue)'}]},
+  outro:{name:'Outro',sub:'',dur:0,phases:[]}
 };
 
 // ── XP / LEVELS ──
 const LEVELS = [
-  {n:1,name:'Neurônio Dormente',xp:0},
-  {n:2,name:'Primeira Sinapse',xp:100},
-  {n:3,name:'Dendrito Ativo',xp:250},
-  {n:4,name:'Circuito Neural',xp:500},
-  {n:5,name:'Rede Sináptica',xp:800},
-  {n:6,name:'Córtex Desperto',xp:1200},
-  {n:7,name:'Cérebro Iluminado',xp:1800},
-  {n:8,name:'Mente Ascendente',xp:2500},
-  {n:9,name:'Hiperfoco Mestre',xp:3500},
+  {n:1,name:'Neurônio Dormente',xp:0},{n:2,name:'Primeira Sinapse',xp:100},{n:3,name:'Dendrito Ativo',xp:250},
+  {n:4,name:'Circuito Neural',xp:500},{n:5,name:'Rede Sináptica',xp:800},{n:6,name:'Córtex Desperto',xp:1200},
+  {n:7,name:'Cérebro Iluminado',xp:1800},{n:8,name:'Mente Ascendente',xp:2500},{n:9,name:'Hiperfoco Mestre',xp:3500},
   {n:10,name:'Rede Neural Completa',xp:5000}
 ];
-function getLevel(xp) {
-  for (let i = LEVELS.length-1; i >= 0; i--) if (xp >= LEVELS[i].xp) return LEVELS[i];
-  return LEVELS[0];
-}
-function getNextLevel(xp) {
-  for (let i = 0; i < LEVELS.length; i++) if (xp < LEVELS[i].xp) return LEVELS[i];
-  return LEVELS[LEVELS.length-1];
-}
-function addXP(amount, reason) {
-  const oldLvl = getLevel(XP.total);
-  XP.total += amount;
-  const newLvl = getLevel(XP.total);
-  XP.level = newLvl.n;
-  DB.set('xp', XP);
-  updateXPBar();
+function getLevel(xp){for(let i=LEVELS.length-1;i>=0;i--)if(xp>=LEVELS[i].xp)return LEVELS[i];return LEVELS[0];}
+function getNextLevel(xp){for(let i=0;i<LEVELS.length;i++)if(xp<LEVELS[i].xp)return LEVELS[i];return LEVELS[LEVELS.length-1];}
+function addXP(amount,reason){
+  const oldLvl=getLevel(XP.total);XP.total+=amount;const newLvl=getLevel(XP.total);XP.level=newLvl.n;DB.set('xp',XP);updateXPBar();
   showToast(`+${amount} XP — ${reason}`);
-  if (newLvl.n > oldLvl.n) {
-    setTimeout(() => showBadge('🧠', `Nível ${newLvl.n}!`, newLvl.name, `+${amount} XP`), 600);
-  }
+  if(newLvl.n>oldLvl.n)setTimeout(()=>showBadge('🧠',`Nível ${newLvl.n}!`,newLvl.name,`+${amount} XP`),600);
 }
-function updateXPBar() {
-  const cur = getLevel(XP.total);
-  const nxt = getNextLevel(XP.total);
-  const pct = nxt.xp === cur.xp ? 100 : Math.min(100, ((XP.total - cur.xp) / (nxt.xp - cur.xp)) * 100);
-  document.getElementById('xp-level').textContent = cur.n;
-  document.getElementById('xp-label-name').textContent = cur.name;
-  document.getElementById('xp-nums').textContent = `${XP.total}/${nxt.xp} XP`;
-  document.getElementById('xp-fill').style.width = pct + '%';
+function updateXPBar(){
+  const cur=getLevel(XP.total),nxt=getNextLevel(XP.total);
+  const pct=nxt.xp===cur.xp?100:Math.min(100,((XP.total-cur.xp)/(nxt.xp-cur.xp))*100);
+  document.getElementById('xp-level').textContent=cur.n;
+  document.getElementById('xp-label-name').textContent=cur.name;
+  document.getElementById('xp-nums').textContent=`${XP.total}/${nxt.xp} XP`;
+  document.getElementById('xp-fill').style.width=pct+'%';
 }
 
 // ── NAVIGATION ──
-function goPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  document.getElementById('nav-'+id).classList.add('active');
-  document.getElementById('page-scroll').scrollTop = 0;
-  if (id === 'metas') updateReport();
-  if (id === 'foco') drawNeuron();
-  if (id === 'perfil') renderBadges();
+  const navBtn=document.getElementById('nav-'+id);
+  if(navBtn)navBtn.classList.add('active');
+  document.getElementById('page-scroll').scrollTop=0;
+  if(id==='metas')updateReport();
+  if(id==='foco')drawNeuron();
+  if(id==='perfil')renderBadges();
+  if(id==='forum')renderForum();
 }
 
 // ── GREETING ──
-function updateGreeting() {
-  const h = new Date().getHours();
-  const g = h < 12 ? 'Bom dia ☀️' : h < 18 ? 'Boa tarde 🌤️' : 'Boa noite 🌙';
-  document.getElementById('greeting-text').textContent = g;
-  const d = new Date();
-  const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  document.getElementById('greeting-date').textContent = `${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
+function updateGreeting(){
+  const h=new Date().getHours();
+  document.getElementById('greeting-text').textContent=h<12?'Bom dia ☀️':h<18?'Boa tarde 🌤️':'Boa noite 🌙';
+  const d=new Date();const dias=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  document.getElementById('greeting-date').textContent=`${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
   calcStreak();
-  if (streak > 0) {
-    document.getElementById('streak-pill').style.display = 'inline-flex';
-    document.getElementById('streak-num').textContent = streak;
-  }
+  if(streak>0){document.getElementById('streak-pill').style.display='inline-flex';document.getElementById('streak-num').textContent=streak;}
 }
-
-// ── STREAK ──
-function calcStreak() {
-  let count = 0;
-  let d = new Date();
-  d.setDate(d.getDate() - 1);
-  while (true) {
-    const ds = d.toISOString().slice(0,10);
-    const day = DB.get('day_'+ds);
-    if (day && day.goals && day.goals.some(g => g.done)) { count++; d.setDate(d.getDate()-1); }
-    else break;
-  }
-  // check today too
-  if (S.goals && S.goals.some(g => g.done)) count++;
-  streak = count;
-  DB.set('streak', streak);
+function calcStreak(){
+  let count=0;let d=new Date();d.setDate(d.getDate()-1);
+  while(true){const ds=d.toISOString().slice(0,10);const day=DB.get('day_'+ds);if(day&&day.goals&&day.goals.some(g=>g.done)){count++;d.setDate(d.getDate()-1);}else break;}
+  if(S.goals&&S.goals.some(g=>g.done))count++;
+  streak=count;DB.set('streak',streak);
 }
 
 // ── MEDICATION ──
-function onMedChange() {
-  const sel = document.getElementById('med-select').value;
-  S.medType = sel;
-  saveDay(S);
-}
-function tomarRemedio() {
-  const time = document.getElementById('med-time').value;
-  if (!time) { showToast('⏰ Selecione o horário!'); return; }
-  S.med = true;
-  S.medTime = time;
-  S.medType = document.getElementById('med-select').value;
-  saveDay(S);
-  const btn = document.getElementById('med-btn');
-  btn.classList.add('taken');
-  btn.innerHTML = '✓ Tomado às ' + time;
-  document.getElementById('med-progress').style.display = 'block';
-  addXP(10, 'Medicação registrada');
-  awardBadge('med_first', '💊', 'Primeira Dose', 'Registrou medicação pela primeira vez');
+function onMedChange(){S.medType=document.getElementById('med-select').value;saveDay(S);}
+function tomarRemedio(){
+  const time=document.getElementById('med-time').value;
+  if(!time){showToast('⏰ Selecione o horário!');return;}
+  S.med=true;S.medTime=time;S.medType=document.getElementById('med-select').value;saveDay(S);
+  const btn=document.getElementById('med-btn');btn.classList.add('taken');btn.innerHTML='✓ Tomado às '+time;
+  document.getElementById('med-progress').style.display='block';
+  addXP(10,'Medicação registrada');awardBadge('med_first','💊','Primeira Dose','Registrou medicação');
   updateMedProgress();
 }
-function updateMedProgress() {
-  if (!S.med || !S.medTime) return;
-  const medKey = S.medType || 'venvanse';
-  const med = MEDS[medKey];
-  if (!med || med.dur === 0) { document.getElementById('med-phase-txt').textContent = '✓ Registrado'; return; }
-  const [hh,mm] = S.medTime.split(':').map(Number);
-  const took = new Date(); took.setHours(hh,mm,0);
-  const elapsed = (Date.now() - took.getTime()) / 3600000;
-  const pct = Math.min(100, Math.max(0, (elapsed / med.dur) * 100));
-  const fill = document.getElementById('med-fill');
-  fill.style.width = pct + '%';
-  // color + phase
-  let phase = med.phases[0];
-  for (let i = med.phases.length-1; i >= 0; i--) {
-    if (elapsed >= med.phases[i].t) { phase = med.phases[i]; break; }
-  }
-  fill.style.background = `linear-gradient(90deg, ${phase.c}, ${phase.c}88)`;
-  document.getElementById('med-phase-txt').textContent = elapsed > med.dur ? '⏱️ Efeito encerrado' : `${phase.l} — ${Math.round(med.dur - elapsed)}h restantes`;
+function updateMedProgress(){
+  if(!S.med||!S.medTime)return;const med=MEDS[S.medType||'venvanse'];
+  if(!med||med.dur===0){document.getElementById('med-phase-txt').textContent='✓ Registrado';return;}
+  const[hh,mm]=S.medTime.split(':').map(Number);const took=new Date();took.setHours(hh,mm,0);
+  const elapsed=(Date.now()-took.getTime())/3600000;const pct=Math.min(100,Math.max(0,(elapsed/med.dur)*100));
+  const fill=document.getElementById('med-fill');fill.style.width=pct+'%';
+  let phase=med.phases[0];for(let i=med.phases.length-1;i>=0;i--)if(elapsed>=med.phases[i].t){phase=med.phases[i];break;}
+  fill.style.background=`linear-gradient(90deg,${phase.c},${phase.c}88)`;
+  document.getElementById('med-phase-txt').textContent=elapsed>med.dur?'⏱️ Efeito encerrado':`${phase.l} — ${Math.round(med.dur-elapsed)}h restantes`;
 }
 
 // ── WATER ──
-function addAgua(n) {
-  S.agua = Math.max(0, (S.agua||0) + n);
-  saveDay(S);
-  document.getElementById('agua-val').textContent = S.agua;
-  const card = document.getElementById('qc-agua');
-  card.classList.toggle('done', S.agua >= 8);
-  if (n > 0 && S.agua === 8) { addXP(5, 'Meta de água!'); awardBadge('agua8','💧','Hidratado','Bebeu 8 copos em um dia'); }
+function addAgua(n){
+  S.agua=Math.max(0,(S.agua||0)+n);saveDay(S);document.getElementById('agua-val').textContent=S.agua;
+  document.getElementById('qc-agua').classList.toggle('done',S.agua>=8);
+  if(n>0&&S.agua===8){addXP(5,'Meta de água!');awardBadge('agua8','💧','Hidratado','8 copos em um dia');}
 }
 
-// ── HUMOR MODAL ──
-function openHumor() {
-  const emojis = [{e:'😊',l:'Ótimo'},{e:'🙂',l:'Bom'},{e:'😐',l:'Neutro'},{e:'😔',l:'Baixo'},{e:'😫',l:'Péssimo'}];
-  const html = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-content">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Como está seu humor?</div>
-    <div style="display:flex;gap:12px;justify-content:center;">${emojis.map(h => 
-      `<button style="font-size:40px;padding:12px;border-radius:16px;background:${S.humor===h.l?'var(--blue-g)':'var(--bg2)'};border:2px solid ${S.humor===h.l?'var(--blue)':'var(--border)'};flex:1;max-width:70px;" onclick="setHumor('${h.l}','${h.e}')">${h.e}<div style="font-size:10px;color:var(--txt3);margin-top:4px;">${h.l}</div></button>`
-    ).join('')}</div>
+// ── HUMOR ──
+function openHumor(){
+  const emojis=[{e:'😊',l:'Ótimo'},{e:'🙂',l:'Bom'},{e:'😐',l:'Neutro'},{e:'😔',l:'Baixo'},{e:'😫',l:'Péssimo'}];
+  document.getElementById('modals').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-content">
+    <div class="modal-handle"></div><div class="modal-title">Como está seu humor?</div>
+    <div style="display:flex;gap:12px;justify-content:center;">${emojis.map(h=>`<button style="font-size:40px;padding:12px;border-radius:16px;background:${S.humor===h.l?'var(--blue-g)':'var(--bg2)'};border:2px solid ${S.humor===h.l?'var(--blue)':'var(--border)'};flex:1;max-width:70px;" onclick="setHumor('${h.l}','${h.e}')">${h.e}<div style="font-size:10px;color:var(--txt3);margin-top:4px;">${h.l}</div></button>`).join('')}</div>
   </div></div>`;
-  document.getElementById('modals').innerHTML = html;
 }
-function setHumor(label, emoji) {
-  S.humor = label;
-  saveDay(S);
-  document.getElementById('humor-val').textContent = emoji;
-  document.getElementById('qc-humor').classList.add('done');
-  closeModal();
-  addXP(5, 'Humor registrado');
-}
+function setHumor(l,e){S.humor=l;saveDay(S);document.getElementById('humor-val').textContent=e;document.getElementById('qc-humor').classList.add('done');closeModal();addXP(5,'Humor registrado');}
 
-// ── SONO MODAL ──
-function openSono() {
-  const hours = [4,5,6,7,8,9,10,'11+'];
-  const quals = [{e:'😫',l:'Péssima'},{e:'😔',l:'Ruim'},{e:'😐',l:'Regular'},{e:'🙂',l:'Boa'},{e:'😊',l:'Ótima'}];
-  const html = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-content">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Quanto dormiu?</div>
-    <div class="sleep-hours-grid" id="sono-hours">${hours.map(h => 
-      `<button class="sleep-h-btn ${S.sono==h?'active':''}" onclick="pickSonoH('${h}')">${h}h</button>`
-    ).join('')}</div>
+// ── SONO ──
+let _sonoH,_sonoQ;
+function openSono(){
+  _sonoH=S.sono;_sonoQ=S.sonoQual;
+  const hours=[4,5,6,7,8,9,10,'11+'];const quals=[{e:'😫',l:'Péssima'},{e:'😔',l:'Ruim'},{e:'😐',l:'Regular'},{e:'🙂',l:'Boa'},{e:'😊',l:'Ótima'}];
+  document.getElementById('modals').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-content">
+    <div class="modal-handle"></div><div class="modal-title">Quanto dormiu?</div>
+    <div class="sleep-hours-grid">${hours.map(h=>`<button class="sleep-h-btn ${S.sono==h?'active':''}" onclick="_sonoH='${h}';document.querySelectorAll('.sleep-h-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${h}h</button>`).join('')}</div>
     <div style="font-size:13px;color:var(--txt2);margin-bottom:8px;">Qualidade:</div>
-    <div class="sleep-qual-row">${quals.map(q =>
-      `<button class="sleep-q-btn ${S.sonoQual===q.l?'active':''}" onclick="pickSonoQ('${q.l}','${q.e}')">${q.e}<span class="sq-label">${q.l}</span></button>`
-    ).join('')}</div>
-    <button class="sleep-save" id="sono-save" onclick="saveSono()">Salvar</button>
+    <div class="sleep-qual-row">${quals.map(q=>`<button class="sleep-q-btn ${S.sonoQual===q.l?'active':''}" onclick="_sonoQ='${q.l}';document.querySelectorAll('.sleep-q-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${q.e}<span class="sq-label">${q.l}</span></button>`).join('')}</div>
+    <button style="width:100%;margin-top:12px;padding:14px;border-radius:var(--r);background:var(--blue);color:#fff;font-size:14px;font-weight:600;" onclick="saveSono()">Salvar</button>
   </div></div>`;
-  document.getElementById('modals').innerHTML = html;
 }
-let _sonoH = S.sono, _sonoQ = S.sonoQual;
-function pickSonoH(h) { _sonoH = h; document.querySelectorAll('.sleep-h-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); }
-function pickSonoQ(l,e) { _sonoQ = l; document.querySelectorAll('.sleep-q-btn').forEach(b=>b.classList.remove('active')); event.target.closest('.sleep-q-btn').classList.add('active'); }
-function saveSono() {
-  if (!_sonoH) { showToast('Selecione as horas!'); return; }
-  S.sono = _sonoH;
-  S.sonoQual = _sonoQ || 'Regular';
-  saveDay(S);
-  document.getElementById('sono-val').textContent = S.sono + 'h';
-  document.getElementById('qc-sono').classList.add('done');
-  closeModal();
-  addXP(10, 'Sono registrado');
-}
+function saveSono(){if(!_sonoH){showToast('Selecione as horas!');return;}S.sono=_sonoH;S.sonoQual=_sonoQ||'Regular';saveDay(S);document.getElementById('sono-val').textContent=S.sono+'h';document.getElementById('qc-sono').classList.add('done');closeModal();addXP(10,'Sono registrado');}
 
-// ── ATIVIDADE MODAL ──
-function openAtividade() {
-  const ativs = [{e:'🏃',l:'Corrida'},{e:'🏋️',l:'Musculação'},{e:'🚶',l:'Caminhada'},{e:'🧘',l:'Yoga'},{e:'🚴',l:'Bike'},{e:'⚽',l:'Esporte'},{e:'💃',l:'Dança'},{e:'🏊',l:'Natação'}];
-  const html = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-content">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Atividade física</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">${ativs.map(a =>
-      `<button style="padding:16px;border-radius:var(--r);background:${S.atividade===a.l?'var(--green-g)':'var(--bg2)'};border:1px solid ${S.atividade===a.l?'var(--green)':'var(--border)'};color:var(--txt);font-size:14px;display:flex;align-items:center;gap:10px;" onclick="setAtividade('${a.l}','${a.e}')">${a.e} ${a.l}</button>`
-    ).join('')}</div>
+// ── ATIVIDADE ──
+function openAtividade(){
+  const ativs=[{e:'🏃',l:'Corrida'},{e:'🏋️',l:'Musculação'},{e:'🚶',l:'Caminhada'},{e:'🧘',l:'Yoga'},{e:'🚴',l:'Bike'},{e:'⚽',l:'Esporte'},{e:'💃',l:'Dança'},{e:'🏊',l:'Natação'}];
+  document.getElementById('modals').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-content">
+    <div class="modal-handle"></div><div class="modal-title">Atividade física</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">${ativs.map(a=>`<button style="padding:16px;border-radius:var(--r);background:${S.atividade===a.l?'var(--green-g)':'var(--bg2)'};border:1px solid ${S.atividade===a.l?'var(--green)':'var(--border)'};color:var(--txt);font-size:14px;display:flex;align-items:center;gap:10px;" onclick="setAtividade('${a.l}','${a.e}')">${a.e} ${a.l}</button>`).join('')}</div>
   </div></div>`;
-  document.getElementById('modals').innerHTML = html;
 }
-function setAtividade(label, emoji) {
-  S.atividade = label;
-  saveDay(S);
-  document.getElementById('ativ-val').textContent = emoji;
-  document.getElementById('qc-ativ').classList.add('done');
-  closeModal();
-  addXP(15, 'Atividade registrada');
-  awardBadge('ativ_first','🏃','Em Movimento','Registrou atividade pela primeira vez');
-}
+function setAtividade(l,e){S.atividade=l;saveDay(S);document.getElementById('ativ-val').textContent=e;document.getElementById('qc-ativ').classList.add('done');closeModal();addXP(15,'Atividade registrada');awardBadge('ativ_first','🏃','Em Movimento','Registrou atividade');}
 
-function closeModal() { document.getElementById('modals').innerHTML = ''; }
+function closeModal(){document.getElementById('modals').innerHTML='';}
 
 // ── GOALS ──
-function renderGoals() {
-  const list = document.getElementById('goals-list');
-  if (!S.goals || S.goals.length === 0) { list.innerHTML = '<div style="text-align:center;color:var(--txt3);font-size:13px;padding:16px;">Adicione suas metas do dia</div>'; return; }
-  const sorted = [...S.goals].sort((a,b) => {const p = {alta:0,media:1,baixa:2}; return p[a.prio]-p[b.prio];});
-  list.innerHTML = sorted.map(g => `
-    <div class="goal-item ${g.done?'completed':''}" onclick="toggleGoal('${g.id}')">
-      <div class="goal-check">${g.done?'✓':''}</div>
-      <div class="goal-text">${g.text}</div>
-      <span class="goal-prio prio-${g.prio}">${g.prio==='alta'?'🔴':g.prio==='media'?'🟡':'🟢'}</span>
-    </div>
-  `).join('');
+function renderGoals(){
+  const list=document.getElementById('goals-list');
+  if(!S.goals||S.goals.length===0){list.innerHTML='<div style="text-align:center;color:var(--txt3);font-size:13px;padding:16px;">Adicione suas metas do dia</div>';return;}
+  const sorted=[...S.goals].sort((a,b)=>{const p={alta:0,media:1,baixa:2};return p[a.prio]-p[b.prio];});
+  list.innerHTML=sorted.map(g=>`<div class="goal-item ${g.done?'completed':''}" onclick="toggleGoal('${g.id}')">
+    <div class="goal-check">${g.done?'✓':''}</div><div class="goal-text">${g.text}</div>
+    <span class="goal-prio prio-${g.prio}">${g.prio==='alta'?'🔴':g.prio==='media'?'🟡':'🟢'}</span></div>`).join('');
 }
-function addGoal() {
-  const input = document.getElementById('goal-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const prio = document.getElementById('goal-prio').value;
-  if (!S.goals) S.goals = [];
-  S.goals.push({ id:uid(), text, prio, done:false });
-  saveDay(S);
-  input.value = '';
-  renderGoals();
-}
-function toggleGoal(id) {
-  const g = S.goals.find(g => g.id === id);
-  if (!g) return;
-  g.done = !g.done;
-  saveDay(S);
-  renderGoals();
-  if (g.done) {
-    const xpMap = {alta:20,media:10,baixa:5};
-    addXP(xpMap[g.prio] || 5, `Meta concluída!`);
-    confetti();
-  }
-  calcStreak();
-}
+function addGoal(){const input=document.getElementById('goal-input');const text=input.value.trim();if(!text)return;if(!S.goals)S.goals=[];S.goals.push({id:uid(),text,prio:document.getElementById('goal-prio').value,done:false});saveDay(S);input.value='';renderGoals();}
+function toggleGoal(id){const g=S.goals.find(g=>g.id===id);if(!g)return;g.done=!g.done;saveDay(S);renderGoals();if(g.done){addXP({alta:20,media:10,baixa:5}[g.prio]||5,'Meta concluída!');confetti();}calcStreak();}
 
 // ── FIXED GOALS ──
-function renderFixedGoals() {
-  const list = document.getElementById('fixed-goals-list');
-  if (fixedGoals.length === 0) { list.innerHTML = '<div style="text-align:center;color:var(--txt3);font-size:13px;padding:16px;">Suas metas fixas de rotina</div>'; return; }
-  list.innerHTML = fixedGoals.map(g => {
-    const done = (S.fixedDone || []).includes(g.id);
-    return `<div class="goal-item ${done?'completed':''}" onclick="toggleFixed('${g.id}')">
-      <div class="goal-check">${done?'✓':''}</div>
-      <div class="goal-text">${g.text}</div>
-      <button onclick="event.stopPropagation();removeFixed('${g.id}')" style="background:none;color:var(--red);font-size:18px;padding:4px 8px;">×</button>
+function renderFixedGoals(){
+  const list=document.getElementById('fixed-goals-list');
+  if(fixedGoals.length===0){list.innerHTML='<div style="text-align:center;color:var(--txt3);font-size:13px;padding:16px;">Suas metas fixas de rotina</div>';return;}
+  list.innerHTML=fixedGoals.map(g=>{const done=(S.fixedDone||[]).includes(g.id);
+    return`<div class="goal-item ${done?'completed':''}" onclick="toggleFixed('${g.id}')"><div class="goal-check">${done?'✓':''}</div><div class="goal-text">${g.text}</div>
+    <button onclick="event.stopPropagation();removeFixed('${g.id}')" style="background:none;color:var(--red);font-size:18px;padding:4px 8px;">×</button></div>`;}).join('');
+}
+function addFixedGoal(){const input=document.getElementById('fixed-goal-input');const text=input.value.trim();if(!text)return;fixedGoals.push({id:uid(),text});DB.set('fixedGoals',fixedGoals);input.value='';renderFixedGoals();}
+function toggleFixed(id){if(!S.fixedDone)S.fixedDone=[];const idx=S.fixedDone.indexOf(id);if(idx>=0)S.fixedDone.splice(idx,1);else{S.fixedDone.push(id);addXP(10,'Meta fixa concluída!');confetti();}saveDay(S);renderFixedGoals();}
+function removeFixed(id){fixedGoals=fixedGoals.filter(g=>g.id!==id);DB.set('fixedGoals',fixedGoals);renderFixedGoals();}
+
+// ── POMODORO ──
+let pomoState={running:false,phase:'foco',timeLeft:25*60,cycle:0,totalCycles:4,totalMin:0,interval:null};
+const POMO_FOCUS=25*60,POMO_BREAK=5*60,POMO_LONG=15*60,CIRC=2*Math.PI*88;
+function updatePomoUI(){
+  const m=Math.floor(pomoState.timeLeft/60),s=pomoState.timeLeft%60;
+  document.getElementById('pomo-time').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const total=pomoState.phase==='foco'?POMO_FOCUS:(pomoState.cycle>0&&pomoState.cycle%4===0?POMO_LONG:POMO_BREAK);
+  document.getElementById('pomo-ring').style.strokeDashoffset=CIRC*(1-(1-pomoState.timeLeft/total));
+  document.getElementById('pomo-ring').style.stroke=pomoState.phase==='foco'?'var(--blue)':'var(--green)';
+  document.getElementById('pomo-phase').textContent=pomoState.phase==='foco'?'Foco':'Pausa';
+  document.getElementById('pomo-cycles').textContent=`${pomoState.cycle}/${pomoState.totalCycles}`;
+  document.getElementById('pomo-total').textContent=`${pomoState.totalMin}min`;
+  let dots='';for(let i=0;i<pomoState.totalCycles;i++){const cls=i<pomoState.cycle?'done':(i===pomoState.cycle&&pomoState.phase==='foco'?'current':'');dots+=`<div class="pomo-dot ${cls}"></div>`;}
+  document.getElementById('pomo-dots').innerHTML=dots;
+  const btn=document.getElementById('pomo-play-btn');btn.classList.toggle('running',pomoState.running);
+  document.getElementById('pomo-play-icon').innerHTML=pomoState.running?'<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>':'<polygon points="8,5 20,12 8,19"/>';
+}
+function pomoToggle(){if(pomoState.running){clearInterval(pomoState.interval);pomoState.running=false;}else{pomoState.running=true;pomoState.interval=setInterval(pomoTick,1000);}updatePomoUI();}
+function pomoTick(){
+  if(pomoState.timeLeft<=0){clearInterval(pomoState.interval);pomoState.running=false;
+    if(pomoState.phase==='foco'){pomoState.cycle++;pomoState.totalMin+=25;S.pomoCycles=pomoState.cycle;S.pomoMinutes=pomoState.totalMin;saveDay(S);addXP(25,`Ciclo ${pomoState.cycle} completo!`);confetti();if(pomoState.cycle>=4)awardBadge('pomo4','🔥','4 Ciclos!','4 ciclos em um dia');pomoState.phase='pausa';pomoState.timeLeft=pomoState.cycle%4===0?POMO_LONG:POMO_BREAK;}
+    else{pomoState.phase='foco';pomoState.timeLeft=POMO_FOCUS;}
+    drawNeuron();updatePomoUI();showToast(pomoState.phase==='pausa'?'🎉 Foco concluído! Pausa.':'▶️ Hora de focar!');return;}
+  pomoState.timeLeft--;updatePomoUI();
+}
+function pomoReset(){clearInterval(pomoState.interval);pomoState={running:false,phase:'foco',timeLeft:POMO_FOCUS,cycle:0,totalCycles:4,totalMin:0,interval:null};updatePomoUI();}
+function pomoSkip(){pomoState.timeLeft=0;pomoTick();}
+
+// ── NEURON ──
+function drawNeuron(){
+  const canvas=document.getElementById('neuron-canvas');if(!canvas)return;const ctx=canvas.getContext('2d');const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2;ctx.clearRect(0,0,w,h);
+  const cycles=pomoState.cycle;const stage=cycles>=6?4:cycles>=3?3:cycles>=1?2:1;
+  const glowR=40+stage*12;const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,glowR);
+  const colors=['rgba(59,130,246,0.3)','rgba(139,92,246,0.2)','rgba(16,185,129,0.25)','rgba(245,158,11,0.3)'];
+  grad.addColorStop(0,colors[stage-1]);grad.addColorStop(1,'transparent');ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
+  ctx.save();ctx.translate(cx,cy);const bodyR=28+stage*4;
+  const bodyGrad=ctx.createRadialGradient(0,-5,5,0,0,bodyR);bodyGrad.addColorStop(0,stage>=3?'#93C5FD':'#64748B');bodyGrad.addColorStop(1,stage>=3?'#3B82F6':'#475569');
+  ctx.beginPath();ctx.arc(0,0,bodyR,0,Math.PI*2);ctx.fillStyle=bodyGrad;ctx.fill();
+  const eyeOff=bodyR*0.3,eyeR=3+stage*0.5;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-eyeOff,-4,eyeR,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(eyeOff,-4,eyeR,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#1E293B';ctx.beginPath();ctx.arc(-eyeOff+1,-3,eyeR*0.5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(eyeOff+1,-3,eyeR*0.5,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();
+  if(stage===1)ctx.arc(0,8,6,Math.PI*0.2,Math.PI*0.8);else if(stage===2){ctx.moveTo(-6,10);ctx.lineTo(6,10);}else ctx.arc(0,6,8,Math.PI*0.1,Math.PI*0.9);ctx.stroke();
+  if(stage>=2){const numDend=stage===2?4:stage===3?8:14;ctx.strokeStyle=stage>=3?'rgba(59,130,246,0.6)':'rgba(148,163,184,0.4)';ctx.lineWidth=stage>=3?2.5:1.5;
+    for(let i=0;i<numDend;i++){const angle=(Math.PI*2/numDend)*i+(Date.now()*0.0002);const len=bodyR+15+stage*12+Math.sin(Date.now()*0.001+i)*8;
+      ctx.beginPath();ctx.moveTo(Math.cos(angle)*bodyR,Math.sin(angle)*bodyR);ctx.quadraticCurveTo(Math.cos(angle+0.3)*(bodyR+len*0.4),Math.sin(angle+0.3)*(bodyR+len*0.4),Math.cos(angle)*len,Math.sin(angle)*len);ctx.stroke();
+      if(stage>=3){ctx.fillStyle=stage>=4?'rgba(245,158,11,0.8)':'rgba(59,130,246,0.6)';ctx.beginPath();ctx.arc(Math.cos(angle)*len,Math.sin(angle)*len,3,0,Math.PI*2);ctx.fill();}}}
+  if(stage>=4){for(let i=0;i<6;i++){const a=(Math.PI*2/6)*i+Date.now()*0.003;const r2=bodyR+50+Math.sin(Date.now()*0.002+i)*10;ctx.fillStyle='rgba(245,158,11,0.7)';ctx.beginPath();ctx.arc(Math.cos(a)*r2,Math.sin(a)*r2,2.5,0,Math.PI*2);ctx.fill();}}
+  ctx.restore();
+}
+function startNeuronAnim(){(function loop(){drawNeuron();requestAnimationFrame(loop);})();}
+
+// ══════════════════════════════════════════
+//  REATIVAR FOCO — 5 PASSOS COMPLETOS
+// ══════════════════════════════════════════
+let rfStepsDone = [];
+
+function openReativar() {
+  rfStepsDone = [];
+  const html = `<div class="rf-overlay" id="rf-overlay">
+    <div class="rf-header">
+      <div style="font-size:20px;font-weight:700;">⚡ Reativar Foco</div>
+      <button class="rf-close" onclick="closeReativar()">✕</button>
+    </div>
+    <div class="rf-steps" id="rf-steps"></div>
+  </div>`;
+  document.getElementById('modals').innerHTML = html;
+  renderRFSteps();
+}
+
+function renderRFSteps() {
+  const steps = [
+    { id:'agua', icon:'🧊', title:'Água nos pulsos', desc:'Coloque água gelada nos pulsos e na nuca por 30 segundos. O choque térmico ativa o sistema nervoso e reativa a atenção.', action:'splash', btnLabel:'✓ Fiz isso' },
+    { id:'respiracao', icon:'🌬️', title:'Respiração Quadrada', desc:'4 segundos inspira → 4 segura → 4 expira → 4 segura. São 4 ciclos. Isso regula o córtex pré-frontal.', action:'breathing', btnLabel:'Começar respiração' },
+    { id:'braindump', icon:'📝', title:'Brain Dump — 60 seg', desc:'Escreva TUDO que está na sua cabeça. Sem filtro, sem ordem. Esvaziar a mente libera RAM do cérebro.', action:'braindump', btnLabel:'Começar brain dump' },
+    { id:'caminhada', icon:'🚶', title:'Caminhada de 2 minutos', desc:'Levante e ande por 2 minutos. Qualquer movimento. Isso aumenta o fluxo sanguíneo cerebral e libera noradrenalina.', action:'walk', btnLabel:'Iniciar timer de 2 min' },
+    { id:'frase', icon:'💡', title:'Frase de Reancoragem', desc:'Leia em voz alta e volte ao foco.', action:'phrase', btnLabel:'Gerar frase' }
+  ];
+
+  const container = document.getElementById('rf-steps');
+  const allDone = rfStepsDone.length >= 5;
+
+  if (allDone) {
+    container.innerHTML = `<div class="rf-complete-banner">
+      <div class="rf-big-emoji">🧠✨</div>
+      <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Foco Reativado!</div>
+      <div style="font-size:14px;color:var(--txt2);margin-bottom:20px;">Completou o protocolo inteiro. Seu cérebro está pronto.</div>
+      <div style="font-family:var(--mono);color:var(--green);font-size:18px;font-weight:700;margin-bottom:20px;">+30 XP</div>
+      <button class="rf-action-btn green" onclick="closeReativar()">Voltar ao Foco</button>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = steps.map((s, i) => {
+    const done = rfStepsDone.includes(s.id);
+    const isActive = !done && rfStepsDone.length === i;
+    return `<div class="rf-step ${done ? 'done' : ''} ${isActive ? 'active' : ''}" id="rf-step-${s.id}">
+      <div class="rf-step-num">${done ? '✓' : i + 1}</div>
+      <div class="rf-step-title">${s.icon} ${s.title}</div>
+      <div class="rf-step-desc">${s.desc}</div>
+      ${isActive ? `<div class="rf-step-action" id="rf-action-${s.id}">
+        <button class="rf-action-btn" onclick="doRFStep('${s.id}','${s.action}')">${s.btnLabel}</button>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
-function addFixedGoal() {
-  const input = document.getElementById('fixed-goal-input');
-  const text = input.value.trim();
-  if (!text) return;
-  fixedGoals.push({ id:uid(), text });
-  DB.set('fixedGoals', fixedGoals);
-  input.value = '';
-  renderFixedGoals();
-}
-function toggleFixed(id) {
-  if (!S.fixedDone) S.fixedDone = [];
-  const idx = S.fixedDone.indexOf(id);
-  if (idx >= 0) S.fixedDone.splice(idx,1);
-  else { S.fixedDone.push(id); addXP(10, 'Meta fixa concluída!'); confetti(); }
-  saveDay(S);
-  renderFixedGoals();
-}
-function removeFixed(id) {
-  fixedGoals = fixedGoals.filter(g => g.id !== id);
-  DB.set('fixedGoals', fixedGoals);
-  renderFixedGoals();
+
+function doRFStep(id, action) {
+  const actionArea = document.getElementById('rf-action-' + id);
+  if (!actionArea) return;
+
+  switch (action) {
+    case 'splash':
+      completeRFStep(id);
+      break;
+
+    case 'breathing':
+      actionArea.innerHTML = `<div class="breathing-container">
+        <div class="breathing-circle" id="rf-breath-circle">Inspire</div>
+        <div style="margin-top:12px;font-size:13px;color:var(--txt2);" id="rf-breath-counter">4 ciclos</div>
+      </div>`;
+      startRFBreathing(id);
+      break;
+
+    case 'braindump':
+      actionArea.innerHTML = `<div>
+        <textarea style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px;color:var(--txt);font-size:14px;resize:none;min-height:100px;" placeholder="Escreva tudo que está na sua cabeça..." id="rf-braindump-txt"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <span style="font-family:var(--mono);font-size:24px;color:var(--amber);font-weight:700;" id="rf-bd-timer">60</span>
+          <button class="rf-action-btn" style="width:auto;padding:10px 24px;" onclick="completeRFStep('${id}')">Concluir</button>
+        </div>
+      </div>`;
+      let bdTime = 60;
+      const bdInt = setInterval(() => {
+        bdTime--;
+        const el = document.getElementById('rf-bd-timer');
+        if (!el) { clearInterval(bdInt); return; }
+        el.textContent = bdTime;
+        if (bdTime <= 0) { clearInterval(bdInt); completeRFStep(id); }
+      }, 1000);
+      document.getElementById('rf-braindump-txt').focus();
+      break;
+
+    case 'walk':
+      actionArea.innerHTML = `<div style="text-align:center;">
+        <div style="font-family:var(--mono);font-size:48px;font-weight:700;color:var(--green);margin:16px 0;" id="rf-walk-timer">2:00</div>
+        <div style="font-size:13px;color:var(--txt2);">Levante e caminhe!</div>
+      </div>`;
+      let walkTime = 120;
+      const walkInt = setInterval(() => {
+        walkTime--;
+        const el = document.getElementById('rf-walk-timer');
+        if (!el) { clearInterval(walkInt); return; }
+        const wm = Math.floor(walkTime / 60), ws = walkTime % 60;
+        el.textContent = `${wm}:${String(ws).padStart(2, '0')}`;
+        if (walkTime <= 0) { clearInterval(walkInt); completeRFStep(id); }
+      }, 1000);
+      break;
+
+    case 'phrase':
+      const frases = [
+        '"O foco não é ausência de distração. É a escolha de voltar."',
+        '"Seu cérebro não está quebrado. Ele só precisa de direção."',
+        '"Cada vez que você volta ao foco, uma sinapse se fortalece."',
+        '"Não precisa ser perfeito. Precisa ser feito."',
+        '"A dopamina da conquista é melhor que a do scroll."',
+        '"Você já recomeçou antes. Pode recomeçar agora."',
+        '"2 minutos de foco real valem mais que 2 horas de intenção."',
+        '"O TDAH é o seu motor. O foco é o volante."'
+      ];
+      const frase = frases[Math.floor(Math.random() * frases.length)];
+      actionArea.innerHTML = `<div style="text-align:center;padding:16px 0;">
+        <div style="font-size:18px;font-style:italic;color:var(--blue);line-height:1.6;margin-bottom:16px;">${frase}</div>
+        <div style="font-size:12px;color:var(--txt3);margin-bottom:12px;">Leia em voz alta e volte ao foco.</div>
+        <button class="rf-action-btn green" onclick="completeRFStep('${id}')">✓ Li em voz alta</button>
+      </div>`;
+      break;
+  }
 }
 
-// ── POMODORO ──
-let pomoState = { running:false, phase:'foco', timeLeft:25*60, cycle:0, totalCycles:4, totalMin:0, interval:null };
-const POMO_FOCUS = 25*60;
-const POMO_BREAK = 5*60;
-const POMO_LONG = 15*60;
-const CIRC = 2 * Math.PI * 88;
-
-function updatePomoUI() {
-  const m = Math.floor(pomoState.timeLeft/60);
-  const s = pomoState.timeLeft%60;
-  document.getElementById('pomo-time').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  const total = pomoState.phase === 'foco' ? POMO_FOCUS : (pomoState.cycle > 0 && pomoState.cycle % 4 === 0 ? POMO_LONG : POMO_BREAK);
-  const pct = 1 - (pomoState.timeLeft / total);
-  document.getElementById('pomo-ring').style.strokeDashoffset = CIRC * (1 - pct);
-  document.getElementById('pomo-ring').style.stroke = pomoState.phase === 'foco' ? 'var(--blue)' : 'var(--green)';
-  document.getElementById('pomo-phase').textContent = pomoState.phase === 'foco' ? 'Foco' : 'Pausa';
-  document.getElementById('pomo-cycles').textContent = `${pomoState.cycle}/${pomoState.totalCycles}`;
-  document.getElementById('pomo-total').textContent = `${pomoState.totalMin}min`;
-  // dots
-  let dots = '';
-  for (let i = 0; i < pomoState.totalCycles; i++) {
-    const cls = i < pomoState.cycle ? 'done' : (i === pomoState.cycle && pomoState.phase === 'foco' ? 'current' : '');
-    dots += `<div class="pomo-dot ${cls}"></div>`;
-  }
-  document.getElementById('pomo-dots').innerHTML = dots;
-  // play button
-  const btn = document.getElementById('pomo-play-btn');
-  btn.classList.toggle('running', pomoState.running);
-  document.getElementById('pomo-play-icon').innerHTML = pomoState.running
-    ? '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>'
-    : '<polygon points="8,5 20,12 8,19"/>';
-}
-function pomoToggle() {
-  if (pomoState.running) { clearInterval(pomoState.interval); pomoState.running = false; }
-  else {
-    pomoState.running = true;
-    pomoState.interval = setInterval(pomoTick, 1000);
-  }
-  updatePomoUI();
-}
-function pomoTick() {
-  if (pomoState.timeLeft <= 0) {
-    clearInterval(pomoState.interval);
-    pomoState.running = false;
-    if (pomoState.phase === 'foco') {
-      pomoState.cycle++;
-      pomoState.totalMin += 25;
-      S.pomoCycles = pomoState.cycle;
-      S.pomoMinutes = pomoState.totalMin;
-      saveDay(S);
-      addXP(25, `Ciclo ${pomoState.cycle} completo!`);
-      confetti();
-      if (pomoState.cycle >= 4) awardBadge('pomo4','🔥','4 Ciclos!','Completou 4 ciclos em um dia');
-      pomoState.phase = 'pausa';
-      pomoState.timeLeft = pomoState.cycle % 4 === 0 ? POMO_LONG : POMO_BREAK;
-    } else {
-      pomoState.phase = 'foco';
-      pomoState.timeLeft = POMO_FOCUS;
-    }
-    drawNeuron();
-    updatePomoUI();
-    showToast(pomoState.phase === 'pausa' ? '🎉 Foco concluído! Pausa.' : '▶️ Hora de focar!');
-    return;
-  }
-  pomoState.timeLeft--;
-  if (pomoState.phase === 'foco') pomoState.totalMin; // track
-  updatePomoUI();
-}
-function pomoReset() {
-  clearInterval(pomoState.interval);
-  pomoState = { running:false, phase:'foco', timeLeft:POMO_FOCUS, cycle:0, totalCycles:4, totalMin:0, interval:null };
-  updatePomoUI();
-}
-function pomoSkip() {
-  pomoState.timeLeft = 0;
-  pomoTick();
-}
-
-// ── NEURON DRAWING ──
-function drawNeuron() {
-  const canvas = document.getElementById('neuron-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  const cx = w/2, cy = h/2;
-  ctx.clearRect(0,0,w,h);
-  
-  const cycles = pomoState.cycle;
-  const stage = cycles >= 6 ? 4 : cycles >= 3 ? 3 : cycles >= 1 ? 2 : 1;
-  
-  // glow
-  const glowR = 40 + stage * 12;
-  const grad = ctx.createRadialGradient(cx,cy,0,cx,cy,glowR);
-  const colors = ['rgba(59,130,246,0.3)','rgba(139,92,246,0.2)','rgba(16,185,129,0.25)','rgba(245,158,11,0.3)'];
-  grad.addColorStop(0, colors[stage-1]);
-  grad.addColorStop(1, 'transparent');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,w,h);
-  
-  // body
-  ctx.save();
-  ctx.translate(cx, cy);
-  const bodyR = 28 + stage * 4;
-  const bodyGrad = ctx.createRadialGradient(0,-5,5,0,0,bodyR);
-  bodyGrad.addColorStop(0, stage >= 3 ? '#93C5FD' : '#64748B');
-  bodyGrad.addColorStop(1, stage >= 3 ? '#3B82F6' : '#475569');
-  ctx.beginPath();
-  ctx.arc(0, 0, bodyR, 0, Math.PI*2);
-  ctx.fillStyle = bodyGrad;
-  ctx.fill();
-  
-  // face
-  const eyeOff = bodyR * 0.3;
-  const eyeR = 3 + stage * 0.5;
-  ctx.fillStyle = '#fff';
-  ctx.beginPath(); ctx.arc(-eyeOff, -4, eyeR, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(eyeOff, -4, eyeR, 0, Math.PI*2); ctx.fill();
-  // pupils
-  ctx.fillStyle = '#1E293B';
-  ctx.beginPath(); ctx.arc(-eyeOff+1, -3, eyeR*0.5, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(eyeOff+1, -3, eyeR*0.5, 0, Math.PI*2); ctx.fill();
-  // mouth
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  if (stage === 1) { ctx.arc(0, 8, 6, Math.PI*0.2, Math.PI*0.8); } // sad
-  else if (stage === 2) { ctx.moveTo(-6,10); ctx.lineTo(6,10); } // neutral
-  else { ctx.arc(0, 6, 8, Math.PI*0.1, Math.PI*0.9); } // happy
-  ctx.stroke();
-  
-  // dendrites
-  if (stage >= 2) {
-    const numDend = stage === 2 ? 4 : stage === 3 ? 8 : 14;
-    ctx.strokeStyle = stage >= 3 ? 'rgba(59,130,246,0.6)' : 'rgba(148,163,184,0.4)';
-    ctx.lineWidth = stage >= 3 ? 2.5 : 1.5;
-    for (let i = 0; i < numDend; i++) {
-      const angle = (Math.PI*2 / numDend) * i + (Date.now() * 0.0002);
-      const len = bodyR + 15 + stage * 12 + Math.sin(Date.now()*0.001 + i) * 8;
-      ctx.beginPath();
-      ctx.moveTo(Math.cos(angle)*bodyR, Math.sin(angle)*bodyR);
-      const cp1x = Math.cos(angle + 0.3) * (bodyR + len*0.4);
-      const cp1y = Math.sin(angle + 0.3) * (bodyR + len*0.4);
-      ctx.quadraticCurveTo(cp1x, cp1y, Math.cos(angle)*len, Math.sin(angle)*len);
-      ctx.stroke();
-      // synapse dots
-      if (stage >= 3) {
-        ctx.fillStyle = stage >= 4 ? 'rgba(245,158,11,0.8)' : 'rgba(59,130,246,0.6)';
-        ctx.beginPath();
-        ctx.arc(Math.cos(angle)*len, Math.sin(angle)*len, 3, 0, Math.PI*2);
-        ctx.fill();
-      }
-    }
-  }
-  // sparks for stage 4
-  if (stage >= 4) {
-    for (let i = 0; i < 6; i++) {
-      const a = (Math.PI*2/6)*i + Date.now()*0.003;
-      const r2 = bodyR + 50 + Math.sin(Date.now()*0.002+i)*10;
-      ctx.fillStyle = 'rgba(245,158,11,0.7)';
-      ctx.beginPath();
-      ctx.arc(Math.cos(a)*r2, Math.sin(a)*r2, 2.5, 0, Math.PI*2);
-      ctx.fill();
-    }
-  }
-  ctx.restore();
-}
-let neuronAnim;
-function startNeuronAnim() {
-  function loop() { drawNeuron(); neuronAnim = requestAnimationFrame(loop); }
-  loop();
-}
-
-// ── BREATHING ──
-function openBreathing() {
-  const html = `<div class="breathing-overlay" id="breathing-overlay">
-    <div style="font-size:20px;font-weight:700;margin-bottom:30px;">Respiração Quadrada</div>
-    <div class="breathing-circle" id="breath-circle">Inspire</div>
-    <div style="margin-top:20px;font-size:14px;color:var(--txt2);" id="breath-counter">4 ciclos restantes</div>
-    <button class="breathing-close" onclick="closeBreathing()">Fechar</button>
-  </div>`;
-  document.getElementById('modals').innerHTML = html;
-  startBreathing();
-}
-function startBreathing() {
-  const circle = document.getElementById('breath-circle');
+function startRFBreathing(stepId) {
+  const circle = document.getElementById('rf-breath-circle');
   if (!circle) return;
-  const phases = ['Inspire','Segure','Expire','Segure'];
-  let phase = 0, cycles = 0, maxCycles = 4;
+  const phases = ['Inspire', 'Segure', 'Expire', 'Segure'];
+  let phase = 0, cycles = 0;
   function tick() {
-    if (!document.getElementById('breath-circle')) return;
+    if (!document.getElementById('rf-breath-circle')) return;
     const p = phases[phase % 4];
     circle.textContent = p;
     circle.className = 'breathing-circle';
@@ -910,221 +798,158 @@ function startBreathing() {
     phase++;
     if (phase % 4 === 0) {
       cycles++;
-      document.getElementById('breath-counter').textContent = `${maxCycles - cycles} ciclos restantes`;
-      if (cycles >= maxCycles) {
-        setTimeout(() => {
-          addXP(15, 'Respiração completa!');
-          awardBadge('breath','🧘','Zen Mode','Completou respiração quadrada');
-          closeBreathing();
-        }, 4000);
-        return;
-      }
+      const counter = document.getElementById('rf-breath-counter');
+      if (counter) counter.textContent = `${4 - cycles} ciclos restantes`;
+      if (cycles >= 4) { setTimeout(() => completeRFStep(stepId), 4000); return; }
     }
     setTimeout(tick, 4000);
   }
   tick();
 }
-function closeBreathing() { document.getElementById('modals').innerHTML = ''; }
+
+function completeRFStep(id) {
+  if (!rfStepsDone.includes(id)) rfStepsDone.push(id);
+  if (rfStepsDone.length >= 5) {
+    addXP(30, 'Protocolo Reativar Foco completo!');
+    awardBadge('reativar', '⚡', 'Foco Reativado', 'Completou o protocolo de emergência');
+    confetti();
+  } else {
+    showToast(`✓ Passo ${rfStepsDone.length}/5 concluído`);
+  }
+  renderRFSteps();
+}
+
+function closeReativar() { document.getElementById('modals').innerHTML = ''; }
+
+// ══════════════════════════════════════════
+//  FÓRUM COMUNITÁRIO
+// ══════════════════════════════════════════
+let forumTab = 'geral';
+const SAMPLE_POSTS = [
+  { id:'p1', user:'Ana M.', avatar:'🧠', cat:'geral', body:'Descobri que usar fone com ruído branco me ajuda MUITO a focar no trabalho. Alguém mais?', time:'2h', likes:12, replies:4, color:'var(--blue)' },
+  { id:'p2', user:'Pedro K.', avatar:'💊', cat:'medicacao', body:'Mudei de Ritalina pra Venvanse semana passada. A diferença no tempo de efeito é absurda. Finalmente consigo trabalhar à tarde inteira.', time:'5h', likes:23, replies:8, color:'var(--green)' },
+  { id:'p3', user:'Mari S.', avatar:'🎯', cat:'vitorias', body:'Primeira semana completando todas as metas fixas! O sistema de XP me motivou muito 🔥', time:'1d', likes:34, replies:6, color:'var(--amber)' },
+  { id:'p4', user:'Lucas R.', avatar:'💡', cat:'dicas', body:'Dica: coloca o celular em outro cômodo durante os ciclos de foco. Parece bobo mas muda TUDO.', time:'1d', likes:19, replies:5, color:'var(--purple)' },
+  { id:'p5', user:'Bia T.', avatar:'🌊', cat:'geral', body:'Dias ruins fazem parte. Não completei nenhum ciclo hoje mas registrei meu humor e meu sono. Isso também conta.', time:'3h', likes:45, replies:12, color:'var(--pink)' },
+  { id:'p6', user:'Caio D.', avatar:'🏋️', cat:'dicas', body:'Exercício de manhã antes do remédio = combo perfeito. Meu psiquiatra confirmou que potencializa o efeito.', time:'2d', likes:28, replies:7, color:'var(--green)' },
+  { id:'p7', user:'Ju F.', avatar:'😴', cat:'geral', body:'Quem mais tem problema com sono? Mesmo cansada não consigo desligar o cérebro. Alguma técnica que funcione?', time:'6h', likes:31, replies:15, color:'var(--blue)' },
+  { id:'p8', user:'Rafa L.', avatar:'🎮', cat:'vitorias', body:'Nível 5 no app! Rede Sináptica desbloqueada! Nunca mantive um hábito por tanto tempo 💪', time:'4h', likes:52, replies:9, color:'var(--amber)' }
+];
+let userPosts = DB.get('forumPosts') || [];
+
+function setForumTab(tab) {
+  forumTab = tab;
+  document.querySelectorAll('.forum-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderForum();
+}
+
+function renderForum() {
+  const feed = document.getElementById('forum-feed');
+  const allPosts = [...userPosts.map(p => ({...p, isUser:true})), ...SAMPLE_POSTS];
+  const filtered = forumTab === 'geral' ? allPosts : allPosts.filter(p => p.cat === forumTab);
+
+  if (filtered.length === 0) {
+    feed.innerHTML = '<div class="forum-empty">Nenhum post nessa categoria ainda. Seja o primeiro!</div>';
+    return;
+  }
+
+  feed.innerHTML = filtered.map(p => `<div class="forum-post">
+    <div class="forum-post-header">
+      <div class="forum-avatar" style="background:${p.color || 'var(--blue-g)'}">${p.avatar}</div>
+      <div style="flex:1;"><div class="forum-user">${p.user}${p.isUser?' <span style="font-size:10px;color:var(--blue);">(você)</span>':''}</div><div class="forum-time">${p.time}</div></div>
+    </div>
+    <div class="forum-body">${p.body}</div>
+    <div class="forum-actions">
+      <button class="forum-act" onclick="likeForum('${p.id}')">❤️ ${p.likes||0}</button>
+      <button class="forum-act">💬 ${p.replies||0}</button>
+    </div>
+  </div>`).join('');
+}
+
+function postForum() {
+  const input = document.getElementById('forum-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const post = { id:'u_'+uid(), user:'Você', avatar:'✨', cat:forumTab==='geral'?'geral':forumTab, body:text, time:'agora', likes:0, replies:0, color:'var(--blue)' };
+  userPosts.unshift(post);
+  DB.set('forumPosts', userPosts);
+  input.value = '';
+  renderForum();
+  addXP(5, 'Post no fórum!');
+  showToast('✓ Publicado!');
+}
+
+function likeForum(id) {
+  // Simple local like toggle
+  const post = [...userPosts, ...SAMPLE_POSTS].find(p => p.id === id);
+  if (post) { post.likes = (post.likes || 0) + 1; renderForum(); }
+}
 
 // ── REPORT ──
-function updateReport() {
-  // Sono: 25pts
-  const sonoH = typeof S.sono === 'string' ? parseInt(S.sono) : (S.sono || 0);
-  const sonoScore = S.sono ? Math.min(25, Math.round((sonoH / 8) * 25)) : 0;
-  // Metas: 25pts
-  const totalGoals = (S.goals?.length || 0) + fixedGoals.length;
-  const doneGoals = (S.goals?.filter(g=>g.done).length || 0) + (S.fixedDone?.length || 0);
-  const metaScore = totalGoals > 0 ? Math.round((doneGoals / totalGoals) * 25) : 0;
-  // Atividade: 25pts
-  const ativScore = S.atividade ? 25 : 0;
-  // Foco: 25pts
-  const focoScore = Math.min(25, Math.round((pomoState.cycle / 4) * 25));
-  const total = sonoScore + metaScore + ativScore + focoScore;
-
-  document.getElementById('report-score').textContent = total;
-  const bars = [
-    { label:'Sono', val:sonoScore, max:25, color:'var(--purple)' },
-    { label:'Metas', val:metaScore, max:25, color:'var(--blue)' },
-    { label:'Atividade', val:ativScore, max:25, color:'var(--green)' },
-    { label:'Foco', val:focoScore, max:25, color:'var(--amber)' }
-  ];
-  document.getElementById('report-bars').innerHTML = bars.map(b => `
-    <div class="report-bar">
-      <div class="report-bar-label"><span>${b.label}</span><span>${b.val}/${b.max}</span></div>
-      <div class="report-bar-track"><div class="report-bar-fill" style="width:${(b.val/b.max)*100}%;background:${b.color};"></div></div>
-    </div>
-  `).join('');
-
-  // tip
-  const tips = [];
-  if (sonoScore < 15) tips.push('💤 Tente dormir pelo menos 7h — seu córtex pré-frontal precisa disso.');
-  if (!S.atividade) tips.push('🏃 Atividade física aumenta BDNF e melhora o foco em até 4h.');
-  if (S.agua < 6) tips.push('💧 Psicoestimulantes desidratam — beba mais água.');
-  if (focoScore < 12) tips.push('🧠 Tente pelo menos 2 ciclos de foco por dia.');
-  document.getElementById('report-tip').innerHTML = tips.length > 0 ? tips.join('<br><br>') : '🌟 Excelente dia! Continue assim.';
-
-  // calendar
+function updateReport(){
+  const sonoH=typeof S.sono==='string'?parseInt(S.sono):(S.sono||0);
+  const sonoScore=S.sono?Math.min(25,Math.round((sonoH/8)*25)):0;
+  const totalGoals=(S.goals?.length||0)+fixedGoals.length;
+  const doneGoals=(S.goals?.filter(g=>g.done).length||0)+(S.fixedDone?.length||0);
+  const metaScore=totalGoals>0?Math.round((doneGoals/totalGoals)*25):0;
+  const ativScore=S.atividade?25:0;
+  const focoScore=Math.min(25,Math.round((pomoState.cycle/4)*25));
+  const total=sonoScore+metaScore+ativScore+focoScore;
+  document.getElementById('report-score').textContent=total;
+  const bars=[{label:'Sono',val:sonoScore,max:25,color:'var(--purple)'},{label:'Metas',val:metaScore,max:25,color:'var(--blue)'},{label:'Atividade',val:ativScore,max:25,color:'var(--green)'},{label:'Foco',val:focoScore,max:25,color:'var(--amber)'}];
+  document.getElementById('report-bars').innerHTML=bars.map(b=>`<div class="report-bar"><div class="report-bar-label"><span>${b.label}</span><span>${b.val}/${b.max}</span></div><div class="report-bar-track"><div class="report-bar-fill" style="width:${(b.val/b.max)*100}%;background:${b.color};"></div></div></div>`).join('');
+  const tips=[];
+  if(sonoScore<15)tips.push('💤 Tente dormir pelo menos 7h — seu córtex pré-frontal precisa disso.');
+  if(!S.atividade)tips.push('🏃 Atividade física aumenta BDNF e melhora o foco em até 4h.');
+  if(S.agua<6)tips.push('💧 Psicoestimulantes desidratam — beba mais água.');
+  if(focoScore<12)tips.push('🧠 Tente pelo menos 2 ciclos de foco por dia.');
+  document.getElementById('report-tip').innerHTML=tips.length>0?tips.join('<br><br>'):'🌟 Excelente dia! Continue assim.';
   renderCalendar();
 }
-function renderCalendar() {
-  const cal = document.getElementById('report-cal');
-  const now = new Date();
-  const year = now.getFullYear(), month = now.getMonth();
-  const first = new Date(year, month, 1);
-  const last = new Date(year, month+1, 0);
-  const dayNames = ['D','S','T','Q','Q','S','S'];
-  let html = dayNames.map(d => `<div class="cal-header">${d}</div>`).join('');
-  for (let i = 0; i < first.getDay(); i++) html += '<div class="cal-day"></div>';
-  for (let d = 1; d <= last.getDate(); d++) {
-    const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const hasData = DB.get('day_'+ds);
-    const isToday = ds === today();
-    html += `<div class="cal-day ${hasData?'has-data':''} ${isToday?'today':''}">${d}</div>`;
-  }
-  cal.innerHTML = html;
+function renderCalendar(){
+  const cal=document.getElementById('report-cal');const now=new Date();const year=now.getFullYear(),month=now.getMonth();
+  const first=new Date(year,month,1);const last=new Date(year,month+1,0);
+  const dayNames=['D','S','T','Q','Q','S','S'];let html=dayNames.map(d=>`<div class="cal-header">${d}</div>`).join('');
+  for(let i=0;i<first.getDay();i++)html+='<div class="cal-day"></div>';
+  for(let d=1;d<=last.getDate();d++){const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const hasData=DB.get('day_'+ds);const isToday=ds===today();html+=`<div class="cal-day ${hasData?'has-data':''} ${isToday?'today':''}">${d}</div>`;}
+  cal.innerHTML=html;
 }
 
 // ── BADGES ──
-function awardBadge(id, icon, name, desc) {
-  if (badges.find(b => b.id === id)) return;
-  badges.push({ id, icon, name, desc, date:today() });
-  DB.set('badges', badges);
-  setTimeout(() => showBadge(icon, name, desc, '+15 XP'), 400);
-}
-function showBadge(icon, name, desc, xpText) {
-  confetti();
-  const div = document.createElement('div');
-  div.className = 'badge-popup';
-  div.innerHTML = `<div class="badge-icon">${icon}</div><div class="badge-name">${name}</div><div class="badge-desc">${desc}</div><div class="badge-xp">${xpText}</div>`;
-  document.body.appendChild(div);
-  setTimeout(() => div.remove(), 3000);
-}
-function renderBadges() {
-  const list = document.getElementById('badges-list');
-  if (badges.length === 0) { list.innerHTML = '<div style="color:var(--txt3);font-size:13px;">Complete ações para ganhar badges!</div>'; return; }
-  list.innerHTML = badges.map(b => `
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;width:80px;">
-      <div style="font-size:28px;">${b.icon}</div>
-      <div style="font-size:10px;color:var(--txt2);margin-top:4px;">${b.name}</div>
-    </div>
-  `).join('');
+function awardBadge(id,icon,name,desc){if(badges.find(b=>b.id===id))return;badges.push({id,icon,name,desc,date:today()});DB.set('badges',badges);setTimeout(()=>showBadge(icon,name,desc,'+15 XP'),400);}
+function showBadge(icon,name,desc,xpText){confetti();const div=document.createElement('div');div.className='badge-popup';div.innerHTML=`<div class="badge-icon">${icon}</div><div class="badge-name">${name}</div><div class="badge-desc">${desc}</div><div class="badge-xp">${xpText}</div>`;document.body.appendChild(div);setTimeout(()=>div.remove(),3000);}
+function renderBadges(){
+  const list=document.getElementById('badges-list');
+  if(badges.length===0){list.innerHTML='<div style="color:var(--txt3);font-size:13px;">Complete ações para ganhar badges!</div>';return;}
+  list.innerHTML=badges.map(b=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;width:80px;"><div style="font-size:28px;">${b.icon}</div><div style="font-size:10px;color:var(--txt2);margin-top:4px;">${b.name}</div></div>`).join('');
 }
 
 // ── EXPORT / IMPORT ──
-function exportData() {
-  const data = {};
-  DB.keys().forEach(k => data[k] = DB.get(k));
-  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `cleantdah_backup_${today()}.json`;
-  a.click();
-  showToast('📤 Dados exportados!');
-}
-function importData(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(reader.result);
-      Object.entries(data).forEach(([k,v]) => DB.set(k,v));
-      location.reload();
-    } catch { showToast('❌ Arquivo inválido'); }
-  };
-  reader.readAsText(file);
-}
-function resetAll() {
-  if (!confirm('Tem certeza? Todos os dados serão apagados.')) return;
-  DB.keys().forEach(k => DB.del(k));
-  localStorage.clear();
-  location.reload();
-}
+function exportData(){const data={};DB.keys().forEach(k=>data[k]=DB.get(k));const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`cleantdah_backup_${today()}.json`;a.click();showToast('📤 Dados exportados!');}
+function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);Object.entries(data).forEach(([k,v])=>DB.set(k,v));location.reload();}catch{showToast('❌ Arquivo inválido');}};reader.readAsText(file);}
+function resetAll(){if(!confirm('Tem certeza? Todos os dados serão apagados.'))return;DB.keys().forEach(k=>DB.del(k));localStorage.clear();location.reload();}
 
-// ── UI HELPERS ──
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2500);
-}
-function confetti() {
-  const colors = ['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EC4899','#EF4444'];
-  for (let i = 0; i < 30; i++) {
-    const c = document.createElement('div');
-    c.className = 'conf';
-    c.style.left = (5 + Math.random()*90) + 'vw';
-    c.style.top = '-10px';
-    c.style.background = colors[Math.floor(Math.random()*colors.length)];
-    c.style.width = (6+Math.random()*6)+'px';
-    c.style.height = (6+Math.random()*6)+'px';
-    c.style.animationDuration = (1.5+Math.random()*2)+'s';
-    c.style.animationDelay = (Math.random()*0.6)+'s';
-    document.body.appendChild(c);
-    setTimeout(() => c.remove(), 4000);
-  }
-}
+// ── HELPERS ──
+function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+function confetti(){const colors=['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EC4899','#EF4444'];for(let i=0;i<30;i++){const c=document.createElement('div');c.className='conf';c.style.left=(5+Math.random()*90)+'vw';c.style.top='-10px';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.width=(6+Math.random()*6)+'px';c.style.height=(6+Math.random()*6)+'px';c.style.animationDuration=(1.5+Math.random()*2)+'s';c.style.animationDelay=(Math.random()*0.6)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),4000);}}
 
-// ── RESTORE STATE ON LOAD ──
-function restoreUI() {
-  // med
-  if (S.medType) document.getElementById('med-select').value = S.medType;
-  if (S.med && S.medTime) {
-    document.getElementById('med-time').value = S.medTime;
-    const btn = document.getElementById('med-btn');
-    btn.classList.add('taken');
-    btn.innerHTML = '✓ Tomado às ' + S.medTime;
-    document.getElementById('med-progress').style.display = 'block';
-    updateMedProgress();
-  }
-  // agua
-  document.getElementById('agua-val').textContent = S.agua || 0;
-  if (S.agua >= 8) document.getElementById('qc-agua').classList.add('done');
-  // humor
-  if (S.humor) {
-    const em = {Ótimo:'😊',Bom:'🙂',Neutro:'😐',Baixo:'😔',Péssimo:'😫'};
-    document.getElementById('humor-val').textContent = em[S.humor] || '—';
-    document.getElementById('qc-humor').classList.add('done');
-  }
-  // sono
-  if (S.sono) {
-    document.getElementById('sono-val').textContent = S.sono + 'h';
-    document.getElementById('qc-sono').classList.add('done');
-  }
-  // atividade
-  if (S.atividade) {
-    const em2 = {Corrida:'🏃',Musculação:'🏋️',Caminhada:'🚶',Yoga:'🧘',Bike:'🚴',Esporte:'⚽',Dança:'💃',Natação:'🏊'};
-    document.getElementById('ativ-val').textContent = em2[S.atividade] || '✓';
-    document.getElementById('qc-ativ').classList.add('done');
-  }
-  // pomo
-  pomoState.cycle = S.pomoCycles || 0;
-  pomoState.totalMin = S.pomoMinutes || 0;
-}
-
-// ── MED TIMER ──
-let medTimer;
-function startMedTimer() {
-  medTimer = setInterval(() => {
-    if (S.med && S.medTime) updateMedProgress();
-  }, 60000);
+// ── RESTORE UI ──
+function restoreUI(){
+  if(S.medType)document.getElementById('med-select').value=S.medType;
+  if(S.med&&S.medTime){document.getElementById('med-time').value=S.medTime;const btn=document.getElementById('med-btn');btn.classList.add('taken');btn.innerHTML='✓ Tomado às '+S.medTime;document.getElementById('med-progress').style.display='block';updateMedProgress();}
+  document.getElementById('agua-val').textContent=S.agua||0;if(S.agua>=8)document.getElementById('qc-agua').classList.add('done');
+  if(S.humor){const em={Ótimo:'😊',Bom:'🙂',Neutro:'😐',Baixo:'😔',Péssimo:'😫'};document.getElementById('humor-val').textContent=em[S.humor]||'—';document.getElementById('qc-humor').classList.add('done');}
+  if(S.sono){document.getElementById('sono-val').textContent=S.sono+'h';document.getElementById('qc-sono').classList.add('done');}
+  if(S.atividade){const em2={Corrida:'🏃',Musculação:'🏋️',Caminhada:'🚶',Yoga:'🧘',Bike:'🚴',Esporte:'⚽',Dança:'💃',Natação:'🏊'};document.getElementById('ativ-val').textContent=em2[S.atividade]||'✓';document.getElementById('qc-ativ').classList.add('done');}
+  pomoState.cycle=S.pomoCycles||0;pomoState.totalMin=S.pomoMinutes||0;
 }
 
 // ── INIT ──
-function init() {
-  // Set default time to now
-  const now = new Date();
-  document.getElementById('med-time').value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-
-  updateGreeting();
-  updateXPBar();
-  restoreUI();
-  renderGoals();
-  renderFixedGoals();
-  updatePomoUI();
-  startNeuronAnim();
-  startMedTimer();
+function init(){
+  const now=new Date();document.getElementById('med-time').value=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  updateGreeting();updateXPBar();restoreUI();renderGoals();renderFixedGoals();updatePomoUI();startNeuronAnim();
+  setInterval(()=>{if(S.med&&S.medTime)updateMedProgress();},60000);
 }
 init();
 </script>
