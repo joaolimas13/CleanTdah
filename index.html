@@ -73,7 +73,7 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .med-time-input{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:0 12px;height:56px;color:var(--txt);font-family:var(--mono);font-size:18px;width:110px;text-align:center;}
 .med-progress{margin-top:14px;}
 .med-progress-bar{height:8px;background:var(--bg2);border-radius:99px;overflow:hidden;}
-.med-progress-fill{height:100%;border-radius:99px;transition:width 1s linear;}
+.med-progress-fill{height:100%;border-radius:99px;transition:width 1s linear;background:var(--blue);}
 .med-phase{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--txt3);}
 .med-phase-current{font-size:13px;color:var(--amber);font-weight:600;text-align:center;margin-top:6px;}
 .med-effect-desc{font-size:12px;color:var(--txt2);text-align:center;margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:10px;line-height:1.5;font-style:italic;}
@@ -612,10 +612,11 @@ function onMedChange(){S.medType=document.getElementById('med-select').value;sav
 function tomarRemedio(){
   const time=document.getElementById('med-time').value;
   if(!time){showToast('⏰ Selecione o horário!');return;}
+  const alreadyTaken=S.med;
   S.med=true;S.medTime=time;S.medType=document.getElementById('med-select').value;saveDay(S);
-  const btn=document.getElementById('med-btn');btn.classList.add('taken');btn.innerHTML='✓ Tomado às '+time;
+  const btn=document.getElementById('med-btn');btn.classList.add('taken');btn.innerHTML='✓ Tomado às '+time;btn.onclick=null;btn.style.pointerEvents='none';
   document.getElementById('med-progress').style.display='block';
-  addXP(10,'Medicação registrada');awardBadge('med_first','💊','Primeira Dose','Registrou medicação');
+  if(!alreadyTaken){addXP(10,'Medicação registrada');awardBadge('med_first','💊','Primeira Dose','Registrou medicação');}
   updateMedProgress();
 }
 function updateMedProgress(){
@@ -625,7 +626,7 @@ function updateMedProgress(){
   const elapsed=(Date.now()-took.getTime())/3600000;const pct=Math.min(100,Math.max(0,(elapsed/med.dur)*100));
   const fill=document.getElementById('med-fill');fill.style.width=pct+'%';
   let phase=med.phases[0];for(let i=med.phases.length-1;i>=0;i--)if(elapsed>=med.phases[i].t){phase=med.phases[i];break;}
-  fill.style.background=`linear-gradient(90deg,${phase.c},${phase.c}88)`;
+  fill.style.background=phase.c;
   document.getElementById('med-phase-txt').textContent=elapsed>med.dur?'⏱️ Efeito encerrado':`${phase.l} — ${Math.round(med.dur-elapsed)}h restantes`;
   // Effect description
   let effectTxt='';
@@ -666,10 +667,11 @@ function calcStreak(){
 
 // ── WATER (250ml) ──
 function addAgua(n){
+  const wasBefore8=(S.agua||0)<8;
   S.agua=Math.max(0,(S.agua||0)+n);saveDay(S);
   document.getElementById('agua-val').textContent=S.agua;
   document.getElementById('qc-agua').classList.toggle('done',S.agua>=8);
-  if(n>0&&S.agua===8){addXP(5,'Meta de água (2L)!');awardBadge('agua8','💧','Hidratado','8 copos (2L) em um dia');}
+  if(n>0&&S.agua>=8&&wasBefore8){addXP(5,'Meta de água (2L)!');awardBadge('agua8','💧','Hidratado','8 copos (2L) em um dia');}
 }
 
 // ── HUMOR ──
@@ -680,7 +682,7 @@ function openHumor(){
     <div style="display:flex;gap:12px;justify-content:center;">${emojis.map(h=>`<button style="font-size:40px;padding:12px;border-radius:16px;background:${S.humor===h.l?'var(--blue-g)':'var(--bg2)'};border:2px solid ${S.humor===h.l?'var(--blue)':'var(--border)'};flex:1;max-width:70px;" onclick="setHumor('${h.l}','${h.e}')">${h.e}<div style="font-size:10px;color:var(--txt3);margin-top:4px;">${h.l}</div></button>`).join('')}</div>
   </div></div>`;
 }
-function setHumor(l,e){S.humor=l;saveDay(S);document.getElementById('humor-val').textContent=e;document.getElementById('qc-humor').classList.add('done');closeModal();addXP(5,'Humor registrado');}
+function setHumor(l,e){const already=S.humor;S.humor=l;saveDay(S);document.getElementById('humor-val').textContent=e;document.getElementById('qc-humor').classList.add('done');closeModal();if(!already)addXP(5,'Humor registrado');}
 
 // ── SONO ──
 let _sonoH,_sonoQ;
@@ -695,7 +697,7 @@ function openSono(){
     <button style="width:100%;margin-top:12px;padding:14px;border-radius:var(--r);background:var(--blue);color:#fff;font-size:14px;font-weight:600;" onclick="saveSono()">Salvar</button>
   </div></div>`;
 }
-function saveSono(){if(!_sonoH){showToast('Selecione as horas!');return;}S.sono=_sonoH;S.sonoQual=_sonoQ||'Regular';saveDay(S);document.getElementById('sono-val').textContent=S.sono+'h';document.getElementById('qc-sono').classList.add('done');closeModal();addXP(10,'Sono registrado');}
+function saveSono(){if(!_sonoH){showToast('Selecione as horas!');return;}const already=S.sono;S.sono=_sonoH;S.sonoQual=_sonoQ||'Regular';saveDay(S);document.getElementById('sono-val').textContent=S.sono+'h';document.getElementById('qc-sono').classList.add('done');closeModal();if(!already)addXP(10,'Sono registrado');}
 
 // ── ATIVIDADE (com Descanso) ──
 function openAtividade(){
@@ -710,12 +712,13 @@ function openAtividade(){
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">${ativs.map(a=>`<button style="padding:14px 8px;border-radius:var(--r);background:${S.atividade===a.l?'var(--green-g)':'var(--bg2)'};border:1px solid ${S.atividade===a.l?'var(--green)':'var(--border)'};color:var(--txt);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:6px;" onclick="setAtividade('${a.l}','${a.e}')"><span style="font-size:24px;">${a.e}</span>${a.l}</button>`).join('')}</div>
   </div></div>`;
 }
-function setAtividade(l,e){S.atividade=l;saveDay(S);document.getElementById('ativ-val').textContent=e;document.getElementById('qc-ativ').classList.add('done');closeModal();addXP(15,'Atividade registrada');awardBadge('ativ_first','🏃','Em Movimento','Registrou atividade');}
+function setAtividade(l,e){const already=S.atividade;S.atividade=l;saveDay(S);document.getElementById('ativ-val').textContent=e;document.getElementById('qc-ativ').classList.add('done');closeModal();if(!already){addXP(15,'Atividade registrada');awardBadge('ativ_first','🏃','Em Movimento','Registrou atividade');}}
 
 // ── SCREEN TIME ──
 function saveScreenTime(){
   const h=parseInt(document.getElementById('screen-hours').value)||0;
   const m=parseInt(document.getElementById('screen-mins').value)||0;
+  const alreadySaved=S.screenH!==null&&S.screenH!==undefined;
   S.screenH=h;S.screenM=m;saveDay(S);
   const totalMin=h*60+m;
   const fb=document.getElementById('screen-feedback');
@@ -724,7 +727,7 @@ function saveScreenTime(){
   if(totalMin<=180){fb.innerHTML=`<span style="color:var(--green);">✅ Ótimo! Dentro do limite saudável.</span>`;card.style.borderColor='var(--green)';}
   else if(totalMin<=270){fb.innerHTML=`<span style="color:var(--amber);">⚠️ Acima de 3h — pontuação reduzida.</span>`;card.style.borderColor='var(--amber)';}
   else{fb.innerHTML=`<span style="color:var(--red);">🚨 Acima de 4h30 — pontuação zerada!</span>`;card.style.borderColor='var(--red)';}
-  addXP(5,'Tempo de tela registrado');
+  if(!alreadySaved)addXP(5,'Tempo de tela registrado');
   showToast('📱 Tempo de tela salvo!');
 }
 
@@ -1067,7 +1070,7 @@ function confetti(){const colors=['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EC48
 // ── RESTORE UI ──
 function restoreUI(){
   if(S.medType)document.getElementById('med-select').value=S.medType;
-  if(S.med&&S.medTime){document.getElementById('med-time').value=S.medTime;const btn=document.getElementById('med-btn');btn.classList.add('taken');btn.innerHTML='✓ Tomado às '+S.medTime;document.getElementById('med-progress').style.display='block';updateMedProgress();}
+  if(S.med&&S.medTime){document.getElementById('med-time').value=S.medTime;const btn=document.getElementById('med-btn');btn.classList.add('taken');btn.innerHTML='✓ Tomado às '+S.medTime;btn.onclick=null;btn.style.pointerEvents='none';document.getElementById('med-progress').style.display='block';updateMedProgress();}
   document.getElementById('agua-val').textContent=S.agua||0;if(S.agua>=8)document.getElementById('qc-agua').classList.add('done');
   if(S.humor){const em={Ótimo:'😊',Bom:'🙂',Neutro:'😐',Baixo:'😔',Péssimo:'😫'};document.getElementById('humor-val').textContent=em[S.humor]||'—';document.getElementById('qc-humor').classList.add('done');}
   if(S.sono){document.getElementById('sono-val').textContent=S.sono+'h';document.getElementById('qc-sono').classList.add('done');}
