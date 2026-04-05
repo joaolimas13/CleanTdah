@@ -35,7 +35,6 @@ input,select,textarea{font-family:var(--font);outline:none;}
 #app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;}
 .page-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:20px 16px;padding-bottom:calc(var(--nav-h) + 20px);scroll-behavior:smooth;}
 
-/* NAV */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--nav-h);background:rgba(10,14,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 14px;border-radius:12px;background:none;color:var(--txt3);transition:all 0.2s;font-size:10px;font-weight:600;letter-spacing:0.3px;}
 .nav-btn svg{width:24px;height:24px;transition:all 0.2s;}
@@ -46,7 +45,6 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .page.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* HEADER */
 .greeting{margin-bottom:20px;}
 .greeting-row{display:flex;justify-content:space-between;align-items:flex-start;}
 .greeting-hi{font-size:26px;font-weight:700;line-height:1.2;}
@@ -54,7 +52,6 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .streak-pill{display:inline-flex;align-items:center;gap:6px;background:var(--amber-g);color:var(--amber);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-top:8px;}
 .gear-btn{width:40px;height:40px;border-radius:12px;background:var(--surf);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--txt2);flex-shrink:0;}
 
-/* XP BAR */
 .xp-bar-wrap{background:var(--surf);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
 .xp-level{background:var(--blue-g);color:var(--blue);width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:16px;flex-shrink:0;}
 .xp-info{flex:1;min-width:0;}
@@ -62,12 +59,14 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .xp-track{height:6px;background:var(--bg2);border-radius:99px;overflow:hidden;}
 .xp-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:99px;transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}
 
-/* CARDS */
+/* RANK BADGE */
+.rank-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:0.5px;}
+.rank-badge .rank-icon{font-size:13px;}
+
 .card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:14px;transition:all 0.2s;}
 .card-title{font-size:13px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .card-title span{font-size:16px;}
 
-/* MED */
 .med-quick{display:flex;align-items:center;gap:12px;}
 .med-btn-tomei{flex:1;height:56px;border-radius:var(--r);font-size:16px;font-weight:700;border:none;color:#fff;background:linear-gradient(135deg,var(--green2),var(--green));box-shadow:0 4px 20px rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;gap:8px;}
 .med-btn-tomei.taken{background:var(--surf2);color:var(--green);box-shadow:none;border:1px solid var(--green);}
@@ -77,20 +76,29 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .med-progress-fill{height:100%;border-radius:99px;transition:width 1s linear;}
 .med-phase{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--txt3);}
 .med-phase-current{font-size:13px;color:var(--amber);font-weight:600;text-align:center;margin-top:6px;}
+.med-effect-desc{font-size:12px;color:var(--txt2);text-align:center;margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:10px;line-height:1.5;font-style:italic;}
 .med-select{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--txt);font-size:14px;width:100%;margin-bottom:12px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394A3B8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
 
-/* QUICK LOGS */
 .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .quick-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
 .quick-card:active{background:var(--surf2);}
 .quick-card.done{border-color:var(--green);background:var(--green-g);}
 .quick-card .q-icon{font-size:28px;margin-bottom:6px;}
 .quick-card .q-label{font-size:12px;color:var(--txt2);font-weight:500;}
+.quick-card .q-sub{font-size:10px;color:var(--txt3);}
 .quick-card .q-value{font-size:20px;font-weight:700;font-family:var(--mono);margin-top:2px;}
 .quick-card .q-btns{display:flex;gap:8px;justify-content:center;margin-top:8px;}
 .q-btn{width:36px;height:36px;border-radius:50%;background:var(--surf);border:1px solid var(--border);color:var(--txt);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;}
 
-/* SLEEP */
+/* SCREEN TIME */
+.screen-time-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.screen-time-card.done{border-color:var(--green);background:var(--green-g);}
+.screen-time-card.warning{border-color:var(--amber);background:var(--amber-g);}
+.screen-time-card.danger{border-color:var(--red);background:var(--red-g);}
+.screen-input-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;}
+.screen-input{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:6px 8px;color:var(--txt);font-family:var(--mono);font-size:16px;width:50px;text-align:center;}
+.screen-input-label{font-size:12px;color:var(--txt3);}
+
 .sleep-hours-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
 .sleep-h-btn{padding:8px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);color:var(--txt);font-size:14px;font-weight:600;font-family:var(--mono);}
 .sleep-h-btn.active{background:var(--blue-g);border-color:var(--blue);color:var(--blue);}
@@ -99,7 +107,6 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .sleep-q-btn.active{border-color:var(--blue);background:var(--blue-g);}
 .sleep-q-btn .sq-label{font-size:10px;color:var(--txt3);display:block;margin-top:2px;}
 
-/* GOALS */
 .goal-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:all 0.15s;}
 .goal-item.completed{opacity:0.5;text-decoration:line-through;}
 .goal-check{width:28px;height:28px;border-radius:8px;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;font-size:14px;}
@@ -133,11 +140,9 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .pomo-stats{display:flex;gap:20px;font-size:12px;color:var(--txt3);}
 .pomo-stats span{font-family:var(--mono);color:var(--txt);font-weight:600;}
 
-/* NEURON */
 .neuron-wrap{position:relative;width:160px;height:160px;margin:0 auto 10px;}
 .neuron-canvas{width:100%;height:100%;}
 
-/* REATIVAR FOCO */
 .react-focus-btn{width:100%;padding:14px;border-radius:var(--r);background:var(--purple-g);border:1px solid rgba(139,92,246,0.3);color:var(--purple);font-size:14px;font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
 .rf-overlay{position:fixed;inset:0;background:rgba(10,14,26,0.96);z-index:200;display:flex;flex-direction:column;animation:fadeIn 0.3s;overflow-y:auto;}
 .rf-header{padding:20px 16px 10px;display:flex;justify-content:space-between;align-items:center;}
@@ -155,31 +160,51 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .rf-action-btn.green{background:var(--green);}
 .rf-complete-banner{text-align:center;padding:30px 20px;animation:fadeIn 0.4s;}
 .rf-complete-banner .rf-big-emoji{font-size:56px;margin-bottom:12px;}
-
-/* BREATHING SQUARE */
 .breathing-container{display:flex;flex-direction:column;align-items:center;padding:20px 0;}
 .breathing-circle{width:140px;height:140px;border-radius:50%;border:3px solid var(--purple);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:var(--purple);transition:all 4s ease-in-out;}
 .breathing-circle.inhale{transform:scale(1.5);background:var(--purple-g);}
 .breathing-circle.hold{transform:scale(1.5);background:var(--purple-g);}
 .breathing-circle.exhale{transform:scale(1);background:transparent;}
 
-/* FORUM */
-.forum-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;}
-.forum-tab{padding:8px 16px;border-radius:20px;background:var(--surf);border:1px solid var(--border);color:var(--txt2);font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0;}
+/* FORUM v2 */
+.forum-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;-ms-overflow-style:none;scrollbar-width:none;}
+.forum-tabs::-webkit-scrollbar{display:none;}
+.forum-tab{padding:7px 14px;border-radius:20px;background:var(--surf);border:1px solid var(--border);color:var(--txt2);font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0;}
 .forum-tab.active{background:var(--blue-g);border-color:var(--blue);color:var(--blue);}
 .forum-post{background:var(--surf);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:10px;}
 .forum-post-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .forum-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.forum-user{font-size:13px;font-weight:600;}
+.forum-user-info{flex:1;}
+.forum-user{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .forum-time{font-size:11px;color:var(--txt3);}
 .forum-body{font-size:14px;line-height:1.6;color:var(--txt2);}
+.forum-tag{font-size:10px;padding:2px 8px;border-radius:6px;font-weight:600;margin-bottom:8px;display:inline-block;}
 .forum-actions{display:flex;gap:16px;margin-top:10px;}
 .forum-act{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--txt3);background:none;padding:4px 8px;border-radius:8px;}
 .forum-act:active{background:var(--surf2);}
 .forum-compose{position:relative;margin-bottom:16px;}
-.forum-compose textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;color:var(--txt);font-size:14px;resize:none;min-height:80px;}
+.forum-compose textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;padding-right:50px;color:var(--txt);font-size:14px;resize:none;min-height:80px;}
 .forum-compose-btn{position:absolute;bottom:12px;right:12px;width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;}
 .forum-empty{text-align:center;color:var(--txt3);font-size:13px;padding:30px 0;}
+
+/* COMMENTS */
+.forum-comments{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.forum-comment{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid rgba(42,49,80,0.4);}
+.forum-comment:last-child{border-bottom:none;}
+.comment-avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;background:var(--surf2);}
+.comment-body{flex:1;}
+.comment-user{font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;}
+.comment-text{font-size:12px;color:var(--txt2);line-height:1.4;margin-top:2px;}
+.comment-time{font-size:10px;color:var(--txt3);margin-top:2px;}
+.comment-input-row{display:flex;gap:8px;margin-top:8px;}
+.comment-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--txt);font-size:12px;}
+.comment-send{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+
+/* WELCOME BANNER */
+.welcome-banner{background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(139,92,246,0.15));border:1px solid rgba(59,130,246,0.3);border-radius:var(--r2);padding:16px;margin-bottom:16px;text-align:center;}
+.welcome-banner h3{font-size:16px;margin-bottom:6px;}
+.welcome-banner p{font-size:13px;color:var(--txt2);margin-bottom:12px;}
+.welcome-banner button{padding:10px 24px;border-radius:var(--r);background:var(--blue);color:#fff;font-size:13px;font-weight:600;}
 
 /* REPORT */
 .report-score{text-align:center;margin-bottom:20px;}
@@ -204,7 +229,14 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .modal-handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 20px;}
 .modal-title{font-size:20px;font-weight:700;margin-bottom:16px;text-align:center;}
 
-/* BADGE POPUP */
+/* USERNAME MODAL */
+.username-overlay{position:fixed;inset:0;background:rgba(10,14,26,0.95);z-index:300;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.3s;}
+.username-card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r2);padding:30px 24px;width:90%;max-width:380px;text-align:center;}
+.username-card h2{font-size:22px;margin-bottom:8px;}
+.username-card p{font-size:13px;color:var(--txt2);margin-bottom:20px;}
+.username-card input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--txt);font-size:15px;margin-bottom:10px;text-align:center;}
+.username-card button{width:100%;padding:14px;border-radius:var(--r);background:var(--blue);color:#fff;font-size:15px;font-weight:600;}
+
 .badge-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--surf);border:1px solid var(--border);border-radius:var(--r2);padding:30px;text-align:center;z-index:300;animation:badgePop 0.5s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 20px 60px rgba(0,0,0,0.5);}
 @keyframes badgePop{0%{transform:translate(-50%,-50%) scale(0)}60%{transform:translate(-50%,-50%) scale(1.1)}100%{transform:translate(-50%,-50%) scale(1)}}
 .badge-popup .badge-icon{font-size:56px;margin-bottom:12px;}
@@ -241,11 +273,12 @@ input,select,textarea{font-family:var(--font);outline:none;}
       <div class="xp-bar-wrap">
         <div class="xp-level" id="xp-level">1</div>
         <div class="xp-info">
-          <div class="xp-info-top"><span id="xp-label-name">Neurônio Dormente</span><span id="xp-nums">0/100 XP</span></div>
+          <div class="xp-info-top"><span id="xp-label-name">Recruta</span><span id="xp-nums">0/100 XP</span></div>
           <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
         </div>
       </div>
 
+      <!-- MEDICAÇÃO -->
       <div class="card" id="med-card">
         <div class="card-title"><span>💊</span> Medicação</div>
         <select class="med-select" id="med-select" onchange="onMedChange()">
@@ -265,14 +298,17 @@ input,select,textarea{font-family:var(--font);outline:none;}
           <div class="med-progress-bar"><div class="med-progress-fill" id="med-fill"></div></div>
           <div class="med-phase"><span>Início</span><span>Pico</span><span>Final</span></div>
           <div class="med-phase-current" id="med-phase-txt"></div>
+          <div class="med-effect-desc" id="med-effect-desc"></div>
         </div>
       </div>
 
+      <!-- QUICK LOGS -->
       <div class="quick-grid">
         <div class="quick-card" id="qc-agua">
           <div class="q-icon">💧</div>
           <div class="q-label">Água</div>
-          <div class="q-value" id="agua-val">0</div>
+          <div class="q-value"><span id="agua-val">0</span></div>
+          <div class="q-sub">cada copo = 250ml</div>
           <div class="q-btns">
             <button class="q-btn" onclick="addAgua(-1)">−</button>
             <button class="q-btn" onclick="addAgua(1)">+</button>
@@ -295,6 +331,21 @@ input,select,textarea{font-family:var(--font);outline:none;}
         </div>
       </div>
 
+      <!-- TEMPO DE TELA -->
+      <div class="card" style="margin-top:14px;" id="screen-card">
+        <div class="card-title"><span>📱</span> Tempo de Tela</div>
+        <div style="font-size:12px;color:var(--txt3);margin-bottom:10px;">Quanto tempo ficou no celular/PC hoje? (máx 3h = nota total, acima de 4h30 = zero)</div>
+        <div class="screen-input-row">
+          <input type="number" class="screen-input" id="screen-hours" min="0" max="24" placeholder="0" onchange="saveScreenTime()"/>
+          <span class="screen-input-label">horas</span>
+          <input type="number" class="screen-input" id="screen-mins" min="0" max="59" placeholder="0" onchange="saveScreenTime()"/>
+          <span class="screen-input-label">min</span>
+          <button style="padding:8px 16px;border-radius:10px;background:var(--blue);color:#fff;font-size:13px;font-weight:600;" onclick="saveScreenTime()">Salvar</button>
+        </div>
+        <div id="screen-feedback" style="font-size:12px;margin-top:8px;text-align:center;"></div>
+      </div>
+
+      <!-- METAS DO DIA -->
       <div class="card" style="margin-top:14px;">
         <div class="card-title"><span>🎯</span> Metas do dia</div>
         <div id="goals-list"></div>
@@ -337,14 +388,24 @@ input,select,textarea{font-family:var(--font);outline:none;}
       <button class="react-focus-btn" onclick="openReativar()">⚡ Reativar Foco — Protocolo de Emergência</button>
     </div>
 
-    <!-- ═══ FÓRUM ═══ -->
+    <!-- ═══ FÓRUM v2 ═══ -->
     <div class="page" id="page-forum">
-      <div class="greeting"><div class="greeting-hi">Comunidade 💬</div><div class="greeting-sub">Troque experiências com outras pessoas com TDAH</div></div>
+      <div class="greeting">
+        <div class="greeting-hi">Comunidade 💬</div>
+        <div class="greeting-sub">Troque experiências com outras pessoas com TDAH</div>
+      </div>
+      <div id="forum-welcome-banner"></div>
       <div class="forum-tabs" id="forum-tabs">
-        <button class="forum-tab active" onclick="setForumTab('geral')">Geral</button>
-        <button class="forum-tab" onclick="setForumTab('dicas')">Dicas</button>
-        <button class="forum-tab" onclick="setForumTab('medicacao')">Medicação</button>
-        <button class="forum-tab" onclick="setForumTab('vitorias')">Vitórias</button>
+        <button class="forum-tab active" onclick="setForumTab('todos')">🔥 Todos</button>
+        <button class="forum-tab" onclick="setForumTab('apresentacao')">👋 Apresentação</button>
+        <button class="forum-tab" onclick="setForumTab('medicacao')">💊 Medicação</button>
+        <button class="forum-tab" onclick="setForumTab('rotina')">📋 Rotina</button>
+        <button class="forum-tab" onclick="setForumTab('vitorias')">🏆 Vitórias</button>
+        <button class="forum-tab" onclick="setForumTab('desabafos')">💭 Desabafos</button>
+        <button class="forum-tab" onclick="setForumTab('dicas')">💡 Dicas</button>
+        <button class="forum-tab" onclick="setForumTab('relacionamentos')">❤️ Relacionamentos</button>
+        <button class="forum-tab" onclick="setForumTab('trabalho')">💼 Trabalho</button>
+        <button class="forum-tab" onclick="setForumTab('estudos')">📚 Estudos</button>
       </div>
       <div class="forum-compose">
         <textarea id="forum-input" placeholder="Compartilhe algo com a comunidade..." maxlength="500"></textarea>
@@ -384,6 +445,7 @@ input,select,textarea{font-family:var(--font);outline:none;}
           <button class="gear-btn" onclick="goPage('home')"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
         </div>
       </div>
+      <div class="card" id="profile-rank-card"></div>
       <div class="card">
         <div class="card-title"><span>🏆</span> Badges conquistados</div>
         <div id="badges-list" style="display:flex;flex-wrap:wrap;gap:12px;"></div>
@@ -401,7 +463,6 @@ input,select,textarea{font-family:var(--font);outline:none;}
     </div>
   </div>
 
-  <!-- NAV — 4 abas -->
   <nav class="nav">
     <button class="nav-btn active" onclick="goPage('home')" id="nav-home">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>
@@ -423,63 +484,153 @@ input,select,textarea{font-family:var(--font);outline:none;}
 </div>
 
 <div id="modals"></div>
+<div id="username-modal-container"></div>
 
 <script>
 /* ═══════════════════════════════════════════════
-   CLEANTDAH v2 — FUSÃO DEFINITIVA
-   Zero Atrito • TDAH First • Minimalista
+   CLEANTDAH v3 — FÓRUM + PATENTES + TELA
 ═══════════════════════════════════════════════ */
 
-const DB = {
-  get: k => { try { return JSON.parse(localStorage.getItem('ct_'+k)); } catch { return null; } },
-  set: (k,v) => { try { localStorage.setItem('ct_'+k, JSON.stringify(v)); } catch {} },
-  del: k => localStorage.removeItem('ct_'+k),
-  keys: () => Object.keys(localStorage).filter(k=>k.startsWith('ct_')).map(k=>k.slice(3))
-};
-const today = () => new Date().toISOString().slice(0,10);
-const uid = () => Math.random().toString(36).slice(2,9);
+const DB={get:k=>{try{return JSON.parse(localStorage.getItem('ct_'+k));}catch{return null;}},set:(k,v)=>{try{localStorage.setItem('ct_'+k,JSON.stringify(v));}catch{}},del:k=>localStorage.removeItem('ct_'+k),keys:()=>Object.keys(localStorage).filter(k=>k.startsWith('ct_')).map(k=>k.slice(3))};
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Math.random().toString(36).slice(2,9);
 
-function loadDay(d) {
-  return DB.get('day_'+d) || { date:d, med:null, medTime:null, agua:0, humor:null, sono:null, sonoQual:null, atividade:null, goals:[], fixedDone:[], pomoCycles:0, pomoMinutes:0 };
-}
-function saveDay(s) { DB.set('day_'+s.date, s); }
-let S = loadDay(today());
-let XP = DB.get('xp') || { total:0, level:1 };
-let badges = DB.get('badges') || [];
-let fixedGoals = DB.get('fixedGoals') || [];
-let streak = DB.get('streak') || 0;
+function loadDay(d){return DB.get('day_'+d)||{date:d,med:null,medTime:null,agua:0,humor:null,sono:null,sonoQual:null,atividade:null,screenH:null,screenM:null,goals:[],fixedDone:[],pomoCycles:0,pomoMinutes:0};}
+function saveDay(s){DB.set('day_'+s.date,s);}
+let S=loadDay(today());
+let XP=DB.get('xp')||{total:0,level:1};
+let badges=DB.get('badges')||[];
+let fixedGoals=DB.get('fixedGoals')||[];
+let streak=DB.get('streak')||0;
+let userProfile=DB.get('userProfile')||null;
 
-const MEDS = {
-  venvanse:{name:'Venvanse',sub:'Lisdexanfetamina',dur:12,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1.5,l:'Subindo',c:'var(--blue)'},{t:3,l:'Pico de foco',c:'var(--green)'},{t:8,l:'Descendo',c:'var(--amber)'},{t:11,l:'Encerrando',c:'var(--red)'}]},
-  ritalina:{name:'Ritalina',sub:'Metilfenidato',dur:4,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:0.5,l:'Subindo',c:'var(--blue)'},{t:1,l:'Pico',c:'var(--green)'},{t:2.5,l:'Descendo',c:'var(--amber)'},{t:3.5,l:'Encerrando',c:'var(--red)'}]},
-  ritalina_la:{name:'Ritalina LA',sub:'Metilfenidato LA',dur:8,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'1º Pico',c:'var(--green)'},{t:4,l:'2º Pico',c:'var(--green)'},{t:6,l:'Descendo',c:'var(--amber)'},{t:7.5,l:'Encerrando',c:'var(--red)'}]},
-  concerta:{name:'Concerta',sub:'Metilfenidato OROS',dur:12,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'Liberação rápida',c:'var(--blue)'},{t:3,l:'Pico crescente',c:'var(--green)'},{t:8,l:'Descendo',c:'var(--amber)'},{t:11,l:'Encerrando',c:'var(--red)'}]},
-  atentah:{name:'Atentah',sub:'Metilfenidato',dur:8,phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'Subindo',c:'var(--blue)'},{t:2,l:'Pico',c:'var(--green)'},{t:5,l:'Descendo',c:'var(--amber)'},{t:7,l:'Encerrando',c:'var(--red)'}]},
-  strattera:{name:'Strattera',sub:'Atomoxetina',dur:24,phases:[{t:0,l:'Contínuo',c:'var(--blue)'}]},
-  outro:{name:'Outro',sub:'',dur:0,phases:[]}
-};
-
-// ── XP / LEVELS ──
-const LEVELS = [
-  {n:1,name:'Neurônio Dormente',xp:0},{n:2,name:'Primeira Sinapse',xp:100},{n:3,name:'Dendrito Ativo',xp:250},
-  {n:4,name:'Circuito Neural',xp:500},{n:5,name:'Rede Sináptica',xp:800},{n:6,name:'Córtex Desperto',xp:1200},
-  {n:7,name:'Cérebro Iluminado',xp:1800},{n:8,name:'Mente Ascendente',xp:2500},{n:9,name:'Hiperfoco Mestre',xp:3500},
-  {n:10,name:'Rede Neural Completa',xp:5000}
+// ══════════════════════════════════════════
+//  PATENTES — ESTILO CALL OF DUTY
+// ══════════════════════════════════════════
+const RANKS=[
+  {n:1,name:'Recruta',icon:'🔰',xp:0,color:'#64748B',bg:'rgba(100,116,139,0.15)'},
+  {n:2,name:'Soldado',icon:'⚔️',xp:100,color:'#94A3B8',bg:'rgba(148,163,184,0.15)'},
+  {n:3,name:'Cabo',icon:'🛡️',xp:250,color:'#10B981',bg:'rgba(16,185,129,0.12)'},
+  {n:4,name:'Sargento',icon:'⚡',xp:500,color:'#3B82F6',bg:'rgba(59,130,246,0.15)'},
+  {n:5,name:'Tenente',icon:'🎖️',xp:800,color:'#6366F1',bg:'rgba(99,102,241,0.15)'},
+  {n:6,name:'Capitão',icon:'🏅',xp:1200,color:'#8B5CF6',bg:'rgba(139,92,246,0.15)'},
+  {n:7,name:'Major',icon:'👑',xp:1800,color:'#F59E0B',bg:'rgba(245,158,11,0.12)'},
+  {n:8,name:'Coronel',icon:'🦅',xp:2500,color:'#EF4444',bg:'rgba(239,68,68,0.12)'},
+  {n:9,name:'General',icon:'⭐',xp:3500,color:'#EC4899',bg:'rgba(236,72,153,0.12)'},
+  {n:10,name:'Marechal',icon:'💎',xp:5000,color:'#F59E0B',bg:'linear-gradient(135deg,rgba(245,158,11,0.2),rgba(236,72,153,0.2))'}
 ];
-function getLevel(xp){for(let i=LEVELS.length-1;i>=0;i--)if(xp>=LEVELS[i].xp)return LEVELS[i];return LEVELS[0];}
-function getNextLevel(xp){for(let i=0;i<LEVELS.length;i++)if(xp<LEVELS[i].xp)return LEVELS[i];return LEVELS[LEVELS.length-1];}
+
+function getRank(xp){for(let i=RANKS.length-1;i>=0;i--)if(xp>=RANKS[i].xp)return RANKS[i];return RANKS[0];}
+function getNextRank(xp){for(let i=0;i<RANKS.length;i++)if(xp<RANKS[i].xp)return RANKS[i];return RANKS[RANKS.length-1];}
+function getRankBadgeHTML(xp,small){
+  const r=getRank(xp);
+  const sz=small?'':'font-size:12px;';
+  return `<span class="rank-badge" style="background:${r.bg};color:${r.color};${sz}"><span class="rank-icon">${r.icon}</span>${r.name}</span>`;
+}
+
 function addXP(amount,reason){
-  const oldLvl=getLevel(XP.total);XP.total+=amount;const newLvl=getLevel(XP.total);XP.level=newLvl.n;DB.set('xp',XP);updateXPBar();
+  const oldR=getRank(XP.total);XP.total+=amount;const newR=getRank(XP.total);XP.level=newR.n;DB.set('xp',XP);updateXPBar();
   showToast(`+${amount} XP — ${reason}`);
-  if(newLvl.n>oldLvl.n)setTimeout(()=>showBadge('🧠',`Nível ${newLvl.n}!`,newLvl.name,`+${amount} XP`),600);
+  if(newR.n>oldR.n)setTimeout(()=>showBadge(newR.icon,`Patente: ${newR.name}!`,`Você subiu para ${newR.name}`,`+${amount} XP`),600);
 }
 function updateXPBar(){
-  const cur=getLevel(XP.total),nxt=getNextLevel(XP.total);
+  const cur=getRank(XP.total),nxt=getNextRank(XP.total);
   const pct=nxt.xp===cur.xp?100:Math.min(100,((XP.total-cur.xp)/(nxt.xp-cur.xp))*100);
-  document.getElementById('xp-level').textContent=cur.n;
+  document.getElementById('xp-level').textContent=cur.icon;
   document.getElementById('xp-label-name').textContent=cur.name;
   document.getElementById('xp-nums').textContent=`${XP.total}/${nxt.xp} XP`;
   document.getElementById('xp-fill').style.width=pct+'%';
+}
+
+// ══════════════════════════════════════════
+//  MEDICATION — COM FRASES DE EFEITO
+// ══════════════════════════════════════════
+const MEDS={
+  venvanse:{name:'Venvanse',sub:'Lisdexanfetamina',dur:12,
+    phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1.5,l:'Subindo',c:'var(--blue)'},{t:3,l:'Pico de foco',c:'var(--green)'},{t:8,l:'Descendo',c:'var(--amber)'},{t:11,l:'Encerrando',c:'var(--red)'}],
+    effects:[
+      {t:0,txt:'💊 A lisdexanfetamina está sendo convertida em dexanfetamina no organismo. Ainda sem efeito cognitivo.'},
+      {t:1,txt:'🔄 A conversão enzimática está em andamento. Os primeiros sinais de clareza mental podem começar a aparecer.'},
+      {t:1.5,txt:'📈 Dopamina e noradrenalina estão subindo nos receptores pré-frontais. O foco começa a se instalar.'},
+      {t:3,txt:'🧠 Pico de concentração! Seu córtex pré-frontal está com atividade otimizada. Melhor hora para tarefas complexas.'},
+      {t:6,txt:'✅ Efeito estável e sustentado. A liberação gradual mantém o foco sem oscilações bruscas.'},
+      {t:8,txt:'📉 A concentração de dexanfetamina começa a diminuir. Funções executivas ainda presentes mas em declínio.'},
+      {t:10,txt:'🌅 Fase final da metabolização. Pode sentir leve cansaço. Evite cafeína para não prejudicar o sono.'},
+      {t:12,txt:'⏱️ Efeito encerrado. O organismo já metabolizou a medicação. Hora de descansar o cérebro.'}
+    ]},
+  ritalina:{name:'Ritalina',sub:'Metilfenidato IR',dur:4,
+    phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:0.5,l:'Subindo',c:'var(--blue)'},{t:1,l:'Pico',c:'var(--green)'},{t:2.5,l:'Descendo',c:'var(--amber)'},{t:3.5,l:'Encerrando',c:'var(--red)'}],
+    effects:[
+      {t:0,txt:'💊 Metilfenidato em absorção rápida pelo trato gastrointestinal. Efeito em breve.'},
+      {t:0.3,txt:'🔄 O bloqueio da recaptação de dopamina está iniciando. Primeiros sinais de atenção.'},
+      {t:0.5,txt:'📈 Dopamina acumulando nas sinapses. A atenção sustentada está melhorando rapidamente.'},
+      {t:1,txt:'🧠 Pico de ação! Máxima inibição do transportador de dopamina. Hora de aproveitar o foco.'},
+      {t:2,txt:'✅ Efeito ativo mas começando a declinar. Ainda bom para tarefas que exigem atenção.'},
+      {t:3,txt:'📉 Metilfenidato sendo metabolizado. Pode sentir o foco diminuindo gradualmente.'},
+      {t:4,txt:'⏱️ Efeito encerrado. Considere a próxima dose se prescrita pelo seu médico.'}
+    ]},
+  ritalina_la:{name:'Ritalina LA',sub:'Metilfenidato LA',dur:8,
+    phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'1º Pico',c:'var(--green)'},{t:4,l:'2º Pico',c:'var(--green)'},{t:6,l:'Descendo',c:'var(--amber)'},{t:7.5,l:'Encerrando',c:'var(--red)'}],
+    effects:[
+      {t:0,txt:'💊 Cápsula com microgrânulos de liberação bifásica em absorção. Primeira onda chegando.'},
+      {t:1,txt:'🧠 Primeiro pico de liberação! Metade da dose ativa agora. Foco matinal instalado.'},
+      {t:2.5,txt:'🔄 Transição entre a 1ª e 2ª onda. Pode sentir leve oscilação — é normal.'},
+      {t:4,txt:'🧠 Segundo pico! A outra metade da dose foi liberada. Foco renovado para a tarde.'},
+      {t:6,txt:'📉 Ambas as ondas em declínio. Funções executivas ainda ativas mas diminuindo.'},
+      {t:8,txt:'⏱️ Efeito encerrado. As duas ondas já foram metabolizadas.'}
+    ]},
+  concerta:{name:'Concerta',sub:'Metilfenidato OROS',dur:12,
+    phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'Liberação rápida',c:'var(--blue)'},{t:3,l:'Pico crescente',c:'var(--green)'},{t:8,l:'Descendo',c:'var(--amber)'},{t:11,l:'Encerrando',c:'var(--red)'}],
+    effects:[
+      {t:0,txt:'💊 Camada externa de liberação imediata se dissolvendo. 22% da dose ativa em minutos.'},
+      {t:1,txt:'📈 Primeira onda ativa. O sistema OROS começa a bombear metilfenidato de forma crescente.'},
+      {t:3,txt:'🧠 Concentração ascendente! O sistema osmótico libera doses crescentes — pico em formação.'},
+      {t:6,txt:'✅ Pico sustentado. Você está na janela terapêutica ideal para produtividade.'},
+      {t:8,txt:'📉 A bomba osmótica está desacelerando. Efeito começando a declinar gradualmente.'},
+      {t:10,txt:'🌅 Fase final. Ainda pode ter algum efeito residual leve.'},
+      {t:12,txt:'⏱️ Efeito encerrado. O sistema OROS foi completamente utilizado.'}
+    ]},
+  atentah:{name:'Atentah',sub:'Metilfenidato',dur:8,
+    phases:[{t:0,l:'Absorção',c:'var(--amber)'},{t:1,l:'Subindo',c:'var(--blue)'},{t:2,l:'Pico',c:'var(--green)'},{t:5,l:'Descendo',c:'var(--amber)'},{t:7,l:'Encerrando',c:'var(--red)'}],
+    effects:[
+      {t:0,txt:'💊 Absorção iniciada. Metilfenidato entrando na corrente sanguínea.'},
+      {t:1,txt:'📈 Bloqueio do transportador de dopamina em progresso. Atenção melhorando.'},
+      {t:2,txt:'🧠 Pico de ação! Concentração máxima de metilfenidato no cérebro. Use bem esse período.'},
+      {t:4,txt:'✅ Efeito sustentado mas em platô. Ainda funcional para tarefas estruturadas.'},
+      {t:6,txt:'📉 Metabolização avançada. Foco em declínio gradual.'},
+      {t:8,txt:'⏱️ Efeito encerrado. Metilfenidato metabolizado.'}
+    ]},
+  strattera:{name:'Strattera',sub:'Atomoxetina',dur:24,
+    phases:[{t:0,l:'Contínuo',c:'var(--blue)'}],
+    effects:[
+      {t:0,txt:'💊 Atomoxetina é de uso contínuo. Atua na noradrenalina (não na dopamina). Efeito cumulativo ao longo de semanas.'}
+    ]},
+  outro:{name:'Outro',sub:'',dur:0,phases:[],effects:[{t:0,txt:'✓ Medicação registrada.'}]}
+};
+
+function onMedChange(){S.medType=document.getElementById('med-select').value;saveDay(S);}
+function tomarRemedio(){
+  const time=document.getElementById('med-time').value;
+  if(!time){showToast('⏰ Selecione o horário!');return;}
+  S.med=true;S.medTime=time;S.medType=document.getElementById('med-select').value;saveDay(S);
+  const btn=document.getElementById('med-btn');btn.classList.add('taken');btn.innerHTML='✓ Tomado às '+time;
+  document.getElementById('med-progress').style.display='block';
+  addXP(10,'Medicação registrada');awardBadge('med_first','💊','Primeira Dose','Registrou medicação');
+  updateMedProgress();
+}
+function updateMedProgress(){
+  if(!S.med||!S.medTime)return;const med=MEDS[S.medType||'venvanse'];
+  if(!med||med.dur===0){document.getElementById('med-phase-txt').textContent='✓ Registrado';document.getElementById('med-effect-desc').textContent=med.effects?med.effects[0].txt:'';return;}
+  const[hh,mm]=S.medTime.split(':').map(Number);const took=new Date();took.setHours(hh,mm,0);
+  const elapsed=(Date.now()-took.getTime())/3600000;const pct=Math.min(100,Math.max(0,(elapsed/med.dur)*100));
+  const fill=document.getElementById('med-fill');fill.style.width=pct+'%';
+  let phase=med.phases[0];for(let i=med.phases.length-1;i>=0;i--)if(elapsed>=med.phases[i].t){phase=med.phases[i];break;}
+  fill.style.background=`linear-gradient(90deg,${phase.c},${phase.c}88)`;
+  document.getElementById('med-phase-txt').textContent=elapsed>med.dur?'⏱️ Efeito encerrado':`${phase.l} — ${Math.round(med.dur-elapsed)}h restantes`;
+  // Effect description
+  let effectTxt='';
+  if(med.effects){for(let i=med.effects.length-1;i>=0;i--)if(elapsed>=med.effects[i].t){effectTxt=med.effects[i].txt;break;}}
+  document.getElementById('med-effect-desc').textContent=effectTxt;
 }
 
 // ── NAVIGATION ──
@@ -487,19 +638,19 @@ function goPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  const navBtn=document.getElementById('nav-'+id);
-  if(navBtn)navBtn.classList.add('active');
+  const navBtn=document.getElementById('nav-'+id);if(navBtn)navBtn.classList.add('active');
   document.getElementById('page-scroll').scrollTop=0;
   if(id==='metas')updateReport();
   if(id==='foco')drawNeuron();
-  if(id==='perfil')renderBadges();
+  if(id==='perfil'){renderBadges();renderProfileRank();}
   if(id==='forum')renderForum();
 }
 
 // ── GREETING ──
 function updateGreeting(){
   const h=new Date().getHours();
-  document.getElementById('greeting-text').textContent=h<12?'Bom dia ☀️':h<18?'Boa tarde 🌤️':'Boa noite 🌙';
+  const name=userProfile?` ${userProfile.name.split(' ')[0]}`:'';
+  document.getElementById('greeting-text').textContent=h<12?`Bom dia${name} ☀️`:h<18?`Boa tarde${name} 🌤️`:`Boa noite${name} 🌙`;
   const d=new Date();const dias=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   document.getElementById('greeting-date').textContent=`${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
@@ -513,33 +664,12 @@ function calcStreak(){
   streak=count;DB.set('streak',streak);
 }
 
-// ── MEDICATION ──
-function onMedChange(){S.medType=document.getElementById('med-select').value;saveDay(S);}
-function tomarRemedio(){
-  const time=document.getElementById('med-time').value;
-  if(!time){showToast('⏰ Selecione o horário!');return;}
-  S.med=true;S.medTime=time;S.medType=document.getElementById('med-select').value;saveDay(S);
-  const btn=document.getElementById('med-btn');btn.classList.add('taken');btn.innerHTML='✓ Tomado às '+time;
-  document.getElementById('med-progress').style.display='block';
-  addXP(10,'Medicação registrada');awardBadge('med_first','💊','Primeira Dose','Registrou medicação');
-  updateMedProgress();
-}
-function updateMedProgress(){
-  if(!S.med||!S.medTime)return;const med=MEDS[S.medType||'venvanse'];
-  if(!med||med.dur===0){document.getElementById('med-phase-txt').textContent='✓ Registrado';return;}
-  const[hh,mm]=S.medTime.split(':').map(Number);const took=new Date();took.setHours(hh,mm,0);
-  const elapsed=(Date.now()-took.getTime())/3600000;const pct=Math.min(100,Math.max(0,(elapsed/med.dur)*100));
-  const fill=document.getElementById('med-fill');fill.style.width=pct+'%';
-  let phase=med.phases[0];for(let i=med.phases.length-1;i>=0;i--)if(elapsed>=med.phases[i].t){phase=med.phases[i];break;}
-  fill.style.background=`linear-gradient(90deg,${phase.c},${phase.c}88)`;
-  document.getElementById('med-phase-txt').textContent=elapsed>med.dur?'⏱️ Efeito encerrado':`${phase.l} — ${Math.round(med.dur-elapsed)}h restantes`;
-}
-
-// ── WATER ──
+// ── WATER (250ml) ──
 function addAgua(n){
-  S.agua=Math.max(0,(S.agua||0)+n);saveDay(S);document.getElementById('agua-val').textContent=S.agua;
+  S.agua=Math.max(0,(S.agua||0)+n);saveDay(S);
+  document.getElementById('agua-val').textContent=S.agua;
   document.getElementById('qc-agua').classList.toggle('done',S.agua>=8);
-  if(n>0&&S.agua===8){addXP(5,'Meta de água!');awardBadge('agua8','💧','Hidratado','8 copos em um dia');}
+  if(n>0&&S.agua===8){addXP(5,'Meta de água (2L)!');awardBadge('agua8','💧','Hidratado','8 copos (2L) em um dia');}
 }
 
 // ── HUMOR ──
@@ -567,15 +697,36 @@ function openSono(){
 }
 function saveSono(){if(!_sonoH){showToast('Selecione as horas!');return;}S.sono=_sonoH;S.sonoQual=_sonoQ||'Regular';saveDay(S);document.getElementById('sono-val').textContent=S.sono+'h';document.getElementById('qc-sono').classList.add('done');closeModal();addXP(10,'Sono registrado');}
 
-// ── ATIVIDADE ──
+// ── ATIVIDADE (com Descanso) ──
 function openAtividade(){
-  const ativs=[{e:'🏃',l:'Corrida'},{e:'🏋️',l:'Musculação'},{e:'🚶',l:'Caminhada'},{e:'🧘',l:'Yoga'},{e:'🚴',l:'Bike'},{e:'⚽',l:'Esporte'},{e:'💃',l:'Dança'},{e:'🏊',l:'Natação'}];
+  const ativs=[
+    {e:'🏃',l:'Corrida'},{e:'🏋️',l:'Musculação'},{e:'🚶',l:'Caminhada'},{e:'🧘',l:'Yoga'},
+    {e:'🚴',l:'Bike'},{e:'⚽',l:'Esporte'},{e:'💃',l:'Dança'},{e:'🏊',l:'Natação'},
+    {e:'😴',l:'Descanso'}
+  ];
   document.getElementById('modals').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-content">
     <div class="modal-handle"></div><div class="modal-title">Atividade física</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">${ativs.map(a=>`<button style="padding:16px;border-radius:var(--r);background:${S.atividade===a.l?'var(--green-g)':'var(--bg2)'};border:1px solid ${S.atividade===a.l?'var(--green)':'var(--border)'};color:var(--txt);font-size:14px;display:flex;align-items:center;gap:10px;" onclick="setAtividade('${a.l}','${a.e}')">${a.e} ${a.l}</button>`).join('')}</div>
+    <div style="font-size:12px;color:var(--txt3);margin-bottom:12px;text-align:center;">Descanso também conta pontos — seu corpo precisa de recuperação!</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">${ativs.map(a=>`<button style="padding:14px 8px;border-radius:var(--r);background:${S.atividade===a.l?'var(--green-g)':'var(--bg2)'};border:1px solid ${S.atividade===a.l?'var(--green)':'var(--border)'};color:var(--txt);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:6px;" onclick="setAtividade('${a.l}','${a.e}')"><span style="font-size:24px;">${a.e}</span>${a.l}</button>`).join('')}</div>
   </div></div>`;
 }
 function setAtividade(l,e){S.atividade=l;saveDay(S);document.getElementById('ativ-val').textContent=e;document.getElementById('qc-ativ').classList.add('done');closeModal();addXP(15,'Atividade registrada');awardBadge('ativ_first','🏃','Em Movimento','Registrou atividade');}
+
+// ── SCREEN TIME ──
+function saveScreenTime(){
+  const h=parseInt(document.getElementById('screen-hours').value)||0;
+  const m=parseInt(document.getElementById('screen-mins').value)||0;
+  S.screenH=h;S.screenM=m;saveDay(S);
+  const totalMin=h*60+m;
+  const fb=document.getElementById('screen-feedback');
+  const card=document.getElementById('screen-card');
+  card.className='card';card.style.marginTop='14px';
+  if(totalMin<=180){fb.innerHTML=`<span style="color:var(--green);">✅ Ótimo! Dentro do limite saudável.</span>`;card.style.borderColor='var(--green)';}
+  else if(totalMin<=270){fb.innerHTML=`<span style="color:var(--amber);">⚠️ Acima de 3h — pontuação reduzida.</span>`;card.style.borderColor='var(--amber)';}
+  else{fb.innerHTML=`<span style="color:var(--red);">🚨 Acima de 4h30 — pontuação zerada!</span>`;card.style.borderColor='var(--red)';}
+  addXP(5,'Tempo de tela registrado');
+  showToast('📱 Tempo de tela salvo!');
+}
 
 function closeModal(){document.getElementById('modals').innerHTML='';}
 
@@ -655,238 +806,180 @@ function drawNeuron(){
 function startNeuronAnim(){(function loop(){drawNeuron();requestAnimationFrame(loop);})();}
 
 // ══════════════════════════════════════════
-//  REATIVAR FOCO — 5 PASSOS COMPLETOS
+//  REATIVAR FOCO
 // ══════════════════════════════════════════
-let rfStepsDone = [];
-
-function openReativar() {
-  rfStepsDone = [];
-  const html = `<div class="rf-overlay" id="rf-overlay">
-    <div class="rf-header">
-      <div style="font-size:20px;font-weight:700;">⚡ Reativar Foco</div>
-      <button class="rf-close" onclick="closeReativar()">✕</button>
-    </div>
-    <div class="rf-steps" id="rf-steps"></div>
-  </div>`;
-  document.getElementById('modals').innerHTML = html;
-  renderRFSteps();
+let rfStepsDone=[];
+function openReativar(){rfStepsDone=[];document.getElementById('modals').innerHTML=`<div class="rf-overlay" id="rf-overlay"><div class="rf-header"><div style="font-size:20px;font-weight:700;">⚡ Reativar Foco</div><button class="rf-close" onclick="closeReativar()">✕</button></div><div class="rf-steps" id="rf-steps"></div></div>`;renderRFSteps();}
+function renderRFSteps(){
+  const steps=[{id:'agua',icon:'🧊',title:'Água nos pulsos',desc:'Coloque água gelada nos pulsos e na nuca por 30 segundos.',action:'splash',btnLabel:'✓ Fiz isso'},{id:'respiracao',icon:'🌬️',title:'Respiração Quadrada',desc:'4s inspira → 4s segura → 4s expira → 4s segura. São 4 ciclos.',action:'breathing',btnLabel:'Começar respiração'},{id:'braindump',icon:'📝',title:'Brain Dump — 60 seg',desc:'Escreva TUDO que está na cabeça. Sem filtro.',action:'braindump',btnLabel:'Começar brain dump'},{id:'caminhada',icon:'🚶',title:'Caminhada de 2 minutos',desc:'Levante e ande por 2 minutos.',action:'walk',btnLabel:'Iniciar timer de 2 min'},{id:'frase',icon:'💡',title:'Frase de Reancoragem',desc:'Leia em voz alta e volte ao foco.',action:'phrase',btnLabel:'Gerar frase'}];
+  const container=document.getElementById('rf-steps');if(rfStepsDone.length>=5){container.innerHTML=`<div class="rf-complete-banner"><div class="rf-big-emoji">🧠✨</div><div style="font-size:22px;font-weight:700;margin-bottom:8px;">Foco Reativado!</div><div style="font-size:14px;color:var(--txt2);margin-bottom:20px;">Protocolo completo. Cérebro pronto.</div><div style="font-family:var(--mono);color:var(--green);font-size:18px;font-weight:700;margin-bottom:20px;">+30 XP</div><button class="rf-action-btn green" onclick="closeReativar()">Voltar ao Foco</button></div>`;return;}
+  container.innerHTML=steps.map((s,i)=>{const done=rfStepsDone.includes(s.id);const isActive=!done&&rfStepsDone.length===i;return`<div class="rf-step ${done?'done':''} ${isActive?'active':''}" id="rf-step-${s.id}"><div class="rf-step-num">${done?'✓':i+1}</div><div class="rf-step-title">${s.icon} ${s.title}</div><div class="rf-step-desc">${s.desc}</div>${isActive?`<div class="rf-step-action" id="rf-action-${s.id}"><button class="rf-action-btn" onclick="doRFStep('${s.id}','${s.action}')">${s.btnLabel}</button></div>`:''}`;}).join('');
 }
-
-function renderRFSteps() {
-  const steps = [
-    { id:'agua', icon:'🧊', title:'Água nos pulsos', desc:'Coloque água gelada nos pulsos e na nuca por 30 segundos. O choque térmico ativa o sistema nervoso e reativa a atenção.', action:'splash', btnLabel:'✓ Fiz isso' },
-    { id:'respiracao', icon:'🌬️', title:'Respiração Quadrada', desc:'4 segundos inspira → 4 segura → 4 expira → 4 segura. São 4 ciclos. Isso regula o córtex pré-frontal.', action:'breathing', btnLabel:'Começar respiração' },
-    { id:'braindump', icon:'📝', title:'Brain Dump — 60 seg', desc:'Escreva TUDO que está na sua cabeça. Sem filtro, sem ordem. Esvaziar a mente libera RAM do cérebro.', action:'braindump', btnLabel:'Começar brain dump' },
-    { id:'caminhada', icon:'🚶', title:'Caminhada de 2 minutos', desc:'Levante e ande por 2 minutos. Qualquer movimento. Isso aumenta o fluxo sanguíneo cerebral e libera noradrenalina.', action:'walk', btnLabel:'Iniciar timer de 2 min' },
-    { id:'frase', icon:'💡', title:'Frase de Reancoragem', desc:'Leia em voz alta e volte ao foco.', action:'phrase', btnLabel:'Gerar frase' }
-  ];
-
-  const container = document.getElementById('rf-steps');
-  const allDone = rfStepsDone.length >= 5;
-
-  if (allDone) {
-    container.innerHTML = `<div class="rf-complete-banner">
-      <div class="rf-big-emoji">🧠✨</div>
-      <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Foco Reativado!</div>
-      <div style="font-size:14px;color:var(--txt2);margin-bottom:20px;">Completou o protocolo inteiro. Seu cérebro está pronto.</div>
-      <div style="font-family:var(--mono);color:var(--green);font-size:18px;font-weight:700;margin-bottom:20px;">+30 XP</div>
-      <button class="rf-action-btn green" onclick="closeReativar()">Voltar ao Foco</button>
-    </div>`;
-    return;
-  }
-
-  container.innerHTML = steps.map((s, i) => {
-    const done = rfStepsDone.includes(s.id);
-    const isActive = !done && rfStepsDone.length === i;
-    return `<div class="rf-step ${done ? 'done' : ''} ${isActive ? 'active' : ''}" id="rf-step-${s.id}">
-      <div class="rf-step-num">${done ? '✓' : i + 1}</div>
-      <div class="rf-step-title">${s.icon} ${s.title}</div>
-      <div class="rf-step-desc">${s.desc}</div>
-      ${isActive ? `<div class="rf-step-action" id="rf-action-${s.id}">
-        <button class="rf-action-btn" onclick="doRFStep('${s.id}','${s.action}')">${s.btnLabel}</button>
-      </div>` : ''}
-    </div>`;
-  }).join('');
+function doRFStep(id,action){
+  const a=document.getElementById('rf-action-'+id);if(!a)return;
+  if(action==='splash'){completeRFStep(id);return;}
+  if(action==='breathing'){a.innerHTML=`<div class="breathing-container"><div class="breathing-circle" id="rf-breath-circle">Inspire</div><div style="margin-top:12px;font-size:13px;color:var(--txt2);" id="rf-breath-counter">4 ciclos</div></div>`;startRFBreathing(id);return;}
+  if(action==='braindump'){a.innerHTML=`<div><textarea style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px;color:var(--txt);font-size:14px;resize:none;min-height:100px;" placeholder="Escreva tudo..." id="rf-braindump-txt"></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><span style="font-family:var(--mono);font-size:24px;color:var(--amber);font-weight:700;" id="rf-bd-timer">60</span><button class="rf-action-btn" style="width:auto;padding:10px 24px;" onclick="completeRFStep('${id}')">Concluir</button></div></div>`;let t=60;const int=setInterval(()=>{t--;const el=document.getElementById('rf-bd-timer');if(!el){clearInterval(int);return;}el.textContent=t;if(t<=0){clearInterval(int);completeRFStep(id);}},1000);document.getElementById('rf-braindump-txt').focus();return;}
+  if(action==='walk'){a.innerHTML=`<div style="text-align:center;"><div style="font-family:var(--mono);font-size:48px;font-weight:700;color:var(--green);margin:16px 0;" id="rf-walk-timer">2:00</div><div style="font-size:13px;color:var(--txt2);">Levante e caminhe!</div></div>`;let t=120;const int=setInterval(()=>{t--;const el=document.getElementById('rf-walk-timer');if(!el){clearInterval(int);return;}el.textContent=`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;if(t<=0){clearInterval(int);completeRFStep(id);}},1000);return;}
+  if(action==='phrase'){const frases=['"O foco não é ausência de distração. É a escolha de voltar."','"Seu cérebro não está quebrado. Ele só precisa de direção."','"Cada vez que você volta ao foco, uma sinapse se fortalece."','"Não precisa ser perfeito. Precisa ser feito."','"A dopamina da conquista é melhor que a do scroll."','"2 minutos de foco real valem mais que 2 horas de intenção."','"O TDAH é o seu motor. O foco é o volante."'];const f=frases[Math.floor(Math.random()*frases.length)];a.innerHTML=`<div style="text-align:center;padding:16px 0;"><div style="font-size:18px;font-style:italic;color:var(--blue);line-height:1.6;margin-bottom:16px;">${f}</div><div style="font-size:12px;color:var(--txt3);margin-bottom:12px;">Leia em voz alta e volte ao foco.</div><button class="rf-action-btn green" onclick="completeRFStep('${id}')">✓ Li em voz alta</button></div>`;}
 }
-
-function doRFStep(id, action) {
-  const actionArea = document.getElementById('rf-action-' + id);
-  if (!actionArea) return;
-
-  switch (action) {
-    case 'splash':
-      completeRFStep(id);
-      break;
-
-    case 'breathing':
-      actionArea.innerHTML = `<div class="breathing-container">
-        <div class="breathing-circle" id="rf-breath-circle">Inspire</div>
-        <div style="margin-top:12px;font-size:13px;color:var(--txt2);" id="rf-breath-counter">4 ciclos</div>
-      </div>`;
-      startRFBreathing(id);
-      break;
-
-    case 'braindump':
-      actionArea.innerHTML = `<div>
-        <textarea style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px;color:var(--txt);font-size:14px;resize:none;min-height:100px;" placeholder="Escreva tudo que está na sua cabeça..." id="rf-braindump-txt"></textarea>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-          <span style="font-family:var(--mono);font-size:24px;color:var(--amber);font-weight:700;" id="rf-bd-timer">60</span>
-          <button class="rf-action-btn" style="width:auto;padding:10px 24px;" onclick="completeRFStep('${id}')">Concluir</button>
-        </div>
-      </div>`;
-      let bdTime = 60;
-      const bdInt = setInterval(() => {
-        bdTime--;
-        const el = document.getElementById('rf-bd-timer');
-        if (!el) { clearInterval(bdInt); return; }
-        el.textContent = bdTime;
-        if (bdTime <= 0) { clearInterval(bdInt); completeRFStep(id); }
-      }, 1000);
-      document.getElementById('rf-braindump-txt').focus();
-      break;
-
-    case 'walk':
-      actionArea.innerHTML = `<div style="text-align:center;">
-        <div style="font-family:var(--mono);font-size:48px;font-weight:700;color:var(--green);margin:16px 0;" id="rf-walk-timer">2:00</div>
-        <div style="font-size:13px;color:var(--txt2);">Levante e caminhe!</div>
-      </div>`;
-      let walkTime = 120;
-      const walkInt = setInterval(() => {
-        walkTime--;
-        const el = document.getElementById('rf-walk-timer');
-        if (!el) { clearInterval(walkInt); return; }
-        const wm = Math.floor(walkTime / 60), ws = walkTime % 60;
-        el.textContent = `${wm}:${String(ws).padStart(2, '0')}`;
-        if (walkTime <= 0) { clearInterval(walkInt); completeRFStep(id); }
-      }, 1000);
-      break;
-
-    case 'phrase':
-      const frases = [
-        '"O foco não é ausência de distração. É a escolha de voltar."',
-        '"Seu cérebro não está quebrado. Ele só precisa de direção."',
-        '"Cada vez que você volta ao foco, uma sinapse se fortalece."',
-        '"Não precisa ser perfeito. Precisa ser feito."',
-        '"A dopamina da conquista é melhor que a do scroll."',
-        '"Você já recomeçou antes. Pode recomeçar agora."',
-        '"2 minutos de foco real valem mais que 2 horas de intenção."',
-        '"O TDAH é o seu motor. O foco é o volante."'
-      ];
-      const frase = frases[Math.floor(Math.random() * frases.length)];
-      actionArea.innerHTML = `<div style="text-align:center;padding:16px 0;">
-        <div style="font-size:18px;font-style:italic;color:var(--blue);line-height:1.6;margin-bottom:16px;">${frase}</div>
-        <div style="font-size:12px;color:var(--txt3);margin-bottom:12px;">Leia em voz alta e volte ao foco.</div>
-        <button class="rf-action-btn green" onclick="completeRFStep('${id}')">✓ Li em voz alta</button>
-      </div>`;
-      break;
-  }
-}
-
-function startRFBreathing(stepId) {
-  const circle = document.getElementById('rf-breath-circle');
-  if (!circle) return;
-  const phases = ['Inspire', 'Segure', 'Expire', 'Segure'];
-  let phase = 0, cycles = 0;
-  function tick() {
-    if (!document.getElementById('rf-breath-circle')) return;
-    const p = phases[phase % 4];
-    circle.textContent = p;
-    circle.className = 'breathing-circle';
-    if (p === 'Inspire') circle.classList.add('inhale');
-    else if (p === 'Segure') circle.classList.add('hold');
-    else circle.classList.add('exhale');
-    phase++;
-    if (phase % 4 === 0) {
-      cycles++;
-      const counter = document.getElementById('rf-breath-counter');
-      if (counter) counter.textContent = `${4 - cycles} ciclos restantes`;
-      if (cycles >= 4) { setTimeout(() => completeRFStep(stepId), 4000); return; }
-    }
-    setTimeout(tick, 4000);
-  }
-  tick();
-}
-
-function completeRFStep(id) {
-  if (!rfStepsDone.includes(id)) rfStepsDone.push(id);
-  if (rfStepsDone.length >= 5) {
-    addXP(30, 'Protocolo Reativar Foco completo!');
-    awardBadge('reativar', '⚡', 'Foco Reativado', 'Completou o protocolo de emergência');
-    confetti();
-  } else {
-    showToast(`✓ Passo ${rfStepsDone.length}/5 concluído`);
-  }
-  renderRFSteps();
-}
-
-function closeReativar() { document.getElementById('modals').innerHTML = ''; }
+function startRFBreathing(stepId){const circle=document.getElementById('rf-breath-circle');if(!circle)return;const phases=['Inspire','Segure','Expire','Segure'];let phase=0,cycles=0;function tick(){if(!document.getElementById('rf-breath-circle'))return;const p=phases[phase%4];circle.textContent=p;circle.className='breathing-circle';if(p==='Inspire')circle.classList.add('inhale');else if(p==='Segure')circle.classList.add('hold');else circle.classList.add('exhale');phase++;if(phase%4===0){cycles++;const c=document.getElementById('rf-breath-counter');if(c)c.textContent=`${4-cycles} ciclos restantes`;if(cycles>=4){setTimeout(()=>completeRFStep(stepId),4000);return;}}setTimeout(tick,4000);}tick();}
+function completeRFStep(id){if(!rfStepsDone.includes(id))rfStepsDone.push(id);if(rfStepsDone.length>=5){addXP(30,'Protocolo Reativar Foco completo!');awardBadge('reativar','⚡','Foco Reativado','Completou o protocolo');confetti();}else showToast(`✓ Passo ${rfStepsDone.length}/5 concluído`);renderRFSteps();}
+function closeReativar(){document.getElementById('modals').innerHTML='';}
 
 // ══════════════════════════════════════════
-//  FÓRUM COMUNITÁRIO
+//  FÓRUM v2 — COM COMENTÁRIOS + USERNAME
 // ══════════════════════════════════════════
-let forumTab = 'geral';
-const SAMPLE_POSTS = [
-  { id:'p1', user:'Ana M.', avatar:'🧠', cat:'geral', body:'Descobri que usar fone com ruído branco me ajuda MUITO a focar no trabalho. Alguém mais?', time:'2h', likes:12, replies:4, color:'var(--blue)' },
-  { id:'p2', user:'Pedro K.', avatar:'💊', cat:'medicacao', body:'Mudei de Ritalina pra Venvanse semana passada. A diferença no tempo de efeito é absurda. Finalmente consigo trabalhar à tarde inteira.', time:'5h', likes:23, replies:8, color:'var(--green)' },
-  { id:'p3', user:'Mari S.', avatar:'🎯', cat:'vitorias', body:'Primeira semana completando todas as metas fixas! O sistema de XP me motivou muito 🔥', time:'1d', likes:34, replies:6, color:'var(--amber)' },
-  { id:'p4', user:'Lucas R.', avatar:'💡', cat:'dicas', body:'Dica: coloca o celular em outro cômodo durante os ciclos de foco. Parece bobo mas muda TUDO.', time:'1d', likes:19, replies:5, color:'var(--purple)' },
-  { id:'p5', user:'Bia T.', avatar:'🌊', cat:'geral', body:'Dias ruins fazem parte. Não completei nenhum ciclo hoje mas registrei meu humor e meu sono. Isso também conta.', time:'3h', likes:45, replies:12, color:'var(--pink)' },
-  { id:'p6', user:'Caio D.', avatar:'🏋️', cat:'dicas', body:'Exercício de manhã antes do remédio = combo perfeito. Meu psiquiatra confirmou que potencializa o efeito.', time:'2d', likes:28, replies:7, color:'var(--green)' },
-  { id:'p7', user:'Ju F.', avatar:'😴', cat:'geral', body:'Quem mais tem problema com sono? Mesmo cansada não consigo desligar o cérebro. Alguma técnica que funcione?', time:'6h', likes:31, replies:15, color:'var(--blue)' },
-  { id:'p8', user:'Rafa L.', avatar:'🎮', cat:'vitorias', body:'Nível 5 no app! Rede Sináptica desbloqueada! Nunca mantive um hábito por tanto tempo 💪', time:'4h', likes:52, replies:9, color:'var(--amber)' }
+let forumTab='todos';
+const TAG_COLORS={
+  apresentacao:{bg:'rgba(236,72,153,0.12)',color:'#EC4899',label:'👋 Apresentação'},
+  medicacao:{bg:'rgba(59,130,246,0.15)',color:'#3B82F6',label:'💊 Medicação'},
+  rotina:{bg:'rgba(16,185,129,0.12)',color:'#10B981',label:'📋 Rotina'},
+  vitorias:{bg:'rgba(245,158,11,0.12)',color:'#F59E0B',label:'🏆 Vitórias'},
+  desabafos:{bg:'rgba(139,92,246,0.15)',color:'#8B5CF6',label:'💭 Desabafos'},
+  dicas:{bg:'rgba(99,102,241,0.15)',color:'#6366F1',label:'💡 Dicas'},
+  relacionamentos:{bg:'rgba(239,68,68,0.12)',color:'#EF4444',label:'❤️ Relacionamentos'},
+  trabalho:{bg:'rgba(148,163,184,0.15)',color:'#94A3B8',label:'💼 Trabalho'},
+  estudos:{bg:'rgba(16,185,129,0.12)',color:'#10B981',label:'📚 Estudos'},
+  geral:{bg:'rgba(59,130,246,0.15)',color:'#3B82F6',label:'🔥 Geral'}
+};
+
+const SAMPLE_POSTS=[
+  {id:'p1',user:'Ana Martins',username:'@anamartins',avatar:'🧠',cat:'apresentacao',body:'Oi! Me chamo Ana, tenho 28 anos e fui diagnosticada com TDAH há 2 anos. Uso Venvanse e estou aprendendo a lidar melhor com minha rotina. Feliz em estar aqui!',time:'2h',likes:18,xp:800,comments:[{user:'Pedro K.',username:'@pedrok',avatar:'💊',body:'Bem-vinda Ana! Também uso Venvanse. Qualquer dúvida estamos aqui!',time:'1h',xp:1200},{user:'Mari S.',username:'@marisol',avatar:'🎯',body:'Boa sorte na jornada! Esse app me ajudou muito.',time:'30min',xp:500}]},
+  {id:'p2',user:'Pedro Kurosawa',username:'@pedrok',avatar:'💊',cat:'medicacao',body:'Mudei de Ritalina pra Venvanse semana passada. A diferença no tempo de efeito é absurda. Finalmente consigo trabalhar à tarde inteira sem aquela queda brusca.',time:'5h',likes:23,xp:1200,comments:[{user:'Lucas R.',username:'@lucasr',avatar:'💡',body:'Qual dosagem você está usando?',time:'3h',xp:300},{user:'Pedro K.',username:'@pedrok',avatar:'💊',body:'50mg. Meu psiquiatra começou com 30mg por 2 semanas.',time:'2h',xp:1200}]},
+  {id:'p3',user:'Mari Solano',username:'@marisol',avatar:'🎯',cat:'vitorias',body:'Primeira semana completando todas as metas fixas! O sistema de XP me motivou muito 🔥',time:'1d',likes:34,xp:500,comments:[]},
+  {id:'p4',user:'Lucas Ribeiro',username:'@lucasr',avatar:'💡',cat:'dicas',body:'Dica: coloca o celular em outro cômodo durante os ciclos de foco. Parece bobo mas muda TUDO.',time:'1d',likes:19,xp:300,comments:[]},
+  {id:'p5',user:'Bia Torres',username:'@biatorres',avatar:'🌊',cat:'desabafos',body:'Dias ruins fazem parte. Não completei nenhum ciclo hoje mas registrei meu humor e meu sono. Isso também conta.',time:'3h',likes:45,xp:2000,comments:[{user:'Ju F.',username:'@jufernandes',avatar:'😴',body:'Totalmente! Registrar já é uma vitória. Abraço!',time:'2h',xp:1500}]},
+  {id:'p6',user:'Caio Duarte',username:'@caiod',avatar:'🏋️',cat:'rotina',body:'Minha rotina matinal que funcionou: acordar, 10min exercício, tomar remédio, banho gelado, café, pomodoro. Demorei 3 meses pra fixar.',time:'2d',likes:28,xp:3600,comments:[]},
+  {id:'p7',user:'Ju Fernandes',username:'@jufernandes',avatar:'😴',cat:'desabafos',body:'Quem mais tem problema com sono? Mesmo cansada não consigo desligar o cérebro. Alguma técnica que funcione?',time:'6h',likes:31,xp:1500,comments:[{user:'Caio D.',username:'@caiod',avatar:'🏋️',body:'Tenta a técnica 4-7-8: inspira 4s, segura 7s, expira 8s. Mudou minha vida.',time:'5h',xp:3600}]},
+  {id:'p8',user:'Rafa Lima',username:'@rafalima',avatar:'🎮',cat:'vitorias',body:'Patente Capitão desbloqueada! Nunca mantive um hábito por tanto tempo 💪',time:'4h',likes:52,xp:1300,comments:[]}
 ];
-let userPosts = DB.get('forumPosts') || [];
 
-function setForumTab(tab) {
-  forumTab = tab;
-  document.querySelectorAll('.forum-tab').forEach(t => t.classList.remove('active'));
+let userPosts=DB.get('forumPosts')||[];
+let postComments=DB.get('forumComments')||{};
+
+function setForumTab(tab){
+  forumTab=tab;
+  document.querySelectorAll('.forum-tab').forEach(t=>t.classList.remove('active'));
   event.target.classList.add('active');
   renderForum();
 }
 
-function renderForum() {
-  const feed = document.getElementById('forum-feed');
-  const allPosts = [...userPosts.map(p => ({...p, isUser:true})), ...SAMPLE_POSTS];
-  const filtered = forumTab === 'geral' ? allPosts : allPosts.filter(p => p.cat === forumTab);
-
-  if (filtered.length === 0) {
-    feed.innerHTML = '<div class="forum-empty">Nenhum post nessa categoria ainda. Seja o primeiro!</div>';
-    return;
-  }
-
-  feed.innerHTML = filtered.map(p => `<div class="forum-post">
-    <div class="forum-post-header">
-      <div class="forum-avatar" style="background:${p.color || 'var(--blue-g)'}">${p.avatar}</div>
-      <div style="flex:1;"><div class="forum-user">${p.user}${p.isUser?' <span style="font-size:10px;color:var(--blue);">(você)</span>':''}</div><div class="forum-time">${p.time}</div></div>
-    </div>
-    <div class="forum-body">${p.body}</div>
-    <div class="forum-actions">
-      <button class="forum-act" onclick="likeForum('${p.id}')">❤️ ${p.likes||0}</button>
-      <button class="forum-act">💬 ${p.replies||0}</button>
-    </div>
-  </div>`).join('');
+function renderForumWelcome(){
+  const banner=document.getElementById('forum-welcome-banner');
+  if(!userProfile||DB.get('forumIntroduced')){banner.innerHTML='';return;}
+  banner.innerHTML=`<div class="welcome-banner">
+    <h3>👋 Bem-vindo(a) à comunidade!</h3>
+    <p>Que tal se apresentar? Conte um pouco sobre você, seu diagnóstico e o que te trouxe aqui.</p>
+    <button onclick="startIntroPost()">Fazer minha apresentação</button>
+  </div>`;
 }
 
-function postForum() {
-  const input = document.getElementById('forum-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const post = { id:'u_'+uid(), user:'Você', avatar:'✨', cat:forumTab==='geral'?'geral':forumTab, body:text, time:'agora', likes:0, replies:0, color:'var(--blue)' };
-  userPosts.unshift(post);
-  DB.set('forumPosts', userPosts);
-  input.value = '';
+function startIntroPost(){
+  DB.set('forumIntroduced',true);
+  setForumTab('apresentacao');
+  document.querySelectorAll('.forum-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.forum-tab').forEach(t=>{if(t.textContent.includes('Apresentação'))t.classList.add('active');});
+  document.getElementById('forum-input').value='Oi! Me chamo '+((userProfile&&userProfile.name)||'')+' e ';
+  document.getElementById('forum-input').focus();
+  document.getElementById('forum-welcome-banner').innerHTML='';
+}
+
+function renderForum(){
+  renderForumWelcome();
+  const feed=document.getElementById('forum-feed');
+  const allPosts=[...userPosts.map(p=>({...p,isUser:true})),...SAMPLE_POSTS];
+  const filtered=forumTab==='todos'?allPosts:allPosts.filter(p=>p.cat===forumTab);
+  if(filtered.length===0){feed.innerHTML='<div class="forum-empty">Nenhum post nessa categoria ainda. Seja o primeiro!</div>';return;}
+
+  feed.innerHTML=filtered.map(p=>{
+    const tag=TAG_COLORS[p.cat]||TAG_COLORS.geral;
+    const rankHTML=getRankBadgeHTML(p.xp||0,true);
+    const comments=p.isUser?(postComments[p.id]||[]):(p.comments||[]);
+    const commentsHTML=comments.length>0?`<div class="forum-comments">${comments.map(c=>`<div class="forum-comment"><div class="comment-avatar" style="background:var(--surf2)">${c.avatar}</div><div class="comment-body"><div class="comment-user">${c.user} ${getRankBadgeHTML(c.xp||0,true)}</div><div class="comment-text">${c.body}</div><div class="comment-time">${c.time}</div></div></div>`).join('')}</div>`:'';
+    const commentInputHTML=`<div class="comment-input-row" style="margin-top:8px;"><input class="comment-input" placeholder="Comentar..." id="comment-${p.id}" maxlength="300" onkeydown="if(event.key==='Enter')addComment('${p.id}')"/><button class="comment-send" onclick="addComment('${p.id}')">↑</button></div>`;
+
+    return`<div class="forum-post">
+      <div style="margin-bottom:6px;"><span class="forum-tag" style="background:${tag.bg};color:${tag.color};">${tag.label}</span></div>
+      <div class="forum-post-header">
+        <div class="forum-avatar" style="background:${p.isUser?'var(--blue-g)':'var(--surf2)'}">${p.avatar}</div>
+        <div class="forum-user-info">
+          <div class="forum-user">${p.user} ${rankHTML} ${p.isUser?'<span style="font-size:10px;color:var(--blue);">(você)</span>':''}</div>
+          <div class="forum-time">${p.username||''} · ${p.time}</div>
+        </div>
+      </div>
+      <div class="forum-body">${p.body}</div>
+      <div class="forum-actions">
+        <button class="forum-act" onclick="likeForum('${p.id}')">❤️ ${p.likes||0}</button>
+        <button class="forum-act" onclick="document.getElementById('comment-${p.id}').focus()">💬 ${comments.length}</button>
+      </div>
+      ${commentsHTML}
+      ${commentInputHTML}
+    </div>`;
+  }).join('');
+}
+
+function addComment(postId){
+  if(!userProfile){showUsernameModal();return;}
+  const input=document.getElementById('comment-'+postId);if(!input)return;
+  const text=input.value.trim();if(!text)return;
+  const comment={user:userProfile.name,username:'@'+userProfile.username,avatar:'✨',body:text,time:'agora',xp:XP.total};
+  // For sample posts, store comments separately
+  if(!postComments[postId])postComments[postId]=[];
+  // Check if it's a user post
+  const userPost=userPosts.find(p=>p.id===postId);
+  if(userPost){if(!userPost.comments)userPost.comments=[];userPost.comments.push(comment);DB.set('forumPosts',userPosts);}
+  // Also check sample posts and store in separate object
+  const samplePost=SAMPLE_POSTS.find(p=>p.id===postId);
+  if(samplePost){if(!postComments[postId])postComments[postId]=[];postComments[postId].push(comment);DB.set('forumComments',postComments);}
+  input.value='';
+  addXP(5,'Comentário no fórum!');
   renderForum();
-  addXP(5, 'Post no fórum!');
-  showToast('✓ Publicado!');
+  showToast('💬 Comentário publicado!');
 }
 
-function likeForum(id) {
-  // Simple local like toggle
-  const post = [...userPosts, ...SAMPLE_POSTS].find(p => p.id === id);
-  if (post) { post.likes = (post.likes || 0) + 1; renderForum(); }
+function postForum(){
+  if(!userProfile){showUsernameModal();return;}
+  const input=document.getElementById('forum-input');const text=input.value.trim();if(!text)return;
+  const cat=forumTab==='todos'?'geral':forumTab;
+  const post={id:'u_'+uid(),user:userProfile.name,username:'@'+userProfile.username,avatar:'✨',cat,body:text,time:'agora',likes:0,xp:XP.total,comments:[]};
+  userPosts.unshift(post);DB.set('forumPosts',userPosts);input.value='';
+  addXP(10,'Post no fórum!');
+  awardBadge('first_post','✍️','Primeiro Post','Publicou no fórum');
+  if(cat==='apresentacao'){DB.set('forumIntroduced',true);awardBadge('introduced','👋','Apresentado!','Se apresentou na comunidade');}
+  renderForum();showToast('✓ Publicado!');
 }
 
-// ── REPORT ──
+function likeForum(id){
+  const all=[...userPosts,...SAMPLE_POSTS];const post=all.find(p=>p.id===id);
+  if(post){post.likes=(post.likes||0)+1;renderForum();}
+}
+
+// ── USERNAME MODAL ──
+function showUsernameModal(){
+  document.getElementById('username-modal-container').innerHTML=`<div class="username-overlay">
+    <div class="username-card">
+      <h2>🧠 Crie seu perfil</h2>
+      <p>Escolha um nome e usuário para participar do fórum</p>
+      <input id="input-name" placeholder="Seu nome (ex: João Silva)" maxlength="40"/>
+      <input id="input-username" placeholder="Usuário (ex: joaosilva)" maxlength="20" oninput="this.value=this.value.replace(/[^a-z0-9_]/gi,'').toLowerCase()"/>
+      <button onclick="saveUsername()">Entrar na comunidade</button>
+    </div>
+  </div>`;
+  setTimeout(()=>document.getElementById('input-name').focus(),300);
+}
+function saveUsername(){
+  const name=document.getElementById('input-name').value.trim();
+  const username=document.getElementById('input-username').value.trim();
+  if(!name||!username){showToast('Preencha nome e usuário!');return;}
+  userProfile={name,username};DB.set('userProfile',userProfile);
+  document.getElementById('username-modal-container').innerHTML='';
+  updateGreeting();
+  showToast(`Bem-vindo(a), ${name}!`);
+  awardBadge('profile','👤','Perfil Criado','Criou seu perfil');
+}
+
+// ── REPORT (Tempo de Tela no lugar de Foco) ──
 function updateReport(){
   const sonoH=typeof S.sono==='string'?parseInt(S.sono):(S.sono||0);
   const sonoScore=S.sono?Math.min(25,Math.round((sonoH/8)*25)):0;
@@ -894,16 +987,29 @@ function updateReport(){
   const doneGoals=(S.goals?.filter(g=>g.done).length||0)+(S.fixedDone?.length||0);
   const metaScore=totalGoals>0?Math.round((doneGoals/totalGoals)*25):0;
   const ativScore=S.atividade?25:0;
-  const focoScore=Math.min(25,Math.round((pomoState.cycle/4)*25));
-  const total=sonoScore+metaScore+ativScore+focoScore;
+  // SCREEN TIME scoring: <=3h=25, >=4.5h=0, linear between
+  let telaScore=0;
+  if(S.screenH!==null&&S.screenH!==undefined){
+    const totalMin=(S.screenH||0)*60+(S.screenM||0);
+    if(totalMin<=180)telaScore=25;
+    else if(totalMin>=270)telaScore=0;
+    else telaScore=Math.round(25*(1-(totalMin-180)/(270-180)));
+  }
+  const total=sonoScore+metaScore+ativScore+telaScore;
   document.getElementById('report-score').textContent=total;
-  const bars=[{label:'Sono',val:sonoScore,max:25,color:'var(--purple)'},{label:'Metas',val:metaScore,max:25,color:'var(--blue)'},{label:'Atividade',val:ativScore,max:25,color:'var(--green)'},{label:'Foco',val:focoScore,max:25,color:'var(--amber)'}];
+  const bars=[
+    {label:'Sono',val:sonoScore,max:25,color:'var(--purple)'},
+    {label:'Metas',val:metaScore,max:25,color:'var(--blue)'},
+    {label:'Atividade',val:ativScore,max:25,color:'var(--green)'},
+    {label:'Tempo de Tela',val:telaScore,max:25,color:'var(--amber)'}
+  ];
   document.getElementById('report-bars').innerHTML=bars.map(b=>`<div class="report-bar"><div class="report-bar-label"><span>${b.label}</span><span>${b.val}/${b.max}</span></div><div class="report-bar-track"><div class="report-bar-fill" style="width:${(b.val/b.max)*100}%;background:${b.color};"></div></div></div>`).join('');
   const tips=[];
   if(sonoScore<15)tips.push('💤 Tente dormir pelo menos 7h — seu córtex pré-frontal precisa disso.');
-  if(!S.atividade)tips.push('🏃 Atividade física aumenta BDNF e melhora o foco em até 4h.');
-  if(S.agua<6)tips.push('💧 Psicoestimulantes desidratam — beba mais água.');
-  if(focoScore<12)tips.push('🧠 Tente pelo menos 2 ciclos de foco por dia.');
+  if(!S.atividade)tips.push('🏃 Atividade física (ou descanso ativo) aumenta BDNF e melhora o foco.');
+  if(S.agua<6)tips.push('💧 Psicoestimulantes desidratam — beba mais água (meta: 8 copos de 250ml).');
+  if(telaScore<12&&S.screenH!==null)tips.push('📱 Reduza o tempo de tela! A dopamina das redes compete com o foco.');
+  if(S.screenH===null||S.screenH===undefined)tips.push('📱 Registre seu tempo de tela na Home para completar a pontuação.');
   document.getElementById('report-tip').innerHTML=tips.length>0?tips.join('<br><br>'):'🌟 Excelente dia! Continue assim.';
   renderCalendar();
 }
@@ -914,6 +1020,30 @@ function renderCalendar(){
   for(let i=0;i<first.getDay();i++)html+='<div class="cal-day"></div>';
   for(let d=1;d<=last.getDate();d++){const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const hasData=DB.get('day_'+ds);const isToday=ds===today();html+=`<div class="cal-day ${hasData?'has-data':''} ${isToday?'today':''}">${d}</div>`;}
   cal.innerHTML=html;
+}
+
+// ── PROFILE RANK ──
+function renderProfileRank(){
+  const card=document.getElementById('profile-rank-card');
+  const r=getRank(XP.total);const nxt=getNextRank(XP.total);
+  const pct=nxt.xp===r.xp?100:Math.round(((XP.total-r.xp)/(nxt.xp-r.xp))*100);
+  card.innerHTML=`<div class="card-title"><span>${r.icon}</span> Sua Patente</div>
+    <div style="text-align:center;margin-bottom:12px;">
+      <div style="font-size:48px;margin-bottom:8px;">${r.icon}</div>
+      <div style="font-size:22px;font-weight:700;color:${r.color};">${r.name}</div>
+      ${userProfile?`<div style="font-size:13px;color:var(--txt2);margin-top:4px;">${userProfile.name} · @${userProfile.username}</div>`:''}
+      <div style="font-size:12px;color:var(--txt3);margin-top:8px;">${XP.total} XP total</div>
+    </div>
+    <div style="margin-top:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-bottom:4px;">
+        <span>${r.name}</span><span>${nxt.name} (${nxt.xp} XP)</span>
+      </div>
+      <div class="xp-track"><div class="xp-fill" style="width:${pct}%;"></div></div>
+    </div>
+    <div style="margin-top:16px;font-size:12px;color:var(--txt3);">
+      <div style="font-weight:600;margin-bottom:8px;color:var(--txt2);">Todas as patentes:</div>
+      ${RANKS.map(rk=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;${XP.total>=rk.xp?'':'opacity:0.4;'}"><span>${rk.icon}</span><span style="color:${rk.color};font-weight:600;">${rk.name}</span><span style="color:var(--txt3);font-size:11px;margin-left:auto;">${rk.xp} XP</span>${XP.total>=rk.xp?'<span style="color:var(--green);font-size:10px;">✓</span>':''}</div>`).join('')}
+    </div>`;
 }
 
 // ── BADGES ──
@@ -941,12 +1071,22 @@ function restoreUI(){
   document.getElementById('agua-val').textContent=S.agua||0;if(S.agua>=8)document.getElementById('qc-agua').classList.add('done');
   if(S.humor){const em={Ótimo:'😊',Bom:'🙂',Neutro:'😐',Baixo:'😔',Péssimo:'😫'};document.getElementById('humor-val').textContent=em[S.humor]||'—';document.getElementById('qc-humor').classList.add('done');}
   if(S.sono){document.getElementById('sono-val').textContent=S.sono+'h';document.getElementById('qc-sono').classList.add('done');}
-  if(S.atividade){const em2={Corrida:'🏃',Musculação:'🏋️',Caminhada:'🚶',Yoga:'🧘',Bike:'🚴',Esporte:'⚽',Dança:'💃',Natação:'🏊'};document.getElementById('ativ-val').textContent=em2[S.atividade]||'✓';document.getElementById('qc-ativ').classList.add('done');}
+  if(S.atividade){const em2={Corrida:'🏃',Musculação:'🏋️',Caminhada:'🚶',Yoga:'🧘',Bike:'🚴',Esporte:'⚽',Dança:'💃',Natação:'🏊',Descanso:'😴'};document.getElementById('ativ-val').textContent=em2[S.atividade]||'✓';document.getElementById('qc-ativ').classList.add('done');}
+  if(S.screenH!==null&&S.screenH!==undefined){document.getElementById('screen-hours').value=S.screenH;document.getElementById('screen-mins').value=S.screenM||0;
+    const totalMin=(S.screenH||0)*60+(S.screenM||0);const fb=document.getElementById('screen-feedback');const card=document.getElementById('screen-card');
+    if(totalMin<=180){fb.innerHTML=`<span style="color:var(--green);">✅ Ótimo! Dentro do limite.</span>`;card.style.borderColor='var(--green)';}
+    else if(totalMin<=270){fb.innerHTML=`<span style="color:var(--amber);">⚠️ Acima de 3h — pontuação reduzida.</span>`;card.style.borderColor='var(--amber)';}
+    else{fb.innerHTML=`<span style="color:var(--red);">🚨 Acima de 4h30 — pontuação zerada!</span>`;card.style.borderColor='var(--red)';}
+  }
   pomoState.cycle=S.pomoCycles||0;pomoState.totalMin=S.pomoMinutes||0;
 }
 
 // ── INIT ──
 function init(){
+  // Check if user needs to create profile
+  if(!userProfile){
+    // Don't force it, just show when they try to post
+  }
   const now=new Date();document.getElementById('med-time').value=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   updateGreeting();updateXPBar();restoreUI();renderGoals();renderFixedGoals();updatePomoUI();startNeuronAnim();
   setInterval(()=>{if(S.med&&S.medTime)updateMedProgress();},60000);
