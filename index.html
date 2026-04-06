@@ -250,6 +250,9 @@ input,select,textarea{font-family:var(--font);outline:none;}
 .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:10px 20px;font-size:13px;font-weight:500;z-index:500;animation:toastIn 0.3s ease;white-space:nowrap;max-width:90vw;}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-20px)}to{opacity:1;transform:translate(-50%,0)}}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div id="app">
@@ -490,6 +493,30 @@ input,select,textarea{font-family:var(--font);outline:none;}
 /* ═══════════════════════════════════════════════
    CLEANTDAH v3 — FÓRUM + PATENTES + TELA
 ═══════════════════════════════════════════════ */
+
+// ══════════════════════════════════════════
+//  FIREBASE CONFIG — COLE SUAS CREDENCIAIS AQUI
+// ══════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "COLE_SUA_API_KEY_AQUI",
+  authDomain: "COLE_SEU_AUTH_DOMAIN_AQUI",
+  projectId: "COLE_SEU_PROJECT_ID_AQUI",
+  storageBucket: "COLE_SEU_STORAGE_BUCKET_AQUI",
+  messagingSenderId: "COLE_SEU_SENDER_ID_AQUI",
+  appId: "COLE_SEU_APP_ID_AQUI"
+};
+
+let fbReady = false;
+let db = null;
+let fbAuth = null;
+let fbUser = null;
+
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  fbAuth = firebase.auth();
+  fbReady = firebaseConfig.apiKey !== "COLE_SUA_API_KEY_AQUI";
+} catch(e) { console.warn('Firebase não configurado:', e); }
 
 const DB={get:k=>{try{return JSON.parse(localStorage.getItem('ct_'+k));}catch{return null;}},set:(k,v)=>{try{localStorage.setItem('ct_'+k,JSON.stringify(v));}catch{}},del:k=>localStorage.removeItem('ct_'+k),keys:()=>Object.keys(localStorage).filter(k=>k.startsWith('ct_')).map(k=>k.slice(3))};
 const today=()=>new Date().toISOString().slice(0,10);
@@ -831,9 +858,12 @@ function completeRFStep(id){if(!rfStepsDone.includes(id))rfStepsDone.push(id);if
 function closeReativar(){document.getElementById('modals').innerHTML='';}
 
 // ══════════════════════════════════════════
-//  FÓRUM v2 — COM COMENTÁRIOS + USERNAME
+//  FÓRUM v3 — FIREBASE REALTIME
 // ══════════════════════════════════════════
 let forumTab='todos';
+let forumPosts=[];  // loaded from Firebase
+let forumListener=null;
+
 const TAG_COLORS={
   apresentacao:{bg:'rgba(236,72,153,0.12)',color:'#EC4899',label:'👋 Apresentação'},
   medicacao:{bg:'rgba(59,130,246,0.15)',color:'#3B82F6',label:'💊 Medicação'},
@@ -847,19 +877,56 @@ const TAG_COLORS={
   geral:{bg:'rgba(59,130,246,0.15)',color:'#3B82F6',label:'🔥 Geral'}
 };
 
+// Fallback sample posts (shown when Firebase not configured)
 const SAMPLE_POSTS=[
-  {id:'p1',user:'Ana Martins',username:'@anamartins',avatar:'🧠',cat:'apresentacao',body:'Oi! Me chamo Ana, tenho 28 anos e fui diagnosticada com TDAH há 2 anos. Uso Venvanse e estou aprendendo a lidar melhor com minha rotina. Feliz em estar aqui!',time:'2h',likes:18,xp:800,comments:[{user:'Pedro K.',username:'@pedrok',avatar:'💊',body:'Bem-vinda Ana! Também uso Venvanse. Qualquer dúvida estamos aqui!',time:'1h',xp:1200},{user:'Mari S.',username:'@marisol',avatar:'🎯',body:'Boa sorte na jornada! Esse app me ajudou muito.',time:'30min',xp:500}]},
-  {id:'p2',user:'Pedro Kurosawa',username:'@pedrok',avatar:'💊',cat:'medicacao',body:'Mudei de Ritalina pra Venvanse semana passada. A diferença no tempo de efeito é absurda. Finalmente consigo trabalhar à tarde inteira sem aquela queda brusca.',time:'5h',likes:23,xp:1200,comments:[{user:'Lucas R.',username:'@lucasr',avatar:'💡',body:'Qual dosagem você está usando?',time:'3h',xp:300},{user:'Pedro K.',username:'@pedrok',avatar:'💊',body:'50mg. Meu psiquiatra começou com 30mg por 2 semanas.',time:'2h',xp:1200}]},
+  {id:'p1',user:'Ana Martins',username:'@anamartins',avatar:'🧠',cat:'apresentacao',body:'Oi! Me chamo Ana, tenho 28 anos e fui diagnosticada com TDAH há 2 anos. Uso Venvanse e estou aprendendo a lidar melhor com minha rotina. Feliz em estar aqui!',time:'2h',likes:18,xp:800,comments:[{user:'Pedro K.',username:'@pedrok',avatar:'💊',body:'Bem-vinda Ana! Também uso Venvanse. Qualquer dúvida estamos aqui!',time:'1h',xp:1200}]},
+  {id:'p2',user:'Pedro Kurosawa',username:'@pedrok',avatar:'💊',cat:'medicacao',body:'Mudei de Ritalina pra Venvanse semana passada. A diferença no tempo de efeito é absurda. Finalmente consigo trabalhar à tarde inteira.',time:'5h',likes:23,xp:1200,comments:[]},
   {id:'p3',user:'Mari Solano',username:'@marisol',avatar:'🎯',cat:'vitorias',body:'Primeira semana completando todas as metas fixas! O sistema de XP me motivou muito 🔥',time:'1d',likes:34,xp:500,comments:[]},
   {id:'p4',user:'Lucas Ribeiro',username:'@lucasr',avatar:'💡',cat:'dicas',body:'Dica: coloca o celular em outro cômodo durante os ciclos de foco. Parece bobo mas muda TUDO.',time:'1d',likes:19,xp:300,comments:[]},
-  {id:'p5',user:'Bia Torres',username:'@biatorres',avatar:'🌊',cat:'desabafos',body:'Dias ruins fazem parte. Não completei nenhum ciclo hoje mas registrei meu humor e meu sono. Isso também conta.',time:'3h',likes:45,xp:2000,comments:[{user:'Ju F.',username:'@jufernandes',avatar:'😴',body:'Totalmente! Registrar já é uma vitória. Abraço!',time:'2h',xp:1500}]},
-  {id:'p6',user:'Caio Duarte',username:'@caiod',avatar:'🏋️',cat:'rotina',body:'Minha rotina matinal que funcionou: acordar, 10min exercício, tomar remédio, banho gelado, café, pomodoro. Demorei 3 meses pra fixar.',time:'2d',likes:28,xp:3600,comments:[]},
-  {id:'p7',user:'Ju Fernandes',username:'@jufernandes',avatar:'😴',cat:'desabafos',body:'Quem mais tem problema com sono? Mesmo cansada não consigo desligar o cérebro. Alguma técnica que funcione?',time:'6h',likes:31,xp:1500,comments:[{user:'Caio D.',username:'@caiod',avatar:'🏋️',body:'Tenta a técnica 4-7-8: inspira 4s, segura 7s, expira 8s. Mudou minha vida.',time:'5h',xp:3600}]},
+  {id:'p5',user:'Bia Torres',username:'@biatorres',avatar:'🌊',cat:'desabafos',body:'Dias ruins fazem parte. Não completei nenhum ciclo hoje mas registrei meu humor e meu sono. Isso também conta.',time:'3h',likes:45,xp:2000,comments:[]},
+  {id:'p6',user:'Caio Duarte',username:'@caiod',avatar:'🏋️',cat:'rotina',body:'Minha rotina matinal: acordar, 10min exercício, tomar remédio, banho gelado, café, pomodoro. Demorei 3 meses pra fixar.',time:'2d',likes:28,xp:3600,comments:[]},
+  {id:'p7',user:'Ju Fernandes',username:'@jufernandes',avatar:'😴',cat:'desabafos',body:'Quem mais tem problema com sono? Mesmo cansada não consigo desligar o cérebro. Alguma técnica que funcione?',time:'6h',likes:31,xp:1500,comments:[]},
   {id:'p8',user:'Rafa Lima',username:'@rafalima',avatar:'🎮',cat:'vitorias',body:'Patente Capitão desbloqueada! Nunca mantive um hábito por tanto tempo 💪',time:'4h',likes:52,xp:1300,comments:[]}
 ];
 
-let userPosts=DB.get('forumPosts')||[];
-let postComments=DB.get('forumComments')||{};
+function timeAgo(ts){
+  if(!ts)return'agora';
+  const now=Date.now();const d=ts.toDate?ts.toDate().getTime():ts;
+  const diff=Math.floor((now-d)/1000);
+  if(diff<60)return'agora';if(diff<3600)return Math.floor(diff/60)+'min';
+  if(diff<86400)return Math.floor(diff/3600)+'h';
+  return Math.floor(diff/86400)+'d';
+}
+
+// Firebase Auth — anonymous login
+async function ensureAuth(){
+  if(!fbReady)return;
+  if(fbUser)return fbUser;
+  try{
+    const cred=await fbAuth.signInAnonymously();
+    fbUser=cred.user;
+    // Check if user profile exists in Firestore
+    const doc=await db.collection('users').doc(fbUser.uid).get();
+    if(doc.exists){
+      const data=doc.data();
+      userProfile={name:data.name,username:data.username,uid:fbUser.uid};
+      DB.set('userProfile',userProfile);
+      updateGreeting();
+    }
+    return fbUser;
+  }catch(e){console.error('Auth error:',e);return null;}
+}
+
+// Start real-time listener
+function startForumListener(){
+  if(!fbReady||!db)return;
+  if(forumListener)forumListener(); // unsubscribe previous
+  forumListener=db.collection('posts').orderBy('createdAt','desc').limit(100).onSnapshot(snap=>{
+    forumPosts=[];
+    snap.forEach(doc=>{forumPosts.push({id:doc.id,...doc.data()});});
+    renderForum();
+  },err=>console.error('Forum listener error:',err));
+}
 
 function setForumTab(tab){
   forumTab=tab;
@@ -880,9 +947,8 @@ function renderForumWelcome(){
 
 function startIntroPost(){
   DB.set('forumIntroduced',true);
-  setForumTab('apresentacao');
-  document.querySelectorAll('.forum-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.forum-tab').forEach(t=>{if(t.textContent.includes('Apresentação'))t.classList.add('active');});
+  forumTab='apresentacao';
+  document.querySelectorAll('.forum-tab').forEach(t=>{t.classList.remove('active');if(t.textContent.includes('Apresentação'))t.classList.add('active');});
   document.getElementById('forum-input').value='Oi! Me chamo '+((userProfile&&userProfile.name)||'')+' e ';
   document.getElementById('forum-input').focus();
   document.getElementById('forum-welcome-banner').innerHTML='';
@@ -891,27 +957,44 @@ function startIntroPost(){
 function renderForum(){
   renderForumWelcome();
   const feed=document.getElementById('forum-feed');
-  const allPosts=[...userPosts.map(p=>({...p,isUser:true})),...SAMPLE_POSTS];
-  const filtered=forumTab==='todos'?allPosts:allPosts.filter(p=>p.cat===forumTab);
+
+  // Use Firebase posts if available, otherwise sample posts
+  const posts=forumPosts.length>0?forumPosts:SAMPLE_POSTS;
+  const filtered=forumTab==='todos'?posts:posts.filter(p=>p.cat===forumTab);
+
   if(filtered.length===0){feed.innerHTML='<div class="forum-empty">Nenhum post nessa categoria ainda. Seja o primeiro!</div>';return;}
 
-  feed.innerHTML=filtered.map(p=>{
+  if(!fbReady){
+    feed.innerHTML=`<div style="text-align:center;padding:12px;margin-bottom:12px;background:var(--amber-g);border:1px solid rgba(245,158,11,0.3);border-radius:var(--r);font-size:12px;color:var(--amber);">⚠️ Firebase não configurado — mostrando posts de exemplo. <a href="#" onclick="showFirebaseHelp()" style="color:var(--blue);text-decoration:underline;">Como configurar?</a></div>`+renderPostsHTML(filtered);
+  } else {
+    feed.innerHTML=renderPostsHTML(filtered);
+  }
+}
+
+function renderPostsHTML(posts){
+  return posts.map(p=>{
     const tag=TAG_COLORS[p.cat]||TAG_COLORS.geral;
     const rankHTML=getRankBadgeHTML(p.xp||0,true);
-    const comments=p.isUser?(postComments[p.id]||[]):(p.comments||[]);
-    const commentsHTML=comments.length>0?`<div class="forum-comments">${comments.map(c=>`<div class="forum-comment"><div class="comment-avatar" style="background:var(--surf2)">${c.avatar}</div><div class="comment-body"><div class="comment-user">${c.user} ${getRankBadgeHTML(c.xp||0,true)}</div><div class="comment-text">${c.body}</div><div class="comment-time">${c.time}</div></div></div>`).join('')}</div>`:'';
+    const isMe=userProfile&&p.uid&&userProfile.uid&&p.uid===userProfile.uid;
+    const comments=p.comments||[];
+    const timeStr=p.createdAt?timeAgo(p.createdAt):(p.time||'agora');
+
+    const commentsHTML=comments.length>0?`<div class="forum-comments">${comments.map(c=>{
+      const cTimeStr=c.createdAt?timeAgo(c.createdAt):(c.time||'agora');
+      return`<div class="forum-comment"><div class="comment-avatar" style="background:var(--surf2)">${c.avatar||'✨'}</div><div class="comment-body"><div class="comment-user">${c.user} ${getRankBadgeHTML(c.xp||0,true)}</div><div class="comment-text">${escapeHTML(c.body)}</div><div class="comment-time">${cTimeStr}</div></div></div>`;
+    }).join('')}</div>`:'';
     const commentInputHTML=`<div class="comment-input-row" style="margin-top:8px;"><input class="comment-input" placeholder="Comentar..." id="comment-${p.id}" maxlength="300" onkeydown="if(event.key==='Enter')addComment('${p.id}')"/><button class="comment-send" onclick="addComment('${p.id}')">↑</button></div>`;
 
     return`<div class="forum-post">
       <div style="margin-bottom:6px;"><span class="forum-tag" style="background:${tag.bg};color:${tag.color};">${tag.label}</span></div>
       <div class="forum-post-header">
-        <div class="forum-avatar" style="background:${p.isUser?'var(--blue-g)':'var(--surf2)'}">${p.avatar}</div>
+        <div class="forum-avatar" style="background:${isMe?'var(--blue-g)':'var(--surf2)'}">${p.avatar||'✨'}</div>
         <div class="forum-user-info">
-          <div class="forum-user">${p.user} ${rankHTML} ${p.isUser?'<span style="font-size:10px;color:var(--blue);">(você)</span>':''}</div>
-          <div class="forum-time">${p.username||''} · ${p.time}</div>
+          <div class="forum-user">${escapeHTML(p.user||'Anônimo')} ${rankHTML} ${isMe?'<span style="font-size:10px;color:var(--blue);">(você)</span>':''}</div>
+          <div class="forum-time">${p.username?'@'+escapeHTML(p.username):''} · ${timeStr}</div>
         </div>
       </div>
-      <div class="forum-body">${p.body}</div>
+      <div class="forum-body">${escapeHTML(p.body||'')}</div>
       <div class="forum-actions">
         <button class="forum-act" onclick="likeForum('${p.id}')">❤️ ${p.likes||0}</button>
         <button class="forum-act" onclick="document.getElementById('comment-${p.id}').focus()">💬 ${comments.length}</button>
@@ -922,43 +1005,99 @@ function renderForum(){
   }).join('');
 }
 
-function addComment(postId){
+function escapeHTML(str){
+  if(!str)return'';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function addComment(postId){
   if(!userProfile){showUsernameModal();return;}
   const input=document.getElementById('comment-'+postId);if(!input)return;
   const text=input.value.trim();if(!text)return;
-  const comment={user:userProfile.name,username:'@'+userProfile.username,avatar:'✨',body:text,time:'agora',xp:XP.total};
-  // For sample posts, store comments separately
-  if(!postComments[postId])postComments[postId]=[];
-  // Check if it's a user post
-  const userPost=userPosts.find(p=>p.id===postId);
-  if(userPost){if(!userPost.comments)userPost.comments=[];userPost.comments.push(comment);DB.set('forumPosts',userPosts);}
-  // Also check sample posts and store in separate object
-  const samplePost=SAMPLE_POSTS.find(p=>p.id===postId);
-  if(samplePost){if(!postComments[postId])postComments[postId]=[];postComments[postId].push(comment);DB.set('forumComments',postComments);}
   input.value='';
+
+  const comment={user:userProfile.name,username:userProfile.username,avatar:'✨',body:text,xp:XP.total,createdAt:new Date()};
+
+  if(fbReady&&db){
+    try{
+      await db.collection('posts').doc(postId).update({
+        comments:firebase.firestore.FieldValue.arrayUnion({...comment,createdAt:firebase.firestore.Timestamp.now()})
+      });
+    }catch(e){
+      // If post doesn't exist in Firebase (sample post), ignore
+      console.warn('Comment error:',e);
+    }
+  } else {
+    // Fallback local
+    const post=SAMPLE_POSTS.find(p=>p.id===postId);
+    if(post){if(!post.comments)post.comments=[];post.comments.push({...comment,time:'agora'});}
+    renderForum();
+  }
   addXP(5,'Comentário no fórum!');
-  renderForum();
   showToast('💬 Comentário publicado!');
 }
 
-function postForum(){
+async function postForum(){
   if(!userProfile){showUsernameModal();return;}
   const input=document.getElementById('forum-input');const text=input.value.trim();if(!text)return;
   const cat=forumTab==='todos'?'geral':forumTab;
-  const post={id:'u_'+uid(),user:userProfile.name,username:'@'+userProfile.username,avatar:'✨',cat,body:text,time:'agora',likes:0,xp:XP.total,comments:[]};
-  userPosts.unshift(post);DB.set('forumPosts',userPosts);input.value='';
+  input.value='';
+
+  const post={
+    user:userProfile.name,
+    username:userProfile.username,
+    uid:userProfile.uid||null,
+    avatar:'✨',
+    cat,
+    body:text,
+    likes:0,
+    xp:XP.total,
+    comments:[],
+    createdAt:fbReady?firebase.firestore.Timestamp.now():new Date()
+  };
+
+  if(fbReady&&db){
+    try{await db.collection('posts').add(post);}
+    catch(e){console.error('Post error:',e);showToast('❌ Erro ao publicar');return;}
+  } else {
+    post.id='local_'+uid();post.time='agora';
+    SAMPLE_POSTS.unshift(post);
+    renderForum();
+  }
+
   addXP(10,'Post no fórum!');
   awardBadge('first_post','✍️','Primeiro Post','Publicou no fórum');
   if(cat==='apresentacao'){DB.set('forumIntroduced',true);awardBadge('introduced','👋','Apresentado!','Se apresentou na comunidade');}
-  renderForum();showToast('✓ Publicado!');
+  showToast('✓ Publicado!');
 }
 
-function likeForum(id){
-  const all=[...userPosts,...SAMPLE_POSTS];const post=all.find(p=>p.id===id);
-  if(post){post.likes=(post.likes||0)+1;renderForum();}
+async function likeForum(id){
+  if(fbReady&&db){
+    try{await db.collection('posts').doc(id).update({likes:firebase.firestore.FieldValue.increment(1)});}
+    catch(e){console.warn('Like error:',e);}
+  } else {
+    const post=SAMPLE_POSTS.find(p=>p.id===id);
+    if(post){post.likes=(post.likes||0)+1;renderForum();}
+  }
 }
 
-// ── USERNAME MODAL ──
+function showFirebaseHelp(){
+  document.getElementById('modals').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-content">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔥 Configurar Firebase</div>
+    <div style="font-size:13px;color:var(--txt2);line-height:1.7;">
+      <p><b>1.</b> Acesse <a href="https://console.firebase.google.com" target="_blank" style="color:var(--blue);">console.firebase.google.com</a></p>
+      <p><b>2.</b> Clique em "Adicionar projeto" e crie um projeto</p>
+      <p><b>3.</b> Vá em Autenticação → Provedores → Ative "Anônimo"</p>
+      <p><b>4.</b> Vá em Firestore Database → Criar banco de dados → Modo de teste</p>
+      <p><b>5.</b> Vá em Configurações do projeto (⚙️) → Seus apps → Web (</>) → Registrar</p>
+      <p><b>6.</b> Copie o objeto firebaseConfig e cole no código do app</p>
+      <p style="margin-top:12px;color:var(--amber);">Depois de colar as credenciais no código, o fórum funcionará em tempo real para todos! 🎉</p>
+    </div>
+  </div></div>`;
+}
+
+// ── USERNAME MODAL (com Firebase) ──
 function showUsernameModal(){
   document.getElementById('username-modal-container').innerHTML=`<div class="username-overlay">
     <div class="username-card">
@@ -971,15 +1110,37 @@ function showUsernameModal(){
   </div>`;
   setTimeout(()=>document.getElementById('input-name').focus(),300);
 }
-function saveUsername(){
+async function saveUsername(){
   const name=document.getElementById('input-name').value.trim();
   const username=document.getElementById('input-username').value.trim();
   if(!name||!username){showToast('Preencha nome e usuário!');return;}
-  userProfile={name,username};DB.set('userProfile',userProfile);
+
+  // Firebase Auth + Firestore profile
+  if(fbReady){
+    await ensureAuth();
+    if(fbUser){
+      try{
+        // Check if username is taken
+        const existing=await db.collection('users').where('username','==',username).get();
+        if(!existing.empty&&existing.docs[0].id!==fbUser.uid){
+          showToast('❌ Usuário já existe! Tente outro.');return;
+        }
+        await db.collection('users').doc(fbUser.uid).set({name,username,xp:XP.total,createdAt:firebase.firestore.Timestamp.now()},{merge:true});
+        userProfile={name,username,uid:fbUser.uid};
+      }catch(e){console.error('Save profile error:',e);userProfile={name,username};}
+    } else {
+      userProfile={name,username};
+    }
+  } else {
+    userProfile={name,username};
+  }
+
+  DB.set('userProfile',userProfile);
   document.getElementById('username-modal-container').innerHTML='';
   updateGreeting();
   showToast(`Bem-vindo(a), ${name}!`);
   awardBadge('profile','👤','Perfil Criado','Criou seu perfil');
+  renderForum();
 }
 
 // ── REPORT (Tempo de Tela no lugar de Foco) ──
@@ -1084,15 +1245,61 @@ function restoreUI(){
   pomoState.cycle=S.pomoCycles||0;pomoState.totalMin=S.pomoMinutes||0;
 }
 
+// ── RESET DIÁRIO — detecta novo dia e limpa tudo ──
+let lastKnownDate=today();
+
+function resetUIToNewDay(){
+  // Reload day data for today (will be empty/fresh)
+  S=loadDay(today());
+  // Reset all UI elements to default
+  const btn=document.getElementById('med-btn');btn.classList.remove('taken');btn.innerHTML='💊 Tomei';btn.onclick=tomarRemedio;btn.style.pointerEvents='auto';
+  document.getElementById('med-progress').style.display='none';
+  document.getElementById('med-fill').style.width='0%';
+  document.getElementById('med-phase-txt').textContent='';
+  document.getElementById('med-effect-desc').textContent='';
+  document.getElementById('agua-val').textContent='0';
+  document.getElementById('qc-agua').classList.remove('done');
+  document.getElementById('humor-val').textContent='—';
+  document.getElementById('qc-humor').classList.remove('done');
+  document.getElementById('sono-val').textContent='—';
+  document.getElementById('qc-sono').classList.remove('done');
+  document.getElementById('ativ-val').textContent='—';
+  document.getElementById('qc-ativ').classList.remove('done');
+  document.getElementById('screen-hours').value='';
+  document.getElementById('screen-mins').value='';
+  document.getElementById('screen-feedback').innerHTML='';
+  document.getElementById('screen-card').style.borderColor='var(--border)';
+  const now=new Date();document.getElementById('med-time').value=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  // Reset pomodoro
+  pomoReset();
+  // Reset goals UI (daily goals are per-day, fixed goals just uncheck)
+  renderGoals();
+  renderFixedGoals();
+  updateGreeting();
+  updateXPBar();
+  lastKnownDate=today();
+  showToast('🌅 Novo dia! Tudo zerado.');
+}
+
+function checkDayChange(){
+  const t=today();
+  if(t!==lastKnownDate){resetUIToNewDay();}
+}
+
+// Check every 30 seconds + when user returns to tab
+setInterval(checkDayChange,30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayChange();});
+
 // ── INIT ──
-function init(){
-  // Check if user needs to create profile
-  if(!userProfile){
-    // Don't force it, just show when they try to post
-  }
+async function init(){
   const now=new Date();document.getElementById('med-time').value=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   updateGreeting();updateXPBar();restoreUI();renderGoals();renderFixedGoals();updatePomoUI();startNeuronAnim();
   setInterval(()=>{if(S.med&&S.medTime)updateMedProgress();},60000);
+  // Firebase init
+  if(fbReady){
+    await ensureAuth();
+    startForumListener();
+  }
 }
 init();
 </script>
